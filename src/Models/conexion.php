@@ -1,0 +1,19 @@
+<?php
+    namespace Anonymous01j\Repuestos\Models;
+    use PDOException;
+    use PDO;
+
+    class Conexion extends PDO {
+        function __construct() {
+            $servername = "localhost";
+            $username = "root";
+            $password = "";
+            $dbname = "respuestos";
+            try {
+                parent::__construct("mysql:host=$servername;dbname=$dbname", $username, $password);
+                $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            } catch(PDOException $e) {
+                die("Error en la conexión: " . $e->getMessage());
+            }
+        }
+    }

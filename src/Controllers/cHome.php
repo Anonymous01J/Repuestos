@@ -1,0 +1,53 @@
+<?php
+    namespace Anonymous01j\Repuestos\Controllers;
+    use Anonymous01j\Repuestos\Models\Usuarios;
+    class CHome {
+        public function view() {
+            if (!isset($_SESSION['id'])) {
+                if (isset($_COOKIE['id'])) {
+                    $_SESSION['id'] = $_COOKIE['id'];
+                    $_SESSION['nombre'] = $_COOKIE['nombre'];
+                    $_SESSION['rol'] = $_COOKIE['rol'];
+                } else {
+                    require_once __DIR__ . '/../Views/Login.php';
+                    exit();
+                }
+            }
+            $title = 'Inicio';
+            require_once __DIR__ . '/../Views/Home.php';
+        }
+
+        public function login() {
+            $usuario = new Usuarios();
+
+            if (isset($_POST['usuario']) && isset($_POST['clave'])) {
+                $login = $usuario->login($_POST['usuario'], $_POST['clave']);
+                if ($login) {
+                    session_start();
+                    $_SESSION['id'] = $login['id'];
+                    $_SESSION['nombre'] = $login['nombre'];
+                    $rolData = $usuario->searchRol($_POST['usuario']);
+                    $_SESSION['rol'] = $rolData ? $rolData['rol_nombre'] : '';
+
+                    if (isset($_POST['recordar'])) {
+                        setcookie("id", $login['id'], time() + 3600 * 24 * 30, "/");
+                        setcookie("nombre", $login['nombre'], time() + 3600 * 24 * 30, "/");
+                        setcookie("rol", $rolData ? $rolData['rol_nombre'] : '', time() + 3600 * 24 * 30, "/");
+                    }
+                    header("Location: ?c=CHome/view");
+                } else {
+                    header("Location: ?c=CHome/view&error=1");
+                }
+            }
+        }
+        public function logout() {
+            session_destroy();
+            // Eliminar cookies
+            setcookie("id", "", time() - 3600, "/");
+            setcookie("nombre", "", time() - 3600, "/");
+            setcookie("rol", "", time() - 3600, "/");
+
+            require_once __DIR__ . '/../Views/Login.php';
+            exit();
+        }
+    }
