@@ -2,45 +2,45 @@
     namespace Anonymous01j\Repuestos\Models;
     use Anonymous01j\Repuestos\Models\Conexion;
 
-    class Detalle_Ingreso extends Conexion {
+    class Detalles_Venta extends Conexion {
         private $id;
-        private $id_ingreso;
+        private $id_venta;
         private $id_producto;
         private $cantidad;
-        private $precio_compra;
+        private $precio_unitario;
         private $subtotal;
 
-        public function __construct($id = null, $id_ingreso = null, $id_producto = null, $cantidad = null, $precio_compra = null, $subtotal = null) {
+        public function __construct($id = null, $id_venta = null, $id_producto = null, $cantidad = null, $precio_unitario = null, $subtotal = null) {
             parent::__construct();
             $this->id = $id;
-            $this->id_ingreso = $id_ingreso;
+            $this->id_venta = $id_venta;
             $this->id_producto = $id_producto;
             $this->cantidad = $cantidad;
-            $this->precio_compra = $precio_compra;
+            $this->precio_unitario = $precio_unitario;
             $this->subtotal = $subtotal;
         }
 
         public function getId() { return $this->id; }
-        public function getIngresoId() { return $this->id_ingreso; }
+        public function getVentaId() { return $this->id_venta; }
         public function getProductoId() { return $this->id_producto; }
         public function getCantidad() { return $this->cantidad; }
-        public function getPrecio_compra() { return $this->precio_compra; }
+        public function getPrecioUnitario() { return $this->precio_unitario; }
         public function getSubtotal() { return $this->subtotal; }
 
         public function setId($id) { $this->id = $id; return $this; }
-        public function setIngresoId($id_ingreso) { $this->id_ingreso = $id_ingreso; return $this; }
+        public function setVentaId($id_venta) { $this->id_venta = $id_venta; return $this; }
         public function setProductoId($id_producto) { $this->id_producto = $id_producto; return $this; }
         public function setCantidad($cantidad) { $this->cantidad = $cantidad; return $this; }
-        public function setPrecio_compra($precio_compra) { $this->precio_compra = $precio_compra; return $this; }
+        public function setPrecioUnitario($precio_unitario) { $this->precio_unitario = $precio_unitario; return $this; }
         public function setSubtotal($subtotal) { $this->subtotal = $subtotal; return $this; }
 
-        public function insert($id_ingreso, $id_producto, $cantidad, $precio_compra, $subtotal) {
-            $sql = "INSERT INTO detalle_ingreso (id_ingreso, id_producto, cantidad, precio_compra, subtotal) VALUES (:id_ingreso, :id_producto, :cantidad, :precio_compra, :subtotal)";
+        public function insert($id_venta, $id_producto, $cantidad, $precio_unitario, $subtotal) {
+            $sql = "INSERT INTO detalle_venta (id_venta, id_producto, cantidad, precio_unitario, subtotal) VALUES (:id_venta, :id_producto, :cantidad, :precio_unitario, :subtotal)";
             $stmt = $this->prepare($sql);
-            $stmt->bindParam(":id_ingreso", $id_ingreso);
+            $stmt->bindParam(":id_venta", $id_venta);
             $stmt->bindParam(":id_producto", $id_producto);
             $stmt->bindParam(":cantidad", $cantidad);
-            $stmt->bindParam(":precio_compra", $precio_compra);
+            $stmt->bindParam(":precio_unitario", $precio_unitario);
             $stmt->bindParam(":subtotal", $subtotal);
             if ($stmt->execute()) {
                 return true;
@@ -48,9 +48,8 @@
                 return false;
             }
         }
-
         public function search() {
-            $sql = "SELECT * FROM detalle_ingreso";
+            $sql = "SELECT * FROM detalle_venta";
             $stmt = $this->prepare($sql);
             if ($stmt->execute()) {
                 return $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -58,9 +57,8 @@
                 return [];
             }
         }
-
         public function searchId($id) {
-            $sql = "SELECT * FROM detalle_ingreso WHERE id = :id";
+            $sql = "SELECT * FROM detalle_venta WHERE id = :id";
             $stmt = $this->prepare($sql);
             $stmt->bindParam(":id", $id);
             if ($stmt->execute()) {
@@ -69,10 +67,10 @@
                 return [];
             }
         }
-        public function searchIngresoId($id_ingreso) {
-            $sql = "SELECT * FROM detalle_ingreso WHERE id_ingreso = :id_ingreso";
+        public function searchVentaId($id_venta) {
+            $sql = "SELECT * FROM detalle_venta WHERE id_venta = :id_venta";
             $stmt = $this->prepare($sql);
-            $stmt->bindParam(":id_ingreso", $id_ingreso);
+            $stmt->bindParam(":id_venta", $id_venta);
             if ($stmt->execute()) {
                 return $stmt->fetchAll(\PDO::FETCH_ASSOC);
             } else {
@@ -80,7 +78,7 @@
             }
         }
         public function searchProductoId($id_producto) {
-            $sql = "SELECT * FROM detalle_ingreso WHERE id_producto = :id_producto";
+            $sql = "SELECT * FROM detalle_venta WHERE id_producto = :id_producto";
             $stmt = $this->prepare($sql);
             $stmt->bindParam(":id_producto", $id_producto);
             if ($stmt->execute()) {

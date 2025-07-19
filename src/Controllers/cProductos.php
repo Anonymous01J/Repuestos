@@ -2,7 +2,9 @@
     namespace Anonymous01j\Repuestos\Controllers;
     use Anonymous01j\Repuestos\Models\Productos;
     use Anonymous01j\Repuestos\Models\Categorias;
-
+    use Anonymous01j\Repuestos\Models\Ingresos;
+    use Anonymous01j\Repuestos\Models\Detalles_Ingreso;
+    use Anonymous01j\Repuestos\Models\Proveedores;
     class CProductos {
         public function view() {
             if (!isset($_SESSION['id'])) {
@@ -18,8 +20,15 @@
             $title = 'Productos';
             $producto = new Productos();
             $categoria = new Categorias();
+            $ingreso = new Ingresos();
+            $detalleIngreso = new Detalles_Ingreso();
+            $proveedor = new Proveedores();
+            $proveedores = $proveedor->search();
+            $ingresos = $ingreso->search();
+            $detallesIngresos = $detalleIngreso->search();
             $categorias = $categoria->search();
             $productos = $producto->search();
+            $productosJSON = json_encode($productos);
             require_once __DIR__ . '/../Views/Productos.php';
         }
 
