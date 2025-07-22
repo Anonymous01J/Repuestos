@@ -27,7 +27,7 @@
                 <!-- Clientes Activos -->
                 <div class="tab-pane fade show active" id="activos">
                     <div class="table-responsive">
-                        <table id="tablaActivos" class="table table-striped">
+                        <table id="tablaActivos" class="table-DT table table-striped">
                             <thead>
                                 <tr>
                                     <th>Nombre</th>
@@ -106,7 +106,7 @@
                 <!-- Clientes Inactivos -->
                 <div class="tab-pane fade" id="inactivos">
                     <div class="table-responsive">
-                        <table id="tablaInactivos" class="table table-striped">
+                        <table id="tablaInactivos" class="table-DT table table-striped">
                             <thead>
                                 <tr>
                                     <th>Nombre</th>

@@ -30,13 +30,13 @@
         public function setFecha($fecha) { $this->fecha = $fecha; return $this; }
         public function setTotal($total) { $this->total = $total; return $this; }
 
-        public function insert($id_cliente, $id_usuario, $fecha, $total) {
+        public function insert() {
             $sql = "INSERT INTO ventas (id_cliente, id_usuario, fecha, total) VALUES (:id_cliente, :id_usuario, :fecha, :total)";
             $stmt = $this->prepare($sql);
-            $stmt->bindParam(":id_cliente", $id_cliente);
-            $stmt->bindParam(":id_usuario", $id_usuario);
-            $stmt->bindParam(":fecha", $fecha);
-            $stmt->bindParam(":total", $total);
+            $stmt->bindParam(":id_cliente", $this->id_cliente);
+            $stmt->bindParam(":id_usuario", $this->id_usuario);
+            $stmt->bindParam(":fecha", $this->fecha);
+            $stmt->bindParam(":total", $this->total);
             if ($stmt->execute()) {
                 return true;
             } else {

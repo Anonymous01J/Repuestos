@@ -4,6 +4,7 @@
     use PDO;
 
     class Conexion extends PDO {
+    private Conexion $pdo;
         function __construct() {
             $servername = "localhost";
             $username = "root";
