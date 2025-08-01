@@ -10,7 +10,7 @@ include_once 'src/Views/complements/header.php';
         <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#modalNuevoIngreso">
             + Registrar Entrada
         </button>
-        <button class="btn btn-info mb-3" data-bs-toggle="modal" data-bs-target="#modalNuevaVenta">
+        <button class="btn btn-secondary mb-3" data-bs-toggle="modal" data-bs-target="#modalNuevaVenta">
             + Registrar Venta
         </button>
         <div class="container bg-white p-4 rounded shadow-sm">
@@ -64,17 +64,49 @@ include_once 'src/Views/complements/header.php';
                                         <td><?= htmlspecialchars($p['stock_maximo']) ?></td>
                                         <td><?= htmlspecialchars($p['categoria']) ?></td>
                                         <td>
-                                            <button class="btn btn-sm btn-warning"
-                                                    onclick="editarProducto(<?= htmlspecialchars(json_encode($p)) ?>)">
-                                                Editar
-                                            </button>
-                                            <button class="btn btn-sm btn-success"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#modalIngresoRapido_<?= $p['id'] ?>"
-                                                    data-idProducto="<?= $p['id'] ?>">
-                                                Entrada Rápida
-                                            </button>
-
+                                            <div class="accordion" id="accordionAcciones_<?= $p['id'] ?>">
+                                                <div class="accordion-item">
+                                                        <button 
+                                                        class="accordion-button collapsed p-2" 
+                                                        type="button" 
+                                                        data-bs-toggle="collapse" 
+                                                        data-bs-target="#collapseAcciones_<?= $p['id'] ?>" 
+                                                        aria-expanded="false" 
+                                                        aria-controls="collapseAcciones_<?= $p['id'] ?>">
+                                                        
+                                                        </button>
+                                                <div 
+                                                    id="collapseAcciones_<?= $p['id'] ?>" 
+                                                    class="accordion-collapse collapse" 
+                                                    aria-labelledby="headingAcciones_<?= $p['id'] ?>" 
+                                                    data-bs-parent="#accordionAcciones_<?= $p['id'] ?>">
+                                                    <div class="accordion-body p-2">
+                                                    <div class="d-flex gap-1">
+                                                        <button 
+                                                        class="btn btn-sm btn-outline-warning" 
+                                                        onclick="editarProducto(<?= htmlspecialchars(json_encode($p)) ?>)">
+                                                        Editar
+                                                        </button>
+                                                        <button 
+                                                        class="btn btn-sm btn-outline-success" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#modalIngresoRapido_<?= $p['id'] ?>" 
+                                                        data-idProducto="<?= $p['id'] ?>">
+                                                        Entrada Rápida
+                                                        </button>
+                                                        <button 
+                                                        class="btn btn-sm btn-outline-success" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#modalVentaRapida_<?= $p['id'] ?>" 
+                                                        data-idProducto="<?= $p['id'] ?>" 
+                                                        data-precioProducto="<?= $p['precio'] ?>">
+                                                        Venta Rápida
+                                                        </button>
+                                                    </div>
+                                                    </div>
+                                                </div>
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
                                     <!-- Modal Ingreso Rápido -->
@@ -93,15 +125,6 @@ include_once 'src/Views/complements/header.php';
                                                 <div class="col-md-6 mb-3">
                                                     <label for="cantidad" class="form-label">Cantidad</label>
                                                     <input type="number" name="cantidad" id="cantidad" class="form-control cantidad-input" min="1" required>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="mb-2">Proveedor</label>
-                                                    <select id="selectProveedor<?= $p['id'] ?>" name="id_proveedor" class="form-select select-proveedor" required>
-                                                        <option value="" disabled selected>Seleccione un proveedor</option>
-                                                        <?php foreach ($proveedores as $p): ?>
-                                                            <option value="<?= $p['id'] ?>"><?= htmlspecialchars($p['nombre']) ?></option>
-                                                        <?php endforeach; ?>
-                                                    </select>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="precio" class="form-label">Precio de Compra ($)</label>
@@ -126,6 +149,45 @@ include_once 'src/Views/complements/header.php';
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- Modal Venta Rápida -->
+                                    <div class="modal fade modalVentaRapida" id="modalVentaRapida_<?= $p['id'] ?>" tabindex="-1">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                            <form method="POST" action="?c=CVentas/add">
+                                                <input type="hidden" name="id_usuario" value="<?= $_SESSION['id'] ?>">
+                                                <input type="hidden" name="id_producto" value="<?= $p['id'] ?>">
+                                                <div class="modal-header">
+                                                <h5 class="modal-title">Venta Rápida - <?= htmlspecialchars($p['nombre']) ?></h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body row g-3">
+                                                    <div class="col-md-6">
+                                                        <label for="cantidad" class="form-label">Cantidad</label>
+                                                        <input type="number" name="cantidad" id="cantidad" class="form-control" min="1" required>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="precio" class="form-label">Precio ($)</label>
+                                                        <input type="text" name="precio" id="precio" class="form-control" value="<?= $p['precio'] ?>" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-body row g-3">
+                                                    <div class="col-md-6">
+                                                        <label for="precio" class="form-label">Precio (BS)</label>
+                                                        <input type="text" name="precio" id="precio" class="form-control precio-input" value="<?= htmlspecialchars($p['precio'] * $tasaValor) ?>" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="alert alert-info">
+                                                    <strong>Nota:</strong> Esta venta se registrará con el usuario actual y la fecha actual.
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-primary">Registrar Venta</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                </div>
+                                            </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
 
                                 <?php endforeach; ?>
                             </tbody>
@@ -241,16 +303,6 @@ include_once 'src/Views/complements/header.php';
                 </div>
 
                 <div class="modal-body row g-3">
-                <div class="col-md-6">
-                    <label>Proveedor</label>
-                    <select id="selectProveedor<?= $p['id'] ?>" name="id_proveedor" class="form-select select-proveedor" required>
-                        <option value="" disabled selected>Seleccione un proveedor</option>
-                        <?php foreach ($proveedores as $p): ?>
-                            <option value="<?= $p['id'] ?>"><?= htmlspecialchars($p['nombre']) ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
                 <div class="col-12">
                     <h6>Productos a Ingresar</h6>
                     <table class="table table-striped table-bordered" id="tablaProductosIngreso">
@@ -424,15 +476,15 @@ include_once 'src/Views/complements/header.php';
                     <!-- Categoría -->
                     <div class="col-md-6">
                     <label for="id_categoria" class="form-label">Categoría</label>
-                        <select id="id_categoria" name="id_categoria" class="form-select" required>
-                        <?php if (!empty($categorias)): ?>
-                            <?php foreach ($categorias as $cat): ?>
+                        <select id="id_categoria" name="id_categoria" class="form-select select-categoria" required>
+                            <?php if (!empty($categorias)): ?>
                                 <option value="">Seleccione una categoría</option>
+                            <?php foreach ($categorias as $cat): ?>
                                 <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['nombre']) ?></option>
                             <?php endforeach; ?>
-                        <?php else: ?>
-                            <option value="" disabled selected>⚠️ No hay categorías disponibles. Cree una primero.</option>
-                        <?php endif; ?>
+                            <?php else: ?>
+                                <option value="" disabled selected>⚠️ No hay categorías disponibles. Cree una primero.</option>
+                            <?php endif; ?>
                         </select>
                     </div>
                     <!-- Stock Mínimo -->
@@ -504,7 +556,7 @@ include_once 'src/Views/complements/header.php';
                         </div>
                         <div class="col-md-6">
                             <label>Categoría</label>
-                            <select name="id_categoria" id="editCategoria" class="form-select">
+                            <select name="id_categoria" id="editCategoria" class="form-select select-categoria">
                                 <?php foreach ($categorias as $cat): ?>
                                     <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['nombre']) ?></option>
                                 <?php endforeach; ?>
@@ -888,6 +940,15 @@ $(document).ready(function () {
         width: '100%'
      });
     $('.select-proveedor').each(function () {
+        let $this = $(this);
+        let modal = $this.closest('.modal');
+        $this.select2({
+            theme: 'bootstrap-5',
+            dropdownParent: modal,
+            width: '100%'
+        });
+    });
+    $('.select-categoria').each(function () {
         let $this = $(this);
         let modal = $this.closest('.modal');
         $this.select2({

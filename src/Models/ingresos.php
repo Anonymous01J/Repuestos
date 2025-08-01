@@ -35,9 +35,8 @@
         public function setTotalBs($total_bs) { $this->total_bs = $total_bs; return $this; }
 
         public function insert() {
-            $sql = "INSERT INTO ingresos (id_proveedor, id_usuario, total, total_bs) VALUES (:id_proveedor, :id_usuario, :total, :total_bs)";
+            $sql = "INSERT INTO ingresos (id_usuario, total, total_bs) VALUES (:id_usuario, :total, :total_bs)";
             $stmt = $this->prepare($sql);
-            $stmt->bindParam(":id_proveedor", $this->id_proveedor);
             $stmt->bindParam(":id_usuario", $this->id_usuario);
             $stmt->bindParam(":total", $this->total);
             $stmt->bindParam(":total_bs", $this->total_bs);

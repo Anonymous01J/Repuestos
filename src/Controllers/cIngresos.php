@@ -7,13 +7,12 @@
     class CIngresos {
 
         public function add() {
-            if (isset($_POST['id_usuario']) && isset($_POST['id_proveedor'])) {
+            if (isset($_POST['id_usuario'])) {
                 function normalizarMoneda($valor) {
                     return floatval(str_replace(',', '.', str_replace('.', '', $valor)));
                 }
                 $ingreso = new Ingresos();
                 $ingreso->setIdUsuario($_POST['id_usuario'])
-                        ->setIdProveedor($_POST['id_proveedor'])
                         ->setTotal(normalizarMoneda($_POST['precio']))
                         ->setTotalBs(normalizarMoneda($_POST['precio_bs']));
                 if ($ingreso->insert() && isset($_POST['id_producto']) && isset($_POST['cantidad']) && isset($_POST['precio']) && isset($_POST['precio_bs'])) {
@@ -35,14 +34,14 @@
                 }
             } else {
                 // header("Location: ?c=CProductos/view&error=3");
-                echo "Error: Missing required fields.";
+                echo "Error: Faltan campos obligatorios.";
             }
         }
 
         public function addMany(){
             if (
                 isset($_POST['id_usuario']) &&
-                isset($_POST['id_proveedor']) &&
+                // isset($_POST['id_proveedor']) &&
                 isset($_POST['productos']) &&
                 isset($_POST['cantidades']) &&
                 isset($_POST['precio']) &&
@@ -55,7 +54,7 @@
 
                 $ingreso = new Ingresos();
                 $ingreso->setIdUsuario($_POST['id_usuario'])
-                        ->setIdProveedor($_POST['id_proveedor'])
+                        // ->setIdProveedor($_POST['id_proveedor'])
                         ->setTotal(normalizarMoneda($_POST['total']))
                         ->setTotalBs(normalizarMoneda($_POST['total_bs']));
 
