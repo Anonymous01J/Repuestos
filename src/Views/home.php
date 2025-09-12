@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
     <?php
@@ -9,7 +8,7 @@
     ?>
     <div class="container py-5">
         <h2 class="mb-4">Panel principal</h2>
-        <div class="row g-4">
+        <div class="row g-4 d-flex justify-content-center">
             <div class="col-md-4">
                 <div class="card border-0 shadow-sm">
                     <div class="card-body text-center">
@@ -29,13 +28,22 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Categorías de Productos</h5>
+                        <p class="card-text">Gestiona las categorías disponibles.</p>
+                        <a href="?c=CCategorias/view" class="btn btn-primary">Ver categorías</a>
+                    </div>
+                </div>
+            </div>
             
             <div class="col-md-4">
                 <div class="card border-0 shadow-sm">
                     <div class="card-body text-center">
                         <h5 class="card-title">Ventas</h5>
                         <p class="card-text">Realiza y revisa ventas realizadas.</p>
-                        <a href="?c=CVentas/view" class="btn btn-primary">Ver ventas</a>
+                        <a href="?c=CProductos/view#ventas" class="btn btn-primary">Ver ventas</a>
                     </div>
                 </div>
             </div>

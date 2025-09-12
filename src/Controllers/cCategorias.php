@@ -21,9 +21,11 @@
         }
 
         public function add() {
-            if (isset($_POST['nombre'])) {
+            if (isset($_POST['nombre'], $_POST['codigo'], $_POST['descripcion'])) {
                 $categoria = new Categorias();
-                $categoria->setNombre($_POST['nombre']);
+                $categoria->setNombre($_POST['nombre'])
+                          ->setCodigo($_POST['codigo'])
+                          ->setDescripcion($_POST['descripcion']);
                 if ($categoria->insert()) {
                     header("Location: ?c=CCategorias/view&success=1");
                 } else {
@@ -35,11 +37,29 @@
         }
 
         public function edit() {
-            if (isset($_POST['id']) && isset($_POST['nombre'])) {
+            if (isset($_POST['id'], $_POST['nombre'], $_POST['codigo'], $_POST['descripcion'])) {
                 $categoria = new Categorias();
                 $categoria->setId($_POST['id'])
-                        ->setNombre($_POST['nombre']);
+                          ->setNombre($_POST['nombre'])
+                          ->setCodigo($_POST['codigo'])
+                          ->setDescripcion($_POST['descripcion']);
                 if ($categoria->update()) {
+                    header("Location: ?c=CCategorias/view&success=1");
+                } else {
+                    header("Location: ?c=CCategorias/view&error=1");
+                }
+            } else {
+                header("Location: ?c=CCategorias/view&error=2");
+            }
+        }
+        public function delete() {
+            if (isset($_POST['id'])) {
+                $categoria = new Categorias();
+                $categoria->setId($_POST['id']);
+                $sql = "DELETE FROM categorias WHERE id = :id";
+                $stmt = $categoria->prepare($sql);
+                $stmt->bindParam(":id", $categoria->getId());
+                if ($stmt->execute()) {
                     header("Location: ?c=CCategorias/view&success=1");
                 } else {
                     header("Location: ?c=CCategorias/view&error=1");

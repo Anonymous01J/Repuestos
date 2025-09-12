@@ -37,7 +37,9 @@
         public function setIdProducto($id_producto) { $this->id_producto = $id_producto; return $this; }
         public function setCantidad($cantidad) { $this->cantidad = $cantidad; return $this; }
         public function setPrecioUnitario($precio_unitario) { $this->precio_unitario = $precio_unitario; return $this; }
+        public function setPrecioUnitarioBs($precio_unitario_bs) { $this->precio_unitario_bs = $precio_unitario_bs; return $this; }
         public function setSubtotal($subtotal) { $this->subtotal = $subtotal; return $this; }
+        public function setSubtotalBs($subtotal_bs) { $this->subtotal_bs = $subtotal_bs; return $this; }
 
         public function insert() {
             $sql = "INSERT INTO detalle_venta (id_venta, id_producto, cantidad, precio_unitario, precio_unitario_bs, subtotal, subtotal_bs) VALUES (:id_venta, :id_producto, :cantidad, :precio_unitario, :precio_unitario_bs, :subtotal, :subtotal_bs)";

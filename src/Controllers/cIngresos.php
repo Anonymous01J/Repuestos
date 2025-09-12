@@ -41,7 +41,6 @@
         public function addMany(){
             if (
                 isset($_POST['id_usuario']) &&
-                // isset($_POST['id_proveedor']) &&
                 isset($_POST['productos']) &&
                 isset($_POST['cantidades']) &&
                 isset($_POST['precio']) &&
@@ -52,22 +51,32 @@
                     return floatval(str_replace(',', '.', str_replace('.', '', $valor)));
                 }
 
+                $productos = $_POST['productos'];
+                $cantidades = $_POST['cantidades'];
+                $precios = $_POST['precio'];
+                $precios_bs = $_POST['precio_bs'];
+
+                $total = 0;
+                $totalBs = 0;
+
+                // Calcular totales antes de insertar el ingreso
+                for ($i = 0; $i < count($productos); $i++) {
+                    $cantidad = intval($cantidades[$i]);
+                    $precio = normalizarMoneda($precios[$i]);
+                    $precio_bs = normalizarMoneda($precios_bs[$i]);
+                    $subtotal = $cantidad * $precio;
+                    $subtotal_bs = $cantidad * $precio_bs;
+                    $total += $subtotal;
+                    $totalBs += $subtotal_bs;
+                }
+
                 $ingreso = new Ingresos();
                 $ingreso->setIdUsuario($_POST['id_usuario'])
-                        // ->setIdProveedor($_POST['id_proveedor'])
-                        ->setTotal(normalizarMoneda($_POST['total']))
-                        ->setTotalBs(normalizarMoneda($_POST['total_bs']));
+                        ->setTotal($total)
+                        ->setTotalBs($totalBs);
 
                 if ($ingreso->insert()) {
                     $idIngreso = $ingreso->getLastID();
-                    $total = 0;
-                    $totalBs = 0;
-
-                    // Arrays paralelos
-                    $productos = $_POST['productos'];
-                    $cantidades = $_POST['cantidades'];
-                    $precios = $_POST['precio'];
-                    $precios_bs = $_POST['precio_bs'];
 
                     for ($i = 0; $i < count($productos); $i++) {
                         $cantidad = intval($cantidades[$i]);
@@ -84,16 +93,9 @@
                                         ->setPrecio_compra_bs($precio_bs)
                                         ->setSubtotal($subtotal)
                                         ->setSubtotal_bs($subtotal_bs);
-                        
-                        if ($detallesIngreso->insert()) {
-                            $total += $subtotal;
-                            $totalBs += $subtotal_bs;
-                        }
-                    }
 
-                    // Actualizar totales (opcional si ya los insertaste bien antes)
-                    $ingreso->setTotal($total)->setTotalBs($totalBs);
-                    // Puedes usar update si tienes un método para ello
+                        $detallesIngreso->insert();
+                    }
 
                     header("Location: ?c=CProductos&success=1");
                     exit;

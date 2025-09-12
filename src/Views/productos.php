@@ -51,6 +51,7 @@ include_once 'src/Views/complements/header.php';
                                             <img src="public/assets/img/products/<?= htmlspecialchars($p['imagen']) ?>"
                                                 alt="img" class="img-thumbnail" width="50" style="cursor:pointer"
                                                 data-bs-toggle="modal" data-bs-target="#modalImagen"
+                                                onerror="this.onerror=null;this.src='public/assets/img/products/generic.png';"
                                                 onclick="verImagen('<?= htmlspecialchars($p['imagen']) ?>')">
                                         </td>
                                         <td><?= htmlspecialchars($p['nombre']) ?></td>
@@ -173,7 +174,7 @@ include_once 'src/Views/complements/header.php';
                                                 <div class="modal-body row g-3">
                                                     <div class="col-md-6">
                                                         <label for="precio" class="form-label">Precio (BS)</label>
-                                                        <input type="text" name="precio" id="precio" class="form-control precio-input" value="<?= htmlspecialchars($p['precio'] * $tasaValor) ?>" readonly>
+                                                        <input type="text" name="precio_bs" id="precio_bs" class="form-control precio-input" value="<?= htmlspecialchars($p['precio'] * $tasaValor) ?>" readonly>
                                                     </div>
                                                 </div>
                                                 <div class="alert alert-info">
@@ -204,7 +205,7 @@ include_once 'src/Views/complements/header.php';
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Proveedor</th>
+                                    <!-- <th>Proveedor</th> -->
                                     <th>Usuario</th>
                                     <th>Fecha</th>
                                     <th>Total</th>
@@ -215,7 +216,7 @@ include_once 'src/Views/complements/header.php';
                                 <?php foreach ($ingresos as $i): ?>
                                     <tr>
                                         <td><?= $i['id'] ?></td>
-                                        <td><?= htmlspecialchars($i['proveedor']) ?></td>
+                                        <!-- <td> htmlspecialchars($i['proveedor']) ?></td> -->
                                         <td><?= htmlspecialchars($i['usuario']) ?></td>
                                         <td><?= $i['fecha'] ?></td>
                                         <td>
@@ -246,7 +247,7 @@ include_once 'src/Views/complements/header.php';
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Cliente</th>
+                                    <!-- <th>Cliente</th> -->
                                     <th>Usuario</th>
                                     <th>Fecha</th>
                                     <th>Total</th>
@@ -257,7 +258,7 @@ include_once 'src/Views/complements/header.php';
                                 <?php foreach ($ventas as $v): ?>
                                     <tr>
                                         <td><?= $v['id'] ?></td>
-                                        <td><?= htmlspecialchars($v['id_cliente']) ?></td>
+                                        <!-- <td> htmlspecialchars($v['id_cliente']) ?></td> -->
                                         <td><?= htmlspecialchars($v['id_usuario']) ?></td>
                                         <td><?= $v['fecha'] ?></td>
                                         <td>
@@ -301,39 +302,33 @@ include_once 'src/Views/complements/header.php';
                 <h5 class="modal-title">Registrar Nuevo Ingreso</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
                 <div class="modal-body row g-3">
-                <div class="col-12">
-                    <h6>Productos a Ingresar</h6>
-                    <table class="table table-striped table-bordered" id="tablaProductosIngreso">
-                    <thead>
-                        <tr>
-                        <th>Producto</th>
-                        <th class="col-sm-2">Cantidad</th>
-                        <th class="col-sm-2">Precio ($)</th>
-                        <th class="col-sm-2">Precio (Bs)</th>
-                        <th class="col-sm-2">Subtotal</th>
-                        <th class="col-sm-2">Subtotal (Bs)</th>
-                        <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbodyIngreso">
-                        <!-- Filas dinámicas -->
-                    </tbody>
-                    </table>
-                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="agregarFilaIngreso()">+ Añadir Producto</button>
+                    <div class="col-12">
+                        <button type="button" class="btn btn-outline-primary mb-2" onclick="agregarFilaIngreso()">+ Agregar Producto</button>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio ($)</th>
+                                        <th>Precio (Bs)</th>
+                                        <th>Subtotal ($)</th>
+                                        <th>Subtotal (Bs)</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyIngreso">
+                                    <!-- Filas dinámicas -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="totalResumen" class="fw-bold text-end"></div>
+                    </div>
                 </div>
-
-                <div class="col-md-6 offset-md-6 text-end">
-                    <strong id="totalResumen">Total: 0.00 $ / 0.00 Bs</strong>
-                    <input type="text" class="input-price" name="total" id="total">
-                    <input type="text" class="input-price" name="total_bs" id="total_bs">
-                </div>
-                </div>
-
                 <div class="modal-footer">
-                <button type="submit" class="btn btn-success">Guardar Ingreso</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Guardar Ingreso</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 </div>
             </form>
             </div>
@@ -346,42 +341,36 @@ include_once 'src/Views/complements/header.php';
             <form method="POST" action="?c=CVentas/addMany">
                 <input type="hidden" name="id_usuario" value="<?= $_SESSION['id'] ?>">
                 <div class="modal-header">
-                <h5 class="modal-title">Registrar Nueva Venta</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title">Registrar Nueva Venta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
                 <div class="modal-body row g-3">
-                <div class="col-12">
-                    <h6>Productos a Vender</h6>
-                    <table class="table table-striped table-bordered" id="tablaProductosVenta">
-                    <thead>
-                        <tr>
-                        <th>Producto</th>
-                        <th class="col-sm-2">Cantidad</th>
-                        <th class="col-sm-2">Precio Unitario($)</th>
-                        <th class="col-sm-2">Precio Unitario(Bs)</th>
-                        <th class="col-sm-2">Subtotal</th>
-                        <th class="col-sm-2">Subtotal (Bs)</th>
-                        <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbodyVenta">
-                        <!-- Filas dinámicas -->
-                    </tbody>
-                    </table>
-                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="agregarFilaVenta()">+ Añadir Producto</button>
+                    <div class="col-12">
+                        <button type="button" class="btn btn-outline-primary mb-2" onclick="agregarFilaVenta()">+ Agregar Producto</button>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio ($)</th>
+                                        <th>Precio (Bs)</th>
+                                        <th>Subtotal ($)</th>
+                                        <th>Subtotal (Bs)</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyVenta">
+                                    <!-- Filas dinámicas -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="totalResumenVenta" class="fw-bold text-end"></div>
+                    </div>
                 </div>
-
-                <div class="col-md-6 offset-md-6 text-end">
-                    <strong id="totalResumen">Total: 0.00 $ / 0.00 Bs</strong>
-                    <input type="text" class="input-price" name="total" id="total">
-                    <input type="text" class="input-price" name="total_bs" id="total_bs">
-                </div>
-                </div>
-
                 <div class="modal-footer">
-                <button type="submit" class="btn btn-success">Guardar Venta</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Guardar Venta</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 </div>
             </form>
             </div>
@@ -584,8 +573,23 @@ include_once 'src/Views/complements/header.php';
 
     <?php include_once 'src/Views/complements/footer.php'; ?>
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const hash = window.location.hash;
+            if (hash) {
+            const tabTrigger = document.querySelector(`button[data-bs-target="${hash}"]`);
+            if (tabTrigger) {
+                const tab = new bootstrap.Tab(tabTrigger);
+                tab.show();
+            }
+            }
+        });
         function verImagen(nombre) {
-            document.getElementById('imgGrande').src = 'public/assets/img/products/' + nombre;
+            var img = document.getElementById('imgGrande');
+            img.onerror = function () {
+            this.onerror = null;
+            this.src = 'public/assets/img/products/generic.png';
+            };
+            img.src = 'public/assets/img/products/' + nombre;
         }
 
         function previewImagen(input, idPreview) {
@@ -716,248 +720,218 @@ include_once 'src/Views/complements/header.php';
             });
         });
 
+    // Opciones de productos para selects
+    function getOptionsProductos() {
+        let options = `<option value="">Seleccione</option>`;
+        <?php foreach ($productos as $p): ?>
+            options += `<option value="<?= $p['id'] ?>" data-precio="<?= $p['precio'] ?>"><?= htmlspecialchars($p['nombre']) ?></option>`;
+        <?php endforeach; ?>
+        return options;
+    }
 
+    function agregarFilaIngreso() {
+        const fila = `
+        <tr>
+            <td>
+                <select name="productos[]" class="form-select select-producto" required>
+                    ${getOptionsProductos()}
+                </select>
+            </td>
+            <td><input type="number" name="cantidades[]" class="form-control cantidad" min="1" value="1" required></td>
+            <td><input type="text" name="precio[]" class="form-control precio input-price" required></td>
+            <td><input type="text" name="precio_bs[]" class="form-control precio_bs input-price" required></td>
+            <td><input type="text" class="form-control subtotal input-price" readonly></td>
+            <td><input type="text" class="form-control subtotal_bs input-price" readonly></td>
+            <td><button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(this)">X</button></td>
+        </tr>
+        `;
+        $('#tbodyIngreso').append(fila);
+        bindEvents();
+        $('.select-producto').select2({ dropdownParent: $('#modalNuevoIngreso') });
+    }
 
-function agregarFilaIngreso() {
-  const fila = `
-    <tr>
-      <td>
-        <select name="productos[]" class="form-select select-producto" required>
-          <option value="">Seleccione</option>
-          <?php foreach ($productos as $p): ?>
-            <option value="<?= $p['id'] ?>"><?= htmlspecialchars($p['nombre']) ?></option>
-          <?php endforeach; ?>
-        </select>
-      </td>
-      <td><input type="number" name="cantidades[]" class="form-control cantidad" min="1" value="1" required></td>
-      <td><input type="text" name="precio[]" class="form-control precio input-price" required></td>
-      <td><input type="text" name="precio_bs[]" class="form-control precio_bs input-price" required></td>
-      <td><input type="text" class="form-control subtotal input-price" readonly></td>
-      <td><input type="text" class="form-control subtotal_bs input-price" readonly></td>
-      <td><button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(this)">X</button></td>
-    </tr>
-  `;
-    $('#tbodyIngreso').append(fila);
-    bindEvents(); // Reaplica eventos a nuevos inputs
-    // InputPrice(".input-price");
+    function agregarFilaVenta() {
+        const fila = `
+        <tr>
+            <td>
+                <select name="productos[]" class="form-select select-producto" required>
+                    ${getOptionsProductos()}
+                </select>
+            </td>
+            <td><input type="number" name="cantidades[]" class="form-control cantidad" min="1" value="1" required></td>
+            <td><input type="text" name="precio[]" class="form-control precio input-price" required></td>
+            <td><input type="text" name="precio_bs[]" class="form-control precio_bs input-price" required></td>
+            <td><input type="text" class="form-control subtotal input-price" readonly></td>
+            <td><input type="text" class="form-control subtotal_bs input-price" readonly></td>
+            <td><button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(this)">X</button></td>
+        </tr>
+        `;
+        $('#tbodyVenta').append(fila);
+        bindEvents();
+        $('.select-producto').select2({ dropdownParent: $('#modalNuevaVenta') });
+    }
 
-    $('.select-producto').select2({ dropdownParent: $('#modalNuevoIngreso') }); // Reaplica select2
-}
+    function eliminarFila(btn) {
+        $(btn).closest('tr').remove();
+        actualizarTotales();
+        actualizarTotalesVenta();
+    }
 
-function eliminarFila(btn) {
-  $(btn).closest('tr').remove();
-  actualizarTotales();
-}
+    function bindEvents() {
+        // Formateo de precios
+        function InputPrice(input) {
+            let inputDom = document.querySelectorAll(input);
+            inputDom.forEach((element) => {
+                element.addEventListener("input", (e) => {
+                    let valueUser = e.target.value.replace(/,/g, "").replace(/\./g, "").replace(/[^0-9]/g, "");
+                    let valueLength = valueUser.length;
+                    if (valueLength <= 2) {
+                        element.value = "0" + "," + valueUser;
+                    } else if (valueLength >= 3) {
+                        let it = valueUser.slice(0, valueLength - 2) + "," + valueUser.slice(valueLength - 2);
+                        element.value = it.replace(/^0(?=\d)\,?/, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                    }
+                });
+            });
+        }
+        InputPrice(".input-price");
 
-function bindEvents() {
-    // Aplicar tu formateo personalizado
-    function InputPrice(input) {
-        let inputDom = document.querySelectorAll(input);
-        inputDom.forEach((element) => {
-            element.addEventListener("input", (e) => {
-            let valueUser = e.target.value.replace(/,/g, "").replace(/\./g, "").replace(/[^0-9]/g, "");
-            let valueLength = valueUser.length;
-            if (valueLength <= 2) {
-                element.value = "0" + "," + valueUser;
-            } else if (valueLength >= 3) {
-                let it = valueUser.slice(0, valueLength - 2) + "," + valueUser.slice(valueLength - 2);
-                element.value = it.replace(/^0(?=\d)\,?/, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-            }
+        function parseMoneda(valor) {
+            return parseFloat(valor.replace(/\./g, '').replace(/,/g, '.')) || 0;
+        }
+        function formatMoneda(valor) {
+            let entero = Math.floor(valor).toString();
+            let decimales = Math.round((valor % 1) * 100).toString().padStart(2, '0');
+            let miles = entero.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            return miles + ',' + decimales;
+        }
+
+        // Ingreso
+        $('#tbodyIngreso').find('tr').each(function () {
+            const fila = $(this);
+            fila.find('.select-producto').off('change').on('change', function () {
+                let precio = parseFloat($(this).find('option:selected').data('precio')) || 0;
+                fila.find('.precio').val(formatMoneda(precio));
+                fila.find('.precio_bs').val(formatMoneda(precio * tasa));
+                fila.find('.subtotal').val(formatMoneda(precio));
+                fila.find('.subtotal_bs').val(formatMoneda(precio * tasa));
+                actualizarTotales();
+            });
+            fila.find('.precio').off('keyup').on('keyup', function () {
+                let valorDolares = parseMoneda($(this).val());
+                let valorBolivares = valorDolares * tasa;
+                let cantidad = parseFloat(fila.find('.cantidad').val()) || 1;
+                let subtotal = valorDolares * cantidad;
+                let subtotalBs = valorBolivares * cantidad;
+                fila.find('.precio_bs').val(formatMoneda(valorBolivares));
+                fila.find('.subtotal').val(formatMoneda(subtotal));
+                fila.find('.subtotal_bs').val(formatMoneda(subtotalBs));
+                actualizarTotales();
+            });
+            fila.find('.precio_bs').off('keyup').on('keyup', function () {
+                let valorBolivares = parseMoneda($(this).val());
+                let valorDolares = valorBolivares / tasa;
+                let cantidad = parseFloat(fila.find('.cantidad').val()) || 1;
+                let subtotal = valorDolares * cantidad;
+                let subtotalBs = valorBolivares * cantidad;
+                fila.find('.precio').val(formatMoneda(valorDolares));
+                fila.find('.subtotal').val(formatMoneda(subtotal));
+                fila.find('.subtotal_bs').val(formatMoneda(subtotalBs));
+                actualizarTotales();
+            });
+            fila.find('.cantidad').off('input').on('input', function () {
+                fila.find('.precio').trigger('keyup');
             });
         });
+
+        // Venta
+        $('#tbodyVenta').find('tr').each(function () {
+            const fila = $(this);
+            fila.find('.select-producto').off('change').on('change', function () {
+                let precio = parseFloat($(this).find('option:selected').data('precio')) || 0;
+                fila.find('.precio').val(formatMoneda(precio));
+                fila.find('.precio_bs').val(formatMoneda(precio * tasa));
+                let cantidad = parseFloat(fila.find('.cantidad').val()) || 1;
+                let subtotal = cantidad * precio;
+                let subtotalBs = subtotal * tasa;
+                fila.find('.subtotal').val(formatMoneda(subtotal));
+                fila.find('.subtotal_bs').val(formatMoneda(subtotalBs));
+                actualizarTotalesVenta();
+            });
+            fila.find('.precio').off('keyup').on('keyup', function () {
+                let valorDolares = parseMoneda($(this).val());
+                let valorBolivares = valorDolares * tasa;
+                let cantidad = parseFloat(fila.find('.cantidad').val()) || 1;
+                let subtotal = valorDolares * cantidad;
+                let subtotalBs = valorBolivares * cantidad;
+                fila.find('.precio_bs').val(formatMoneda(valorBolivares));
+                fila.find('.subtotal').val(formatMoneda(subtotal));
+                fila.find('.subtotal_bs').val(formatMoneda(subtotalBs));
+                actualizarTotalesVenta();
+            });
+            fila.find('.precio_bs').off('keyup').on('keyup', function () {
+                let valorBolivares = parseMoneda($(this).val());
+                let valorDolares = valorBolivares / tasa;
+                let cantidad = parseFloat(fila.find('.cantidad').val()) || 1;
+                let subtotal = valorDolares * cantidad;
+                let subtotalBs = valorBolivares * cantidad;
+                fila.find('.precio').val(formatMoneda(valorDolares));
+                fila.find('.subtotal').val(formatMoneda(subtotal));
+                fila.find('.subtotal_bs').val(formatMoneda(subtotalBs));
+                actualizarTotalesVenta();
+            });
+            fila.find('.cantidad').off('input').on('input', function () {
+                fila.find('.precio').trigger('keyup');
+            });
+        });
+
+        $('.select-producto').select2({
+            theme: 'bootstrap-5',
+            dropdownParent: $('#modalNuevaVenta'),
+            width: '100%'
+        });
+        $('.select-producto').select2({
+            theme: 'bootstrap-5',
+            dropdownParent: $('#modalNuevoIngreso'),
+            width: '100%'
+        });
     }
-    InputPrice(".input-price");
-    function parseMoneda(valor) {
-        return parseFloat(valor.replace(/\./g, '').replace(/,/g, '.')) || 0;
-    }
-    function formatMoneda(valor) {
-        let entero = Math.floor(valor).toString();
-        let decimales = Math.round((valor % 1) * 100).toString().padStart(2, '0');
-        let miles = entero.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        return miles + ',' + decimales;
-    }
-    // Asignar eventos individuales por fila
-    $('#tbodyIngreso').find('tr').each(function () {
-        const fila = $(this);
-        fila.find('.precio').off('keyup').on('keyup', function () {
-            // let cantidad = parseFloat(fila.find('.cantidad').val()) || 1;
-            let valorDolares = parseMoneda($(this).val());
-            let valorBolivares = valorDolares * tasa;
-            let subtotal = valorDolares;
-            let subtotalBs = valorBolivares;
 
-            fila.find('.precio_bs').val(formatMoneda(valorBolivares));
-            fila.find('.subtotal').val(formatMoneda(subtotal));
-            fila.find('.subtotal_bs').val(formatMoneda(subtotalBs));
-
-            actualizarTotales();
-        });
-
-        fila.find('.precio_bs').off('keyup').on('keyup', function () {
-            // let cantidad = parseFloat(fila.find('.cantidad').val()) || 1;
-            let valorBolivares = parseMoneda($(this).val());
-            let valorDolares = valorBolivares / tasa;
-            let subtotal = valorDolares;
-            let subtotalBs = valorBolivares;
-
-            fila.find('.precio').val(formatMoneda(valorDolares));
-            fila.find('.subtotal').val(formatMoneda(subtotal));
-            fila.find('.subtotal_bs').val(formatMoneda(subtotalBs));
-
-            actualizarTotales();
-        });
-
-        fila.find('.cantidad').off('input').on('input', function () {
-            fila.find('.precio').trigger('keyup'); // recalcula con nueva cantidad
-        });
-    });
-
-    $('.select-producto').select2({
-        theme: 'bootstrap-5',
-        dropdownParent: $('#modalNuevoIngreso'),
-        width: '100%'
-    });
-        // Asignar eventos individuales por fila
-    $('#tbodyVenta').find('tr').each(function () {
-        const fila = $(this);
-        fila.find('.select-producto').off('change').on('change', function () {
-            let precio = parseFloat($(this).find('option:selected').data('precio')) || 0;
-            let cantidad = parseFloat(fila.find('.cantidad').val()) || 1;
-            let subtotal = cantidad * precio;
-            let subtotalBs = subtotal * tasa;
-            fila.find('.precio').val(formatMoneda(precio));
-            fila.find('.precio_bs').val(formatMoneda(precio * tasa));
-            fila.find('.subtotal').val(formatMoneda(subtotal));
-            fila.find('.subtotal_bs').val(formatMoneda(subtotalBs));
-            actualizarTotales();
-        });
-        function parseMoneda(valor) {
-            return parseFloat(valor.replace(/\./g, '').replace(/,/g, '.')) || 0;
-        }
-        fila.find('.cantidad').off('input').on('input', function () {
-            let cantidad = parseFloat($(this).val()) || 1;
-            let precio = parseMoneda(fila.find('.precio').val());
-
-            let subtotal = cantidad * precio;
-            let subtotalBs = subtotal * tasa;
-
-            fila.find('.subtotal').val(formatMoneda(subtotal));
-            fila.find('.subtotal_bs').val(formatMoneda(subtotalBs));
-            actualizarTotales();
-        });
-
-
-        fila.find('.precio_bs').off('keyup').on('keyup', function () {
-            // let cantidad = parseFloat(fila.find('.cantidad').val()) || 1;
-            let valorBolivares = parseMoneda($(this).val());
-            let valorDolares = valorBolivares / tasa;
-            let subtotal = valorDolares;
-            let subtotalBs = valorBolivares;
-
-            fila.find('.precio').val(formatMoneda(valorDolares));
-            fila.find('.subtotal').val(formatMoneda(subtotal));
-            fila.find('.subtotal_bs').val(formatMoneda(subtotalBs));
-
-            actualizarTotales();
-        });
-
-        fila.find('.cantidad').off('input').on('input', function () {
-            fila.find('.precio').trigger('keyup'); // recalcula con nueva cantidad
-        });
-    });
-
-    $('.select-producto').select2({
-        theme: 'bootstrap-5',
-        dropdownParent: $('#modalNuevaVenta'),
-        width: '100%'
-    });
-}
     function actualizarTotales() {
-    let total = 0;
-    let total_bs = 0;
-
-    $('#tbodyIngreso tr').each(function () {
-        const fila = $(this);
-        function parseMoneda(valor) {
-            return parseFloat(valor.replace(/\./g, '').replace(/,/g, '.')) || 0;
-        }
-        let cantidad = parseFloat(fila.find('.cantidad').val()) || 1;
-        let precio = parseMoneda(fila.find('.precio').val());
-        let subtotal = cantidad * precio;
-        let subtotalBs = subtotal * tasa;
-
-        total += subtotal;
-        total_bs += subtotalBs;
-    });
-
-    $('#totalResumen').text("Total: " + formatMoneda(total) + " $ / " + formatMoneda(total_bs) + " Bs");
-    $('#total').val(formatMoneda(total));
-    $('#total_bs').val(formatMoneda(total_bs));
-}
-function agregarFilaVenta() {
-  const fila = `
-    <tr>
-      <td>
-        <select name="productos[]" class="form-select select-producto" required>
-          <option value="">Seleccione</option>
-          <?php foreach ($productos as $p): ?>
-            <option value="<?= $p['id'] ?>" data-precio="<?= $p['precio'] ?>">
-                <?= htmlspecialchars($p['nombre']) ?>
-            </option>
-          <?php endforeach; ?>
-        </select>
-      </td>
-      <td><input type="number" name="cantidades[]" class="form-control cantidad" min="1" value="1" required></td>
-      <td><input type="text" name="precio[]" class="form-control precio input-price" required></td>
-      <td><input type="text" name="precio_bs[]" class="form-control precio_bs input-price" required></td>
-      <td><input type="text" class="form-control subtotal input-price" readonly></td>
-      <td><input type="text" class="form-control subtotal_bs input-price" readonly></td>
-      <td><button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(this)">X</button></td>
-    </tr>
-  `;
-    $('#tbodyVenta').append(fila);
-    bindEvents(); // Reaplica eventos a nuevos inputs
-    // InputPrice(".input-price");
-
-    $('.select-producto').select2({ dropdownParent: $('#modalNuevaVenta') }); // Reaplica select2
-}
-
-function eliminarFila(btn) {
-  $(btn).closest('tr').remove();
-  actualizarTotales();
-}
-// Inicial
-$(document).ready(function () {
-    bindEvents();
-    $('.select-producto').select2({ 
-        theme: 'bootstrap-5',
-        dropdownParent: $('#modalNuevoIngreso'),
-        width: '100%'
-     });
-    $('.select-producto').select2({ 
-        theme: 'bootstrap-5',
-        dropdownParent: $('#modalNuevaVenta'),
-        width: '100%'
-     });
-    $('.select-proveedor').each(function () {
-        let $this = $(this);
-        let modal = $this.closest('.modal');
-        $this.select2({
-            theme: 'bootstrap-5',
-            dropdownParent: modal,
-            width: '100%'
+        let total = 0;
+        let total_bs = 0;
+        $('#tbodyIngreso tr').each(function () {
+            const fila = $(this);
+            function parseMoneda(valor) {
+                return parseFloat(valor.replace(/\./g, '').replace(/,/g, '.')) || 0;
+            }
+            let cantidad = parseFloat(fila.find('.cantidad').val()) || 1;
+            let precio = parseMoneda(fila.find('.precio').val());
+            let subtotal = cantidad * precio;
+            let subtotalBs = subtotal * tasa;
+            total += subtotal;
+            total_bs += subtotalBs;
         });
-    });
-    $('.select-categoria').each(function () {
-        let $this = $(this);
-        let modal = $this.closest('.modal');
-        $this.select2({
-            theme: 'bootstrap-5',
-            dropdownParent: modal,
-            width: '100%'
+        $('#totalResumen').text("Total: " + formatMoneda(total) + " $ / " + formatMoneda(total_bs) + " Bs");
+    }
+
+    function actualizarTotalesVenta() {
+        let total = 0;
+        let total_bs = 0;
+        $('#tbodyVenta tr').each(function () {
+            const fila = $(this);
+            function parseMoneda(valor) {
+                return parseFloat(valor.replace(/\./g, '').replace(/,/g, '.')) || 0;
+            }
+            let cantidad = parseFloat(fila.find('.cantidad').val()) || 1;
+            let precio = parseMoneda(fila.find('.precio').val());
+            let subtotal = cantidad * precio;
+            let subtotalBs = subtotal * tasa;
+            total += subtotal;
+            total_bs += subtotalBs;
         });
-    });
-});
-    </script>
+        $('#totalResumenVenta').text("Total: " + formatMoneda(total) + " $ / " + formatMoneda(total_bs) + " Bs");
+    }
+</script>
 </body>
 </html>

@@ -80,10 +80,10 @@
                 return [];
             }
         }
-        public function searchId($id) {
+        public function searchId() {
             $sql = "SELECT * FROM productos WHERE id = :id";
             $stmt = $this->prepare($sql);
-            $stmt->bindParam(":id", $id);
+            $stmt->bindParam(":id", $this->id);
             if ($stmt->execute()) {
                 return $stmt->fetch(\PDO::FETCH_ASSOC);
             } else {
@@ -125,6 +125,17 @@
             $stmt->bindParam(":stock_maximo", $this->stock_maximo);
             $stmt->bindParam(":imagen", $this->imagen);
             $stmt->bindParam(":estado", $this->estado);
+            if ($stmt->execute()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        public function updateStock() {
+            $sql = "UPDATE productos SET stock = :stock WHERE id = :id";
+            $stmt = $this->prepare($sql);
+            $stmt->bindParam(":id", $this->id);
+            $stmt->bindParam(":stock", $this->stock);
             if ($stmt->execute()) {
                 return true;
             } else {

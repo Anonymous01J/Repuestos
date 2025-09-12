@@ -7,24 +7,23 @@ $(document).ready(function () {
 
     $('.table-DT').DataTable({
         language: {
-            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+            url: 'https://cdn.datatables.net/plug-ins/2.3.4/i18n/es-ES.json'
         }
     });
     //inputs de precios
     function InputPrice(input) {
-    let inputDom = document.querySelectorAll(input);
-    inputDom.forEach((element) => {
-        element.addEventListener("input", (e) => {
-        let valueUser = e.target.value.replace(/,/g, "").replace(/\./g, "").replace(/[^0-9]/g, "");
-        let valueLength = valueUser.length;
-        if (valueLength <= 2) {
-            element.value = "0" + "," + valueUser;
-        } else if (valueLength >= 3) {
-            let it = valueUser.slice(0, valueLength - 2) + "," + valueUser.slice(valueLength - 2);
-            element.value = it.replace(/^0(?=\d)\,?/, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        }
+        // BUG: Si se llama varias veces, se agregan múltiples listeners.
+        // FIX: Usar jQuery .off('input') antes de .on('input') para evitar duplicados.
+        $(input).off('input').on('input', function (e) {
+            let valueUser = e.target.value.replace(/,/g, "").replace(/\./g, "").replace(/[^0-9]/g, "");
+            let valueLength = valueUser.length;
+            if (valueLength <= 2) {
+                e.target.value = "0" + "," + valueUser;
+            } else if (valueLength >= 3) {
+                let it = valueUser.slice(0, valueLength - 2) + "," + valueUser.slice(valueLength - 2);
+                e.target.value = it.replace(/^0(?=\d)\,?/, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            }
         });
-    });
     }
     InputPrice(".input-price");
     // Modal Tasa BCV
