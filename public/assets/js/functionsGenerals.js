@@ -7,9 +7,29 @@ $(document).ready(function () {
 
     $('.table-DT').DataTable({
         language: {
-            url: 'https://cdn.datatables.net/plug-ins/2.3.4/i18n/es-ES.json'
+            url: 'public/assets/libs/dataTable/Spanish.json'
         }
     });
+    // Para la tabla de entradas
+    $('#tablaEntradas').DataTable({
+        language: {
+            url: 'public/assets/libs/dataTable/Spanish.json'
+        },
+        order: [[0, 'desc']], // Ordenar por la primera columna (ID) descendente
+        pageLength: 10,
+        responsive: true
+    });
+
+    // Para la tabla de ventas
+    $('#tablaVentas').DataTable({
+        language: {
+            url: 'public/assets/libs/dataTable/Spanish.json'
+        },
+        order: [[0, 'desc']], // Ordenar por la primera columna (ID) descendente
+        pageLength: 10,
+        responsive: true
+    });
+
     //inputs de precios
     function InputPrice(input) {
         // BUG: Si se llama varias veces, se agregan múltiples listeners.

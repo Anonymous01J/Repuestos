@@ -2,6 +2,8 @@
     namespace Anonymous01j\Repuestos\Controllers;
     use Anonymous01j\Repuestos\Models\Usuarios;
     use Anonymous01j\Repuestos\Models\Tasa;
+    use Anonymous01j\Repuestos\Models\StockBajo;
+
     class CHome {
         public function view() {
             if (!isset($_SESSION['id'])) {
@@ -15,6 +17,11 @@
                 }
             }
             $title = 'Inicio';
+
+            // Cargar productos con stock bajo para el dashboard
+            $stockBajoModel   = new StockBajo();
+            $productosAlerta  = $stockBajoModel->search();
+
             require_once __DIR__ . '/../Views/Home.php';
         }
 
@@ -41,38 +48,35 @@
                 }
             }
         }
+
         public function logout() {
             session_destroy();
-            // Eliminar cookies
             setcookie("id", "", time() - 3600, "/");
             setcookie("nombre", "", time() - 3600, "/");
             setcookie("rol", "", time() - 3600, "/");
-
             require_once __DIR__ . '/../Views/Login.php';
             exit();
         }
-        public function tasa () {
+
+        public function tasa() {
             $tasa = new Tasa();
             $tasaData = $tasa->search();
             if (count($tasaData) > 0) {
-                $id = $tasaData[0]['id'];
-                $valor = $tasaData[0]['valor'];
-                $fecha_actualizacion = $tasaData[0]['fecha_actualizacion'];
                 echo json_encode([
-                    'id' => $id,
-                    'valor' => $valor,
-                    'fecha_actualizacion' => $fecha_actualizacion
+                    'id'                 => $tasaData[0]['id'],
+                    'valor'              => $tasaData[0]['valor'],
+                    'fecha_actualizacion'=> $tasaData[0]['fecha_actualizacion'],
                 ]);
             } else {
                 echo json_encode(['error' => 'No se encontró la tasa']);
             }
         }
+
         public function updateTasa() {
             if (isset($_POST['valor']) && isset($_POST['id'])) {
                 $tasa = new Tasa();
                 $tasa->setId($_POST['id']);
-                $tasaFormateada = str_replace(',', '.', $_POST['valor']);
-                $tasa->setValor($tasaFormateada);
+                $tasa->setValor(str_replace(',', '.', $_POST['valor']));
                 $tasa->update();
                 header("Location: ?c=CHome/view");
             } else {

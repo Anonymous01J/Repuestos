@@ -7,6 +7,7 @@
     use Anonymous01j\Repuestos\Models\Ventas;
     use Anonymous01j\Repuestos\Models\Detalles_Venta;
     use Anonymous01j\Repuestos\Models\Proveedores;
+
     class CProductos {
         public function view() {
             if (!isset($_SESSION['id'])) {
@@ -34,6 +35,56 @@
             $categorias = $categoria->search();
             $productos = $producto->search();
             require_once __DIR__ . '/../Views/Productos.php';
+        }
+
+        /**
+         * Endpoint AJAX: verifica si hay stock suficiente para uno o varios productos.
+         * POST: items = [{"id": 1, "cantidad": 5}, ...]
+         * Responde JSON: { ok: true } o { ok: false, errores: [{nombre, disponible, solicitado}, ...] }
+         */
+        public function checkStock() {
+            header('Content-Type: application/json');
+
+            $items = [];
+            if (isset($_POST['items'])) {
+                $items = json_decode($_POST['items'], true) ?? [];
+            }
+
+            if (empty($items)) {
+                echo json_encode(['ok' => false, 'errores' => [], 'message' => 'Sin datos']);
+                exit;
+            }
+
+            $producto = new Productos();
+            $errores = [];
+
+            foreach ($items as $item) {
+                $id       = intval($item['id'] ?? 0);
+                $cantidad = floatval($item['cantidad'] ?? 0);
+
+                if ($id <= 0 || $cantidad <= 0) continue;
+
+                $producto->setId($id);
+                $data = $producto->searchId();
+
+                if (!$data) continue;
+
+                if ($data['stock'] < $cantidad) {
+                    $errores[] = [
+                        'id'          => $id,
+                        'nombre'      => $data['nombre'],
+                        'disponible'  => (int) $data['stock'],
+                        'solicitado'  => (int) $cantidad,
+                    ];
+                }
+            }
+
+            if (empty($errores)) {
+                echo json_encode(['ok' => true]);
+            } else {
+                echo json_encode(['ok' => false, 'errores' => $errores]);
+            }
+            exit;
         }
 
         public function add() {
@@ -76,8 +127,7 @@
             if (isset($_POST['id'])) {
             $producto = new Productos();
 
-            // Procesar imagen si se subió una nueva
-            $imagenNombre = $_POST['imagen']; // Valor por defecto: la imagen anterior
+            $imagenNombre = $_POST['imagen'];
             if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
                 $nombreProducto = str_replace(' ', '_', $_POST['nombre']);
                 $extension = pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION);
@@ -106,6 +156,7 @@
             header("Location: ?c=CProductos/view&error=2");
             }
         }
+
         public function delete() {
             if (isset($_POST['id'])) {
                 $producto = new Productos();
@@ -119,6 +170,7 @@
                 header("Location: ?c=CProductos/view&error=2");
             }
         }
+
         public function active() {
             if (isset($_POST['id'])) {
                 $producto = new Productos();
