@@ -9,7 +9,7 @@
             $servername = "localhost";
             $username = "root";
             $password = "";
-            $dbname = "respuestos";
+            $dbname = "repuestos";
             try {
                 parent::__construct("mysql:host=$servername;dbname=$dbname", $username, $password);
                 $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

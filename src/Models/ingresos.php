@@ -4,16 +4,14 @@
 
     class Ingresos extends Conexion {
         private $id;
-        private $id_proveedor;
         private $id_usuario;
         private $fecha;
         private $total;
         private $total_bs;
 
-        public function __construct($id = null, $id_proveedor = null, $id_usuario = null, $fecha = null, $total = null, $total_bs = null) {
+        public function __construct($id = null, $id_usuario = null, $fecha = null, $total = null, $total_bs = null) {
             parent::__construct();
             $this->id = $id;
-            $this->id_proveedor = $id_proveedor;
             $this->id_usuario = $id_usuario;
             $this->fecha = $fecha;
             $this->total = $total;
@@ -21,14 +19,12 @@
         }
 
         public function getId() { return $this->id; }
-        public function getIdProveedor() { return $this->id_proveedor; }
         public function getIdUsuario() { return $this->id_usuario; }
         public function getFecha() { return $this->fecha; }
         public function getTotal() { return $this->total; }
         public function getTotalBs() { return $this->total_bs; }
 
         public function setId($id) { $this->id = $id; return $this; }
-        public function setIdProveedor($id_proveedor) { $this->id_proveedor = $id_proveedor; return $this; }
         public function setIdUsuario($id_usuario) { $this->id_usuario = $id_usuario; return $this; }
         public function setFecha($fecha) { $this->fecha = $fecha; return $this; }
         public function setTotal($total) { $this->total = $total; return $this; }
@@ -56,7 +52,7 @@
             }
         }
         public function search() {
-            $sql = "SELECT id,(SELECT nombre from proveedores WHERE id = id_proveedor) AS proveedor, (SELECT nombre FROM usuarios WHERE id = id_usuario) AS usuario, fecha, total, total_bs FROM ingresos ORDER BY id DESC";
+            $sql = "SELECT id, (SELECT nombre FROM usuarios WHERE id = id_usuario) AS usuario, fecha, total, total_bs FROM ingresos ORDER BY id DESC";
             $stmt = $this->prepare($sql);
             if ($stmt->execute()) {
                 return $stmt->fetchAll(\PDO::FETCH_ASSOC);
