@@ -93,12 +93,12 @@ CREATE TABLE `detalle_ingreso` (
 --
 -- Disparadores `detalle_ingreso`
 --
-DELIMITER $$
-CREATE TRIGGER `tr_ActualizarStock` AFTER INSERT ON `detalle_ingreso` FOR EACH ROW BEGIN
-  UPDATE productos SET stock = stock + NEW.cantidad WHERE id = NEW.id_producto;
-END
-$$
-DELIMITER ;
+-- DELIMITER $$
+-- CREATE TRIGGER `tr_ActualizarStock` AFTER INSERT ON `detalle_ingreso` FOR EACH ROW BEGIN
+--   UPDATE productos SET stock = stock + NEW.cantidad WHERE id = NEW.id_producto;
+-- END
+-- $$
+-- DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -120,12 +120,12 @@ CREATE TABLE `detalle_venta` (
 --
 -- Disparadores `detalle_venta`
 --
-DELIMITER $$
-CREATE TRIGGER `tr_ActualizarStock2` AFTER INSERT ON `detalle_venta` FOR EACH ROW BEGIN
-  UPDATE productos SET stock = stock - NEW.cantidad WHERE id = NEW.id_producto;
-END
-$$
-DELIMITER ;
+-- DELIMITER $$
+-- CREATE TRIGGER `tr_ActualizarStock2` AFTER INSERT ON `detalle_venta` FOR EACH ROW BEGIN
+--   UPDATE productos SET stock = stock - NEW.cantidad WHERE id = NEW.id_producto;
+-- END
+-- $$
+-- DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -303,7 +303,7 @@ CREATE TABLE `v_productos_stock_bajo` (
 --
 DROP TABLE IF EXISTS `v_productos_stock_bajo`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_productos_stock_bajo`  AS SELECT `p`.`id` AS `id`, `p`.`nombre` AS `nombre`, `p`.`marca` AS `marca`, `p`.`precio` AS `precio`, `p`.`stock` AS `stock_actual`, `p`.`stock_minimo` AS `stock_minimo`, `p`.`stock_maximo` AS `stock_maximo`, `c`.`nombre` AS `categoria`, CASE WHEN `p`.`stock` = 0 THEN 'SIN_STOCK' WHEN `p`.`stock` <= `p`.`stock_minimo` THEN 'CRITICO' ELSE 'BAJO' END AS `nivel_alerta` FROM (`productos` `p` left join `categorias` `c` on(`c`.`id` = `p`.`id_categoria`)) WHERE `p`.`stock` <= `p`.`stock_minimo` ORDER BY `p`.`stock` ASC, `p`.`nombre` ASC ;
+-- CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_productos_stock_bajo`  AS SELECT `p`.`id` AS `id`, `p`.`nombre` AS `nombre`, `p`.`marca` AS `marca`, `p`.`precio` AS `precio`, `p`.`stock` AS `stock_actual`, `p`.`stock_minimo` AS `stock_minimo`, `p`.`stock_maximo` AS `stock_maximo`, `c`.`nombre` AS `categoria`, CASE WHEN `p`.`stock` = 0 THEN 'SIN_STOCK' WHEN `p`.`stock` <= `p`.`stock_minimo` THEN 'CRITICO' ELSE 'BAJO' END AS `nivel_alerta` FROM (`productos` `p` left join `categorias` `c` on(`c`.`id` = `p`.`id_categoria`)) WHERE `p`.`stock` <= `p`.`stock_minimo` ORDER BY `p`.`stock` ASC, `p`.`nombre` ASC ;
 
 --
 -- Índices para tablas volcadas

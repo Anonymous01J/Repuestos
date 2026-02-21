@@ -8,8 +8,10 @@ $(document).ready(function () {
     $('.table-DT').DataTable({
         language: {
             url: 'public/assets/libs/dataTable/Spanish.json'
-        }
+        },
+        responsive: true
     });
+
     // Para la tabla de entradas
     $('#tablaEntradas').DataTable({
         language: {
@@ -46,6 +48,7 @@ $(document).ready(function () {
         });
     }
     InputPrice(".input-price");
+
     // Modal Tasa BCV
     $('#modalTasa').on('show.bs.modal', function () {
         $.get('?c=CHome/tasa', function(data) {
