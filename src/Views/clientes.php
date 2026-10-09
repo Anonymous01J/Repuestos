@@ -7,27 +7,22 @@
         require_once __DIR__ . '../complements/header.php';
     ?>
 
-    <div class="container py-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="fw-bold">Gestión de Clientes</h3>
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregar">+ Nuevo Cliente</button>
+    <div class="uk-container uk-container-large uk-padding-large">
+        <div class="uk-flex uk-flex-between uk-flex-middle uk-flex-wrap uk-margin-bottom" style="gap: 12px;">
+            <h2 class="uk-heading-bullet uk-margin-remove">Gestión de Clientes</h2>
+            <button class="uk-button uk-button-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalAgregar">+ Nuevo Cliente</button>
         </div>
-        <div class="container bg-white p-4 rounded shadow-sm">
-            <!-- Tabs de Bootstrap -->
-            <ul class="nav nav-tabs mb-3" id="clienteTabs" role="tablist">
-                <li class="nav-item">
-                    <button class="nav-link active" id="activos-tab" data-bs-toggle="tab" data-bs-target="#activos" type="button">Activos</button>
-                </li>
-                <li class="nav-item">
-                    <button class="nav-link" id="inactivos-tab" data-bs-toggle="tab" data-bs-target="#inactivos" type="button">Inactivos</button>
-                </li>
+
+        <div class="uk-card uk-card-default uk-card-body">
+            <ul class="uk-tab" uk-tab>
+                <li class="uk-active"><a href="#">Activos</a></li>
+                <li><a href="#">Inactivos</a></li>
             </ul>
 
-            <div class="tab-content">
-                <!-- Clientes Activos -->
-                <div class="tab-pane fade show active" id="activos">
-                    <div class="table-responsive">
-                        <table id="tablaActivos" class="table-DT table table-striped">
+            <ul class="uk-switcher uk-margin-top">
+                <li>
+                    <div class="uk-overflow-auto">
+                        <table id="tablaActivos" class="table-DT table table-striped uk-table uk-table-middle uk-table-divider">
                             <thead>
                                 <tr>
                                     <th>Nombre</th>
@@ -45,11 +40,10 @@
                                         <td><?= htmlspecialchars($c['telefono']) ?></td>
                                         <td><?= htmlspecialchars($c['direccion']) ?></td>
                                         <td>
-                                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalEditar<?= $c['id'] ?>">Editar</button>
-                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalConfirmarEliminar<?= $c['id'] ?>">Eliminar</button>
+                                            <button class="uk-button uk-button-primary uk-button-small" type="button" data-bs-toggle="modal" data-bs-target="#modalEditar<?= $c['id'] ?>">Editar</button>
+                                            <button type="button" class="uk-button uk-button-danger uk-button-small" data-bs-toggle="modal" data-bs-target="#modalConfirmarEliminar<?= $c['id'] ?>">Eliminar</button>
                                         </td>
                                     </tr>
-                                    <!-- Modal Editar -->
                                     <div class="modal fade" id="modalEditar<?= $c['id'] ?>" tabindex="-1">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
@@ -70,13 +64,12 @@
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="submit" class="btn btn-primary">Guardar</button>
+                                                        <button type="submit" class="uk-button uk-button-primary">Guardar</button>
                                                     </div>
                                                 </form>
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- Modal Confirmar Eliminación -->
                                     <div class="modal fade" id="modalConfirmarEliminar<?= $c['id'] ?>" tabindex="-1">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
@@ -90,8 +83,8 @@
                                                         ¿Estás seguro de que deseas inhabilitar a <?= htmlspecialchars($c['nombre']) ?>?
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                                                        <button type="button" class="uk-button uk-button-default" data-bs-dismiss="modal">Cancelar</button>
+                                                        <button type="submit" class="uk-button uk-button-danger">Eliminar</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -101,12 +94,11 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
+                </li>
 
-                <!-- Clientes Inactivos -->
-                <div class="tab-pane fade" id="inactivos">
-                    <div class="table-responsive">
-                        <table id="tablaInactivos" class="table-DT table table-striped">
+                <li>
+                    <div class="uk-overflow-auto">
+                        <table id="tablaInactivos" class="table-DT table table-striped uk-table uk-table-middle uk-table-divider">
                             <thead>
                                 <tr>
                                     <th>Nombre</th>
@@ -124,11 +116,10 @@
                                         <td><?= htmlspecialchars($c['telefono']) ?></td>
                                         <td><?= htmlspecialchars($c['direccion']) ?></td>
                                         <td>
-                                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalEditar<?= $c['id'] ?>">Editar</button>
-                                            <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modalConfirmarActivar<?= $c['id'] ?>">Activar</button>
+                                            <button class="uk-button uk-button-primary uk-button-small" type="button" data-bs-toggle="modal" data-bs-target="#modalEditar<?= $c['id'] ?>">Editar</button>
+                                            <button type="button" class="uk-button uk-button-primary uk-button-small" data-bs-toggle="modal" data-bs-target="#modalConfirmarActivar<?= $c['id'] ?>">Activar</button>
                                         </td>
                                     </tr>
-                                    <!-- Modal Editar -->
                                     <div class="modal fade" id="modalEditar<?= $c['id'] ?>" tabindex="-1">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
@@ -149,13 +140,12 @@
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="submit" class="btn btn-primary">Guardar</button>
+                                                        <button type="submit" class="uk-button uk-button-primary">Guardar</button>
                                                     </div>
                                                 </form>
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- Modal Confirmar Activación -->
                                     <div class="modal fade" id="modalConfirmarActivar<?= $c['id'] ?>" tabindex="-1">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
@@ -169,8 +159,8 @@
                                                         ¿Estás seguro de que deseas habilitar a <?= htmlspecialchars($c['nombre']) ?>?
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                        <button type="submit" class="btn btn-success">Activar</button>
+                                                        <button type="button" class="uk-button uk-button-default" data-bs-dismiss="modal">Cancelar</button>
+                                                        <button type="submit" class="uk-button uk-button-primary">Activar</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -180,13 +170,11 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </div>
+                </li>
+            </ul>
         </div>
-
     </div>
 
-    <!-- Modal Agregar Cliente -->
     <div class="modal fade" id="modalAgregar" tabindex="-1">
         <div class="modal-dialog">
             <form action="?c=CClientes/add" method="POST" class="modal-content">
@@ -213,7 +201,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">Guardar</button>
+                    <button type="submit" class="uk-button uk-button-primary">Guardar</button>
                 </div>
             </form>
         </div>
