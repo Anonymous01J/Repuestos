@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="public/assets/css/uikit-theme.css">
     <link rel="stylesheet" href="public/assets/libs/select2/select2.min.css">
 
-    <link rel="stylesheet" href="public/assets/css/style.css">
+    <link rel="stylesheet" href="public/assets/css/style.css?v=<?= filemtime(__DIR__ . '/../../../public/assets/css/style.css') ?>">
 
 </head>
 <body>

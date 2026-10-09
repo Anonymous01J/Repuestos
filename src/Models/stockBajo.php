@@ -9,7 +9,7 @@
         }
 
         public function search(): array {
-            $sql = "SELECT * FROM v_productos_stock_bajo";
+            $sql = "SELECT v_productos_stock_bajo.*, p.imagen FROM v_productos_stock_bajo INNER JOIN productos p ON p.id = v_productos_stock_bajo.id";
             $stmt = $this->prepare($sql);
             if ($stmt->execute()) {
                 return $stmt->fetchAll(\PDO::FETCH_ASSOC);

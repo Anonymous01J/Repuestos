@@ -98,11 +98,12 @@ function applyTheme(theme) {
 
     const themeButton = document.getElementById('themeToggleBtn');
     if (themeButton) {
-        const icon = themeButton.querySelector('span[uk-icon]');
-        if (icon) {
-            const iconName = selectedTheme === 'light' ? 'moon' : 'sun';
-            icon.setAttribute('uk-icon', `icon: ${iconName}; ratio: 1.2`);
+        const themeIcon = themeButton.querySelector('[uk-icon]');
+        if (themeIcon && window.UIkit && UIkit.icon && !UIkit.getComponent(themeIcon, 'icon')) {
+            UIkit.icon(themeIcon, { icon: 'settings', ratio: 1.15 });
         }
+        themeButton.setAttribute('aria-label', selectedTheme === 'light' ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro');
+        themeButton.setAttribute('title', selectedTheme === 'light' ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro');
     }
 }
 

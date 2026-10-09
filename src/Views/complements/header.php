@@ -17,42 +17,42 @@
         <div class="app-loader-text">Cargando sistema</div>
     </div>
 </div>
-<div class="uk-navbar-container app-shell-header">
+<header class="app-shell-header">
     <div class="uk-container uk-container-expand app-header-inner">
-        <nav class="uk-navbar uk-navbar-container uk-navbar-transparent" uk-navbar>
-            <div class="uk-navbar-left">
-                <a class="app-brand" href="?c=CHome/view" aria-label="Ir al inicio">
-                    <span class="app-brand-mark">R</span>
-                    <span class="app-brand-text">RepuestosApp</span>
-                </a>
-            </div>
+        <nav class="app-header-nav" aria-label="Navegación principal">
+            <a class="app-brand" href="?c=CHome/view" aria-label="Ir al inicio">
+                <span class="app-brand-mark">R</span>
+                <span class="app-brand-text">RepuestosApp</span>
+            </a>
 
-            <div class="uk-navbar-right">
-                <div class="uk-flex uk-flex-middle uk-flex-wrap uk-flex-wrap-around app-header-actions">
-                    <button class="theme-toggle-btn" id="themeToggleBtn" type="button" aria-label="Cambiar tema">
-                        <span uk-icon="icon: sun; ratio: 1.2"></span>
-                    </button>
+            <div class="app-header-actions">
+                <button class="theme-toggle-btn" id="themeToggleBtn" type="button" aria-label="Cambiar a tema claro" title="Cambiar tema">
+                  <span uk-icon="icon: settings; ratio: 1.15" aria-hidden="true"></span>
+                </button>
 
-                    <button class="uk-button uk-button-text app-bcv-trigger" id="bcvDiv" type="button" uk-toggle="target: #modalTasa">
-                        <img src="./public/assets/img/bcv2.png" alt="BCV" width="40">
-                        <span class="app-bcv-label">Dólar BCV:</span>
-                        <span class="uk-text-success uk-text-bold app-bcv-value" id="Dolar_bcv"><?= $tasaValor ?> Bs</span>
-                    </button>
+                <button class="uk-button uk-button-text app-bcv-trigger" id="bcvDiv" type="button" uk-toggle="target: #modalTasa" aria-label="Actualizar tasa BCV">
+                    <img src="./public/assets/img/bcv2.png" alt="BCV" width="34" height="34">
+                    <span class="app-bcv-label">Dólar BCV</span>
+                    <span class="uk-text-success uk-text-bold app-bcv-value" id="Dolar_bcv"><?= $tasaValor ?> Bs</span>
+                    <span class="app-bcv-edit-icon" uk-icon="icon: pencil; ratio: 0.8" aria-hidden="true"></span>
+                </button>
 
-                    <div class="app-user-box">
-                        <div class="app-user-avatar">
-                            <?= strtoupper(substr(htmlspecialchars($_SESSION['nombre']), 0, 1)) ?>
-                        </div>
-                        <div class="app-user-meta">
-                            <span>Bienvenido, <?= htmlspecialchars($_SESSION['nombre']) ?></span>
-                        </div>
-                        <a href="?c=CHome/logout" class="uk-button uk-button-small app-logout-btn">Cerrar sesión</a>
-                    </div>
+                <div class="app-user-box">
+                    <span class="app-user-avatar" aria-hidden="true">
+                        <?= strtoupper(substr(htmlspecialchars($_SESSION['nombre'] ?? ''), 0, 1)) ?>
+                    </span>
+                    <span class="app-user-meta" title="<?= htmlspecialchars($_SESSION['nombre'] ?? '') ?>">
+                        <?= htmlspecialchars($_SESSION['nombre'] ?? 'Usuario') ?>
+                    </span>
+                    <a href="?c=CHome/logout" class="app-logout-btn" aria-label="Cerrar sesión" title="Cerrar sesión">
+                        <span uk-icon="icon: sign-out; ratio: 1" aria-hidden="true"></span>
+                        <span class="app-logout-label">Salir</span>
+                    </a>
                 </div>
             </div>
         </nav>
     </div>
-</div>
+</header>
 
 <!-- Modal Tasa -->
 <div id="modalTasa" uk-modal>

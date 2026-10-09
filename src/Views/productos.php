@@ -99,8 +99,8 @@ include_once 'src/Views/complements/header.php';
 
                 <!-- ── Tab: Entradas ───────────────────────────────────── -->
                 <div id="entradas-tab-panel">
-                    <div class="table-responsive">
-                        <table class="table table-striped" id="tablaEntradas">
+                    <div class="app-product-table-wrap">
+                        <table class="uk-table uk-table-divider uk-table-hover uk-table-middle app-product-table" id="tablaEntradas">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -108,7 +108,7 @@ include_once 'src/Views/complements/header.php';
                                     <th>Fecha</th>
                                     <th>Total</th>
                                     <th>Productos</th>
-                                    <th>Detalles</th>
+                                    <th class="uk-text-right">Detalles</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -126,8 +126,8 @@ include_once 'src/Views/complements/header.php';
                                         <td><?= htmlspecialchars($i['usuario']) ?></td>
                                         <td><?= $i['fecha'] ?></td>
                                         <td><?= htmlspecialchars($i['total']) ?> $ / <?= htmlspecialchars($i['total_bs']) ?> Bs</td>
-                                        <td class="text-muted small"><?= htmlspecialchars(implode(', ', $nombresProductosIngreso)) ?></td>
-                                        <td>
+                                        <td><?= htmlspecialchars(implode(', ', $nombresProductosIngreso)) ?: '—' ?></td>
+                                        <td class="uk-text-right">
                                             <button class="uk-button uk-button-small uk-button-primary"
                                                 uk-toggle="target: #modalDetallesIngreso"
                                                 data-id="<?= $i['id'] ?>">Ver</button>
@@ -141,8 +141,8 @@ include_once 'src/Views/complements/header.php';
 
                 <!-- ── Tab: Ventas ─────────────────────────────────────── -->
                 <div id="ventas-tab-panel">
-                    <div class="table-responsive">
-                        <table class="table table-striped" id="tablaVentas">
+                    <div class="app-product-table-wrap">
+                        <table class="uk-table uk-table-divider uk-table-hover uk-table-middle app-product-table" id="tablaVentas">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -150,7 +150,7 @@ include_once 'src/Views/complements/header.php';
                                     <th>Fecha</th>
                                     <th>Total</th>
                                     <th>Productos</th>
-                                    <th>Detalles</th>
+                                    <th class="uk-text-right">Detalles</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -163,7 +163,7 @@ include_once 'src/Views/complements/header.php';
                                         <td class="productos-venta-cell" data-id-venta="<?= $v['id'] ?>">
                                             <span class="text-muted small">Cargando...</span>
                                         </td>
-                                        <td>
+                                        <td class="uk-text-right">
                                             <button class="uk-button uk-button-small uk-button-primary btn-ver-venta"
                                                 uk-toggle="target: #modalDetallesVenta"
                                                 data-id="<?= $v['id'] ?>">Ver</button>
@@ -184,7 +184,8 @@ include_once 'src/Views/complements/header.php';
     <div id="modalImagen" uk-modal>
         <div class="uk-modal-dialog uk-modal-body uk-text-center">
             <button class="uk-modal-close-default" type="button" uk-close></button>
-            <img id="imgGrande" src="" alt="Imagen producto" class="uk-width-1-1 uk-border-rounded">
+            <img id="imgGrande" src="" alt="Imagen producto" class="uk-width-1-1 uk-border-rounded" style="max-height: 80vh; object-fit: contain;">
+            <p id="imgGrandeTitulo" class="uk-text-meta uk-margin-small-top uk-margin-remove-bottom"></p>
         </div>
     </div>
 
@@ -687,7 +688,9 @@ include_once 'src/Views/complements/header.php';
                                 <tr>
                                     <td>
                                         <div class="app-product-row-identity">
-                                            <img src="${imagen}" alt="" onerror="this.onerror=null;this.src='public/assets/img/products/generic.png';">
+                                            <button class="app-product-image-trigger" type="button" data-product-image-id="${p.id}" aria-label="Ver imagen completa de ${p.nombre}">
+                                                <img src="${imagen}" alt="" onerror="this.onerror=null;this.src='public/assets/img/products/generic.png';">
+                                            </button>
                                             <div><strong>${p.nombre}</strong><span>${p.marca || 'Sin marca'}</span></div>
                                         </div>
                                     </td>
@@ -719,7 +722,9 @@ include_once 'src/Views/complements/header.php';
                     <div class="uk-card uk-card-default app-product-card">
                         <div class="uk-card-body">
                             <div class="app-product-visual">
-                                <img src="${imagen}" alt="${p.nombre}" onerror="this.onerror=null;this.src='public/assets/img/products/generic.png';">
+                                <button class="app-product-image-trigger" type="button" data-product-image-id="${p.id}" aria-label="Ver imagen completa de ${p.nombre}">
+                                    <img src="${imagen}" alt="${p.nombre}" onerror="this.onerror=null;this.src='public/assets/img/products/generic.png';">
+                                </button>
                             </div>
                             <h5 class="app-product-name">${p.nombre}</h5>
                             <div class="app-product-head">
@@ -752,7 +757,7 @@ include_once 'src/Views/complements/header.php';
                                 <p class="app-meta-label">Categoría</p>
                                 <p class="app-meta-value">${categoria}</p>
                             </div>
-                            <div class="app-product-actions uk-margin-top" style="justify-content:flex-end;">
+                            <div class="app-product-actions app-product-actions--bottom uk-margin-top">
                                 <button class="uk-button uk-button-primary uk-button-small" type="button" uk-toggle="target: #modalIngresoRapido_${p.id}">Entrada</button>
                                 <button class="uk-button uk-button-default uk-button-small" type="button" uk-toggle="target: #modalVentaRapida_${p.id}">Venta</button>
                             </div>
@@ -780,15 +785,45 @@ include_once 'src/Views/complements/header.php';
                 renderProductosList();
             });
         });
+
+        listEl.querySelectorAll('[data-product-image-id]').forEach((imageTrigger) => {
+            imageTrigger.addEventListener('click', function () {
+                const product = pageItems.find((item) => String(item.id) === this.dataset.productImageId);
+                if (product) verImagen(product.imagen || 'generic.png', product.nombre);
+            });
+        });
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-        const hash = window.location.hash;
-        if (hash) {
-            const tabId = hash.replace('#', '');
-            const tabTrigger = document.getElementById(`${tabId}-tab`);
-            if (tabTrigger) showTabFromTrigger(tabTrigger);
+        function activateProductTabFromHash() {
+            const rawHash = window.location.hash || '';
+            if (!rawHash) return;
+
+            const hashValue = rawHash.replace(/^#/, '').toLowerCase();
+            const tabPanelMap = {
+                productos: 'productos-tab-panel',
+                entradas: 'entradas-tab-panel',
+                ventas: 'ventas-tab-panel'
+            };
+
+            const normalizedHash = hashValue.replace(/-tab-panel$/, '');
+            const panelId = tabPanelMap[normalizedHash] || hashValue;
+            const tabTrigger = document.querySelector(`a[href="#${panelId}"]`);
+
+            const tabList = tabTrigger && tabTrigger.closest('ul.uk-tab');
+            if (!tabList) return;
+
+            const tabLinks = Array.from(tabList.querySelectorAll('a'));
+            const tabIndex = tabLinks.indexOf(tabTrigger);
+            if (tabIndex < 0) return;
+
+            if (window.UIkit && typeof UIkit.tab === 'function') {
+                UIkit.tab(tabList).show(tabIndex);
+            }
         }
+
+        activateProductTabFromHash();
+        window.addEventListener('hashchange', activateProductTabFromHash);
 
         const searchInput = document.getElementById('productosSearch');
         if (searchInput) {
@@ -1057,13 +1092,16 @@ include_once 'src/Views/complements/header.php';
         });
     }
 
-    function verImagen(nombre) {
+    function verImagen(nombre, titulo = 'Producto') {
         const img = document.getElementById('imgGrande');
-        img.onerror = function() { 
-            this.onerror=null; 
-            this.src='public/assets/img/products/generic.png'; 
+        img.onerror = function () {
+            this.onerror = null;
+            this.src = 'public/assets/img/products/generic.png';
         };
-        img.src = 'public/assets/img/products/' + nombre;
+        img.src = 'public/assets/img/products/' + encodeURIComponent(nombre || 'generic.png');
+        img.alt = 'Imagen de ' + titulo;
+        document.getElementById('imgGrandeTitulo').textContent = titulo;
+        if (window.UIkit && UIkit.modal) UIkit.modal('#modalImagen').show();
     }
 
     function previewImagen(input, idPreview) {

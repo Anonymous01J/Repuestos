@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+<?php $productosAlerta = $productosAlerta ?? []; ?>
     <?php require_once __DIR__ . '../complements/head.php'; ?>
     <?php require_once __DIR__ . '../complements/header.php'; ?>
 
@@ -46,86 +47,29 @@
             </div>
         </div>
 
-        <div class="uk-margin-large-top">
-            <?php if (!empty($productosAlerta)): ?>
-                <?php
-                    $sinStock = array_filter($productosAlerta, fn($p) => $p['nivel_alerta'] === 'SIN_STOCK');
-                    $criticos = array_filter($productosAlerta, fn($p) => $p['nivel_alerta'] === 'CRITICO');
-                    $totalAlertas = count($productosAlerta);
-                ?>
-
-                <div class="uk-flex uk-flex-middle uk-flex-wrap uk-margin-bottom" style="gap: 12px;">
-                    <h3 class="uk-margin-remove uk-text-danger">⚠️ Alertas de Inventario</h3>
-                    <span class="uk-badge uk-label-danger" style="background: #dc2626; color: white; font-size: 0.8rem; padding: 0.35rem 0.75rem;"><?= $totalAlertas ?></span>
-                    <?php if (count($sinStock) > 0): ?>
-                        <span class="uk-badge" style="background: #111827; color: white; padding: 0.35rem 0.75rem;"><?= count($sinStock) ?> sin stock</span>
-                    <?php endif; ?>
-                    <?php if (count($criticos) > 0): ?>
-                        <span class="uk-badge" style="background: #fbbf24; color: #111827; padding: 0.35rem 0.75rem;"><?= count($criticos) ?> críticos</span>
-                    <?php endif; ?>
+        <?php
+            $sinStock = array_filter($productosAlerta, static fn($producto) => ($producto['nivel_alerta'] ?? '') === 'SIN_STOCK');
+            $stockBajo = array_filter($productosAlerta, static fn($producto) => ($producto['nivel_alerta'] ?? '') !== 'SIN_STOCK');
+        ?>
+        <section class="uk-card uk-card-default uk-card-body uk-margin-large-top" aria-labelledby="stockSummaryTitle">
+            <div class="uk-flex uk-flex-between uk-flex-middle uk-flex-wrap" style="gap: 16px;">
+                <div>
+                    <h3 id="stockSummaryTitle" class="uk-card-title uk-margin-small-bottom">Alertas de inventario</h3>
+                    <p class="uk-text-muted uk-margin-remove">Resumen de productos que requieren reposición.</p>
                 </div>
-
-                <div class="uk-card uk-card-default uk-overflow-hidden" style="border: 1px solid rgba(220, 38, 38, 0.25);">
-                    <div class="uk-card-header uk-flex uk-flex-between uk-flex-middle" style="background: #fef2f2; border-bottom: 1px solid rgba(220, 38, 38, 0.18);">
-                        <div class="uk-text-bold uk-text-danger">Productos con stock por debajo del mínimo</div>
-                        <a href="?c=CProductos/view" class="uk-button uk-button-small uk-button-default" style="border-color: rgba(220, 38, 38, 0.35); color: #b91c1c;">Ver todos los productos →</a>
-                    </div>
-                    <div class="uk-card-body uk-padding-remove">
-                        <div class="uk-overflow-auto">
-                            <table class="uk-table uk-table-middle uk-table-divider uk-table-hover uk-margin-remove">
-                                <thead>
-                                    <tr>
-                                        <th>Producto</th>
-                                        <th>Categoría</th>
-                                        <th>Precio</th>
-                                        <th class="uk-text-center">Stock actual</th>
-                                        <th class="uk-text-center">Stock mínimo</th>
-                                        <th class="uk-text-center">Estado</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($productosAlerta as $p): ?>
-                                        <?php
-                                            if ($p['nivel_alerta'] === 'SIN_STOCK') {
-                                                $rowStyle = 'background: rgba(254, 202, 202, 0.4);';
-                                                $badgeStyle = 'background: #dc2626; color: white;';
-                                                $badgeLabel = '🚫 Sin stock';
-                                            } else {
-                                                $rowStyle = 'background: rgba(254, 243, 199, 0.6);';
-                                                $badgeStyle = 'background: #fbbf24; color: #111827;';
-                                                $badgeLabel = '⚠️ Crítico';
-                                            }
-                                            $deficit = $p['stock_minimo'] - $p['stock_actual'];
-                                        ?>
-                                        <tr style="<?= $rowStyle ?>">
-                                            <td>
-                                                <div class="uk-text-bold"><?= htmlspecialchars($p['nombre']) ?></div>
-                                                <?php if ($p['marca']): ?>
-                                                    <div class="uk-text-small uk-text-muted"><?= htmlspecialchars($p['marca']) ?></div>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td><?= htmlspecialchars($p['categoria'] ?? '—') ?></td>
-                                            <td><?= number_format($p['precio'], 2) ?> $</td>
-                                            <td class="uk-text-center uk-text-bold"><?= (int) $p['stock_actual'] ?></td>
-                                            <td class="uk-text-center uk-text-muted"><?= (int) $p['stock_minimo'] ?></td>
-                                            <td class="uk-text-center">
-                                                <span class="uk-badge" style="<?= $badgeStyle ?>; padding: 0.55rem 0.85rem; border-radius: 999px;"><?= $badgeLabel ?></span>
-                                                <div class="uk-text-small uk-text-muted uk-margin-small-top">Faltan <?= $deficit ?> ud<?= $deficit !== 1 ? 's' : '' ?>.</div>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-            <?php else: ?>
-                <div class="uk-alert uk-alert-success" uk-alert>
-                    <p class="uk-margin-remove"><strong>Inventario en orden.</strong> Todos los productos tienen stock por encima del mínimo establecido.</p>
-                </div>
+                <a href="?c=CStockBajo/view" class="uk-button uk-button-primary">
+                    Ver detalles <span uk-icon="icon: arrow-right"></span>
+                </a>
+            </div>
+            <div class="uk-grid-small uk-child-width-1-2@s uk-child-width-1-3@m uk-margin-top" uk-grid>
+                <div><div class="app-stock-summary-stat"><div class="app-stock-summary-label">Total de alertas</div><strong class="app-stock-summary-value"><?= count($productosAlerta) ?></strong></div></div>
+                <div><div class="app-stock-summary-stat"><div class="app-stock-summary-label">Sin stock</div><strong class="app-stock-summary-value app-stock-summary-value--danger"><?= count($sinStock) ?></strong></div></div>
+                <div><div class="app-stock-summary-stat"><div class="app-stock-summary-label">Stock bajo</div><strong class="app-stock-summary-value app-stock-summary-value--warning"><?= count($stockBajo) ?></strong></div></div>
+            </div>
+            <?php if (empty($productosAlerta)): ?>
+                <div class="uk-alert-success uk-margin-top" uk-alert><p class="uk-margin-remove">Inventario en orden: no hay productos que requieran reposición.</p></div>
             <?php endif; ?>
-        </div>
+        </section>
 
         <div class="uk-margin-large-top uk-text-muted uk-text-small">
             Rol: <?= htmlspecialchars($_SESSION['rol']) ?> | <?= date('d/m/Y H:i') ?>
