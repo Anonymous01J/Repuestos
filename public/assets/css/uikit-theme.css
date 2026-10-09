@@ -1,0 +1,137 @@
+:root {
+    --uk-primary: #0f766e;
+    --uk-primary-strong: #115e59;
+    --uk-accent: #14b8a6;
+    --uk-surface: #ffffff;
+    --uk-surface-muted: #f3f6fb;
+    --uk-border: rgba(15, 23, 42, 0.12);
+    --uk-text: #1f2937;
+    --uk-muted: #64748b;
+    --uk-success: #16a34a;
+    --uk-warning: #f59e0b;
+    --uk-danger: #dc2626;
+    --uk-box-shadow: 0 12px 30px rgba(15, 23, 42, 0.10);
+    --uk-radius: 18px;
+}
+
+body {
+    background: linear-gradient(180deg, #f6f8fc 0%, #edf4f7 100%);
+    color: var(--uk-text);
+    font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.uk-container {
+    max-width: 1280px;
+}
+
+.uk-card {
+    border: 1px solid var(--uk-border);
+    border-radius: var(--uk-radius);
+    box-shadow: var(--uk-box-shadow);
+}
+
+.uk-card-default {
+    background: var(--uk-surface);
+}
+
+.uk-button,
+.uk-button-secondary,
+.uk-button-primary,
+.uk-button-danger,
+.uk-button-default {
+    border-radius: 12px;
+    font-weight: 600;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.uk-button:hover,
+.uk-button-secondary:hover,
+.uk-button-primary:hover,
+.uk-button-danger:hover,
+.uk-button-default:hover {
+    transform: translateY(-1px);
+}
+
+.uk-button-primary {
+    background: linear-gradient(135deg, var(--uk-primary) 0%, var(--uk-accent) 100%);
+    border: none;
+    color: #fff;
+}
+
+.uk-navbar-container,
+.uk-card,
+.uk-table,
+.uk-alert,
+.uk-modal-dialog,
+.uk-input,
+.uk-select,
+.uk-textarea,
+.uk-button {
+    border-radius: 14px;
+}
+
+.uk-navbar-container {
+    background: rgba(15, 23, 42, 0.96);
+    color: #fff;
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.14);
+}
+
+.uk-navbar-nav > li > a,
+.uk-navbar-item,
+.uk-logo {
+    color: #fff !important;
+}
+
+.uk-table th {
+    color: var(--uk-muted);
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.uk-table td {
+    vertical-align: middle;
+}
+
+.uk-badge,
+.uk-label {
+    border-radius: 999px;
+    font-weight: 600;
+}
+
+.uk-alert {
+    border: 1px solid transparent;
+}
+
+.uk-form-label {
+    font-weight: 600;
+    color: var(--uk-text);
+}
+
+.uk-input,
+.uk-select,
+.uk-textarea {
+    border: 1px solid var(--uk-border);
+    background: #fff;
+    box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.uk-modal-dialog {
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    box-shadow: var(--uk-box-shadow);
+}
+
+.uk-background-muted {
+    background-color: var(--uk-surface-muted);
+}
+
+@media (max-width: 640px) {
+    .uk-card {
+        border-radius: 14px;
+    }
+
+    .uk-navbar-container {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+}

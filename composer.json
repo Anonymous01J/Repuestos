@@ -1,6 +1,5 @@
 {
     "name": "anonymous01j/repuestos",
-    "description": "sistema de inventario para ventas de repuestos automoviles",
     "type": "project",
     "license": "MIT",
     "autoload": {
@@ -10,7 +9,8 @@
     },
     "authors": [
         {
-            "name": "Jose Guillermo Perez Soto"
+            "name": "José Guillermo Pérez Soto",
+            "email": "joseguillermojose01@gmail.com"
         }
     ],
     "minimum-stability": "beta",

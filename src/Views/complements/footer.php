@@ -1,4 +1,6 @@
 <script src="public/assets/libs/jquery-3.7.1/jquery-3.7.1.min.js"></script>
+<script src="public/assets/libs/uikit/uikit.min.js"></script>
+<script src="public/assets/libs/uikit/uikit-icons.min.js"></script>
 
 <script src="public/assets/libs/dataTable/jquery.dataTables.min.js"></script>
 <script src="public/assets/libs/dataTable/dataTables.bootstrap5.min.js"></script>

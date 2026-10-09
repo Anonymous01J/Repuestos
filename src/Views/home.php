@@ -24,6 +24,15 @@
                         <p class="card-text">Controla tus repuestos disponibles.</p>
                         <a href="?c=CProductos/view" class="btn btn-primary">Ver productos</a>
                     </div>
+                </div>  
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Proveedores</h5>
+                        <p class="card-text">Gestiona a tus proveedores.</p>
+                        <a href="?c=CProveedores/view" class="btn btn-primary">Ver proveedores</a>
+                    </div>
                 </div>
             </div>
             <div class="col-md-4">
