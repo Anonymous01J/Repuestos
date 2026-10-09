@@ -13,6 +13,14 @@
     <link rel="stylesheet" href="public/assets/css/style.css">
 </head>
 <body class="app-auth-body uk-height-viewport uk-flex uk-flex-middle">
+    <div id="appLoader" class="app-loader" aria-live="polite" aria-busy="true">
+        <div class="app-loader-inner">
+            <div class="app-loader-mark">R</div>
+            <div class="app-loader-ring"></div>
+            <div class="app-loader-text">Cargando sistema</div>
+        </div>
+    </div>
+
     <div class="uk-container uk-container-small">
         <div class="uk-flex uk-flex-center">
             <div class="app-auth-shell uk-width-1-1 uk-width-medium@m">
@@ -64,5 +72,15 @@
 
     <script src="public/assets/libs/uikit/uikit.min.js"></script>
     <script src="public/assets/libs/uikit/uikit-icons.min.js"></script>
+    <script>
+        window.addEventListener('load', function () {
+            var loader = document.getElementById('appLoader');
+            if (!loader) return;
+            loader.classList.add('is-hidden');
+            window.setTimeout(function () {
+                loader.remove();
+            }, 400);
+        });
+    </script>
 </body>
 </html>

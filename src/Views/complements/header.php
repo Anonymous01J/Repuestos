@@ -10,6 +10,13 @@
         }
     }
 ?>
+<div id="appLoader" class="app-loader" aria-live="polite" aria-busy="true">
+    <div class="app-loader-inner">
+        <div class="app-loader-mark">R</div>
+        <div class="app-loader-ring"></div>
+        <div class="app-loader-text">Cargando sistema</div>
+    </div>
+</div>
 <div class="uk-navbar-container app-shell-header">
     <div class="uk-container uk-container-expand app-header-inner">
         <nav class="uk-navbar uk-navbar-container uk-navbar-transparent" uk-navbar>

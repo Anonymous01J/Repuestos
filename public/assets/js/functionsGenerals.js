@@ -90,8 +90,28 @@ function initThemeToggle() {
     }
 }
 
+function initAppLoader() {
+    const loader = document.getElementById('appLoader');
+    if (!loader) return;
+
+    const hideLoader = function () {
+        loader.classList.add('is-hidden');
+        window.setTimeout(function () {
+            loader.remove();
+        }, 400);
+    };
+
+    if (document.readyState === 'complete') {
+        hideLoader();
+        return;
+    }
+
+    window.addEventListener('load', hideLoader, { once: true });
+}
+
 $(document).ready(function () {
     initThemeToggle();
+    initAppLoader();
 
     const ahora = new Date();
     const tzOffset = ahora.getTimezoneOffset() * 60000; // en milisegundos
