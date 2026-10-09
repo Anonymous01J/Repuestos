@@ -10,25 +10,36 @@
         }
     }
 ?>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4 py-2">
-    <div class="container-fluid d-flex flex-column flex-md-row align-items-center justify-content-between">
-        <div class="d-flex align-items-center mb-2 mb-md-0" id="bcvDiv" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#modalTasa">
-            <img class="img-bcv me-2" src="./public/assets/img/bcv2.png" alt="BCV" width="40">
-            <span class="text-white fw-semibold me-2">Dólar BCV:</span>
-            <span class="text-info fw-bold" id="Dolar_bcv"><?= $tasaValor ?> Bs</span>
-        </div>
-        <div class="d-flex align-items-center">
-            <a class="navbar-brand me-4" href="?c=CHome/view">RepuestosApp</a>
-            <span class="text-white me-3">
-                Bienvenido, <?= htmlspecialchars($_SESSION['nombre']) ?>
-            </span>
-            <a href="?c=CHome/logout" class="btn btn-sm btn-outline-light">Cerrar sesión</a>
-        </div>
+<div class="uk-navbar-container uk-navbar-transparent" style="background: rgba(15, 23, 42, 0.96); box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);">
+    <div class="uk-container uk-container-expand" style="padding-left: 32px; padding-right: 32px;">
+        <nav class="uk-navbar uk-navbar-container uk-navbar-transparent" uk-navbar>
+            <div class="uk-navbar-left">
+                <a class="uk-logo uk-text-bold uk-text-white" href="?c=CHome/view" style="font-size: 1.15rem; letter-spacing: 0.02em;">RepuestosApp</a>
+            </div>
+
+            <div class="uk-navbar-right">
+                <div class="uk-flex uk-flex-middle uk-flex-wrap uk-flex-wrap-around">
+                    <button class="uk-button uk-button-text uk-margin-small-right uk-flex uk-flex-middle uk-text-white" id="bcvDiv" type="button" data-bs-toggle="modal" data-bs-target="#modalTasa" style="padding: 0; min-height: auto;">
+                        <img src="./public/assets/img/bcv2.png" alt="BCV" width="40" style="border-radius: 8px;">
+                        <span class="uk-margin-small-left uk-text-bold">Dólar BCV:</span>
+                        <span class="uk-text-success uk-margin-small-left uk-text-bold" id="Dolar_bcv"><?= $tasaValor ?> Bs</span>
+                    </button>
+
+                    <div class="uk-flex uk-flex-middle uk-margin-left">
+                        <span class="uk-text-white uk-text-small uk-margin-small-right">
+                            Bienvenido, <?= htmlspecialchars($_SESSION['nombre']) ?>
+                        </span>
+                        <a href="?c=CHome/logout" class="uk-button uk-button-default uk-button-small" style="border-color: rgba(255,255,255,0.35); color: #fff;">Cerrar sesión</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
     </div>
-</nav>
+</div>
+
 <!-- Modal Tasa -->
 <div class="modal fade" id="modalTasa" tabindex="-1" aria-labelledby="modalTasaLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <form id="formTasa">
         <div class="modal-header">

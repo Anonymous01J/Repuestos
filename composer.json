@@ -1,6 +1,7 @@
 {
     "name": "anonymous01j/repuestos",
     "type": "project",
+    "description": "sistema de inventario para ventas de repuestos automoviles",
     "license": "MIT",
     "autoload": {
         "psr-4": {
