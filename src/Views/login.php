@@ -12,11 +12,19 @@
     <link rel="stylesheet" href="public/assets/css/uikit-theme.css">
     <link rel="stylesheet" href="public/assets/css/style.css">
 </head>
-<body class="uk-background-muted uk-height-viewport uk-flex uk-flex-middle">
+<body class="app-auth-body uk-height-viewport uk-flex uk-flex-middle">
     <div class="uk-container uk-container-small">
         <div class="uk-flex uk-flex-center">
-            <div class="uk-width-1-1 uk-width-medium@m">
-                <div class="uk-card uk-card-default uk-card-body uk-box-shadow-large" style="border-radius: 22px;">
+            <div class="app-auth-shell uk-width-1-1 uk-width-medium@m">
+                <div class="app-auth-card uk-card uk-card-body">
+                    <div class="app-auth-brand uk-text-center uk-margin-bottom">
+                        <span class="app-brand-mark">R</span>
+                        <div>
+                            <div class="app-auth-title">RepuestosApp</div>
+                            <div class="app-auth-subtitle">Control de inventario</div>
+                        </div>
+                    </div>
+
                     <h3 class="uk-card-title uk-text-center uk-margin-small-bottom">Iniciar Sesión</h3>
 
                     <?php if (isset($_GET['error'])): ?>

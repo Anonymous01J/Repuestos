@@ -3,12 +3,12 @@
     <?php require_once __DIR__ . '../complements/head.php'; ?>
     <?php require_once __DIR__ . '../complements/header.php'; ?>
 
-    <div class="uk-container uk-container-large uk-padding-large" style="padding-top: 40px; padding-bottom: 40px;">
+    <div class="app-dashboard-shell uk-container uk-container-large uk-padding-large">
         <div class="uk-margin-bottom">
-            <h2 class="uk-heading-bullet uk-margin-remove">Panel principal</h2>
+            <div class="app-section-title">Panel principal</div>
         </div>
 
-        <div class="uk-grid uk-grid-small uk-child-width-1-1 uk-child-width-1-2@m uk-child-width-1-3@l" uk-grid>
+        <div class="app-dashboard-grid uk-grid uk-grid-small uk-child-width-1-1 uk-child-width-1-2@m uk-child-width-1-3@l" uk-grid>
             <div>
                 <div class="uk-card uk-card-default uk-card-body uk-height-1-1">
                     <h5 class="uk-card-title uk-margin-small-bottom">Clientes</h5>

@@ -10,26 +10,36 @@
         }
     }
 ?>
-<div class="uk-navbar-container uk-navbar-transparent" style="background: rgba(15, 23, 42, 0.96); box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);">
-    <div class="uk-container uk-container-expand" style="padding-left: 32px; padding-right: 32px;">
+<div class="uk-navbar-container app-shell-header">
+    <div class="uk-container uk-container-expand app-header-inner">
         <nav class="uk-navbar uk-navbar-container uk-navbar-transparent" uk-navbar>
             <div class="uk-navbar-left">
-                <a class="uk-logo uk-text-bold uk-text-white" href="?c=CHome/view" style="font-size: 1.15rem; letter-spacing: 0.02em;">RepuestosApp</a>
+                <a class="app-brand" href="?c=CHome/view" aria-label="Ir al inicio">
+                    <span class="app-brand-mark">R</span>
+                    <span class="app-brand-text">RepuestosApp</span>
+                </a>
             </div>
 
             <div class="uk-navbar-right">
-                <div class="uk-flex uk-flex-middle uk-flex-wrap uk-flex-wrap-around">
-                    <button class="uk-button uk-button-text uk-margin-small-right uk-flex uk-flex-middle uk-text-white" id="bcvDiv" type="button" uk-toggle="target: #modalTasa" style="padding: 0; min-height: auto;">
-                        <img src="./public/assets/img/bcv2.png" alt="BCV" width="40" style="border-radius: 8px;">
-                        <span class="uk-margin-small-left uk-text-bold">Dólar BCV:</span>
-                        <span class="uk-text-success uk-margin-small-left uk-text-bold" id="Dolar_bcv"><?= $tasaValor ?> Bs</span>
+                <div class="uk-flex uk-flex-middle uk-flex-wrap uk-flex-wrap-around app-header-actions">
+                    <button class="theme-toggle-btn" id="themeToggleBtn" type="button" aria-label="Cambiar tema">
+                        <span uk-icon="icon: sun; ratio: 1.2"></span>
                     </button>
 
-                    <div class="uk-flex uk-flex-middle uk-margin-left">
-                        <span class="uk-text-white uk-text-small uk-margin-small-right">
-                            Bienvenido, <?= htmlspecialchars($_SESSION['nombre']) ?>
-                        </span>
-                        <a href="?c=CHome/logout" class="uk-button uk-button-default uk-button-small" style="border-color: rgba(255,255,255,0.35); color: #fff;">Cerrar sesión</a>
+                    <button class="uk-button uk-button-text app-bcv-trigger" id="bcvDiv" type="button" uk-toggle="target: #modalTasa">
+                        <img src="./public/assets/img/bcv2.png" alt="BCV" width="40">
+                        <span class="app-bcv-label">Dólar BCV:</span>
+                        <span class="uk-text-success uk-text-bold app-bcv-value" id="Dolar_bcv"><?= $tasaValor ?> Bs</span>
+                    </button>
+
+                    <div class="app-user-box">
+                        <div class="app-user-avatar">
+                            <?= strtoupper(substr(htmlspecialchars($_SESSION['nombre']), 0, 1)) ?>
+                        </div>
+                        <div class="app-user-meta">
+                            <span>Bienvenido, <?= htmlspecialchars($_SESSION['nombre']) ?></span>
+                        </div>
+                        <a href="?c=CHome/logout" class="uk-button uk-button-small app-logout-btn">Cerrar sesión</a>
                     </div>
                 </div>
             </div>

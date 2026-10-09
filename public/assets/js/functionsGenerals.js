@@ -2,15 +2,16 @@ function openModalElement(target) {
     const modalEl = typeof target === 'string' ? document.querySelector(target) : target;
     if (!modalEl) return;
 
-    if (window.bootstrap && bootstrap.Modal) {
-        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-        modal.show();
-        return;
-    }
-
     if (window.UIkit && UIkit.modal) {
         const modal = UIkit.modal(modalEl);
-        if (modal) modal.show();
+        if (modal) {
+            modal.show();
+            return;
+        }
+    }
+
+    if (modalEl.classList) {
+        modalEl.classList.add('uk-open');
     }
 }
 
@@ -18,44 +19,31 @@ function hideModalElement(target) {
     const modalEl = typeof target === 'string' ? document.querySelector(target) : target;
     if (!modalEl) return;
 
-    if (window.bootstrap && bootstrap.Modal) {
-        const modal = bootstrap.Modal.getInstance(modalEl) || bootstrap.Modal.getOrCreateInstance(modalEl);
-        modal.hide();
-        return;
-    }
-
     if (window.UIkit && UIkit.modal) {
         const modal = UIkit.modal(modalEl);
-        if (modal) modal.hide();
+        if (modal) {
+            modal.hide();
+            return;
+        }
+    }
+
+    if (modalEl.classList) {
+        modalEl.classList.remove('uk-open');
     }
 }
 
 function hideToastElement(toastEl) {
     if (!toastEl) return;
 
-    if (window.bootstrap && bootstrap.Toast) {
-        const toast = bootstrap.Toast.getInstance(toastEl) || new bootstrap.Toast(toastEl);
-        toast.hide();
-        return;
-    }
-
-    if (window.UIkit && UIkit.util) {
-        toastEl.classList.remove('uk-open');
-        toastEl.setAttribute('hidden', 'hidden');
-    }
+    toastEl.classList.remove('uk-open');
+    toastEl.setAttribute('hidden', 'hidden');
 }
 
 function showTabFromTrigger(trigger) {
     if (!trigger) return;
 
-    const targetSelector = trigger.getAttribute('data-bs-target');
+    const targetSelector = trigger.getAttribute('data-bs-target') || trigger.getAttribute('href');
     if (!targetSelector) return;
-
-    if (window.bootstrap && bootstrap.Tab) {
-        const tab = new bootstrap.Tab(trigger);
-        tab.show();
-        return;
-    }
 
     const target = document.querySelector(targetSelector);
     if (!target) return;
@@ -72,7 +60,39 @@ function showTabFromTrigger(trigger) {
     target.classList.add('show', 'active');
 }
 
+function applyTheme(theme) {
+    const selectedTheme = theme === 'light' ? 'light' : 'dark';
+    document.body.classList.toggle('light-theme', selectedTheme === 'light');
+    document.body.classList.toggle('dark-theme', selectedTheme === 'dark');
+    document.documentElement.setAttribute('data-theme', selectedTheme);
+    localStorage.setItem('btnColor', selectedTheme);
+
+    const themeButton = document.getElementById('themeToggleBtn');
+    if (themeButton) {
+        const icon = themeButton.querySelector('span[uk-icon]');
+        if (icon) {
+            const iconName = selectedTheme === 'light' ? 'moon' : 'sun';
+            icon.setAttribute('uk-icon', `icon: ${iconName}; ratio: 1.2`);
+        }
+    }
+}
+
+function initThemeToggle() {
+    const storedTheme = localStorage.getItem('btnColor') || 'dark';
+    applyTheme(storedTheme);
+
+    const themeButton = document.getElementById('themeToggleBtn');
+    if (themeButton) {
+        themeButton.addEventListener('click', function () {
+            const nextTheme = document.body.classList.contains('light-theme') ? 'dark' : 'light';
+            applyTheme(nextTheme);
+        });
+    }
+}
+
 $(document).ready(function () {
+    initThemeToggle();
+
     const ahora = new Date();
     const tzOffset = ahora.getTimezoneOffset() * 60000; // en milisegundos
     const localISO = new Date(ahora - tzOffset).toISOString().slice(0, 16);
@@ -170,7 +190,7 @@ $(document).ready(function () {
 
     document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(function (trigger) {
         trigger.addEventListener('click', function () {
-            const modal = this.closest('.modal');
+            const modal = this.closest('.modal') || this.closest('[uk-modal]');
             if (modal) {
                 hideModalElement(modal);
             }
