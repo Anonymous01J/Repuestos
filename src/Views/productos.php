@@ -191,29 +191,84 @@ include_once 'src/Views/complements/header.php';
 
     <!-- Modal Registro de Ingreso Múltiple -->
     <div id="modalNuevoIngreso" uk-modal>
-        <div class="uk-modal-dialog uk-modal-body uk-width-2xlarge">
+        <div class="uk-modal-dialog uk-modal-body uk-width-2xlarge app-transaction-modal">
             <button class="uk-modal-close-default" type="button" uk-close></button>
-            <h2 class="uk-modal-title">Registrar Nuevo Ingreso</h2>
-            <form method="POST" action="?c=CIngresos/addMany">
-                <input type="hidden" name="id_usuario" value="<?= $_SESSION['id'] ?>">
-                <div class="uk-margin">
-                    <button type="button" class="uk-button uk-button-default" onclick="agregarFilaIngreso()">+ Agregar Producto</button>
+
+            <div class="app-modal-header">
+                <div>
+                    <span class="app-modal-kicker">Inventario</span>
+                    <h2 class="uk-modal-title">Registrar ingreso</h2>
                 </div>
-                <div class="uk-overflow-auto">
-                    <table class="uk-table uk-table-divider uk-table-small uk-table-striped uk-table-middle">
+                <span class="app-modal-tag app-modal-tag--success">Stock +</span>
+            </div>
+
+            <div class="app-transaction-overview">
+                <div class="app-stat-pill">
+                    <span>Productos</span>
+                    <strong id="ingresoRowsCount">0</strong>
+                </div>
+                <div class="app-stat-pill app-stat-pill--accent">
+                    <span>Total estimado</span>
+                    <strong id="ingresoTotalChip">$ 0,00</strong>
+                </div>
+            </div>
+
+            <form method="POST" action="?c=CIngresos/addMany" class="app-transaction-form">
+                <input type="hidden" name="id_usuario" value="<?= $_SESSION['id'] ?>">
+
+                <div class="uk-grid-small uk-child-width-1-2@m uk-margin-bottom" uk-grid>
+                    <div class="uk-width-1-1">
+                        <label class="uk-form-label">Proveedor</label>
+                        <div class="uk-form-controls">
+                            <select name="id_proveedor" class="uk-select select-proveedor" data-placeholder="Seleccione un proveedor">
+                                <?php if (!empty($proveedores)): ?>
+                                    <option value="">Seleccione un proveedor</option>
+                                    <?php foreach ($proveedores as $proveedor): ?>
+                                        <option value="<?= $proveedor['id'] ?>"><?= htmlspecialchars($proveedor['nombre']) ?><?= !empty($proveedor['cedula_rif']) ? ' · ' . htmlspecialchars($proveedor['cedula_rif']) : '' ?></option>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <option value="" selected>⚠️ No hay proveedores activos</option>
+                                <?php endif; ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="app-modal-toolbar">
+                    <div class="app-transaction-meta">
+                        <span class="uk-text-meta">Productos a registrar</span>
+                    </div>
+                    <button type="button" class="uk-button uk-button-primary app-add-row-button" onclick="agregarFilaIngreso()">
+                        <span uk-icon="icon: plus; ratio: 0.9"></span>
+                        Agregar producto
+                    </button>
+                </div>
+
+                <div class="app-transaction-table-wrap uk-overflow-auto">
+                    <table class="uk-table uk-table-divider uk-table-small uk-table-striped uk-table-middle app-transaction-table">
                         <thead>
                             <tr>
-                                <th>Producto</th><th>Cantidad</th><th>Precio ($)</th>
-                                <th>Precio (Bs)</th><th>Subtotal ($)</th><th>Subtotal (Bs)</th><th>Acción</th>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Precio ($)</th>
+                                <th>Precio (Bs)</th>
+                                <th>Subtotal ($)</th>
+                                <th>Subtotal (Bs)</th>
+                                <th class="app-row-actions-head">Acción</th>
                             </tr>
                         </thead>
                         <tbody id="tbodyIngreso"></tbody>
                     </table>
                 </div>
-                <div id="totalResumen" class="uk-text-right uk-text-bold"></div>
-                <div class="uk-text-right uk-margin-top">
+
+                <div class="app-transaction-summary">
+                    <span class="uk-text-meta">Resumen</span>
+                    <div id="totalResumen" class="app-transaction-total"></div>
+                </div>
+
+                <div class="app-modal-actions uk-text-right">
                     <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
-                    <button type="submit" class="uk-button uk-button-primary">Guardar Ingreso</button>
+                    <button type="submit" class="uk-button uk-button-primary">Guardar ingreso</button>
                 </div>
             </form>
         </div>
@@ -221,30 +276,66 @@ include_once 'src/Views/complements/header.php';
 
     <!-- Modal Registro de Venta Múltiple (con validación AJAX de stock) -->
     <div id="modalNuevaVenta" uk-modal>
-        <div class="uk-modal-dialog uk-modal-body uk-width-2xlarge">
+        <div class="uk-modal-dialog uk-modal-body uk-width-2xlarge app-transaction-modal">
             <button class="uk-modal-close-default" type="button" uk-close></button>
-            <h2 class="uk-modal-title">Registrar Nueva Venta</h2>
-            <form id="formVentaMultiple" method="POST" action="?c=CVentas/addMany">
-                <input type="hidden" name="id_usuario" value="<?= $_SESSION['id'] ?>">
-                <div class="uk-margin">
-                    <div id="stockErrorMultiple" class="uk-alert-danger uk-hidden" uk-alert role="alert"></div>
-                    <button type="button" class="uk-button uk-button-default" onclick="agregarFilaVenta()">+ Agregar Producto</button>
+
+            <div class="app-modal-header">
+                <div>
+                    <span class="app-modal-kicker">Ventas</span>
+                    <h2 class="uk-modal-title">Registrar venta</h2>
                 </div>
-                <div class="uk-overflow-auto">
-                    <table class="uk-table uk-table-divider uk-table-small uk-table-striped uk-table-middle">
+                <span class="app-modal-tag app-modal-tag--warning">Control de stock</span>
+            </div>
+
+            <div class="app-transaction-overview">
+                <div class="app-stat-pill">
+                    <span>Productos</span>
+                    <strong id="ventaRowsCount">0</strong>
+                </div>
+                <div class="app-stat-pill app-stat-pill--accent">
+                    <span>Total estimado</span>
+                    <strong id="ventaTotalChip">$ 0,00</strong>
+                </div>
+            </div>
+
+            <form id="formVentaMultiple" method="POST" action="?c=CVentas/addMany" class="app-transaction-form">
+                <input type="hidden" name="id_usuario" value="<?= $_SESSION['id'] ?>">
+
+                <div class="app-modal-toolbar">
+                    <div class="app-transaction-meta">
+                        <div id="stockErrorMultiple" class="uk-alert-danger uk-hidden app-alert-inline" uk-alert role="alert"></div>
+                    </div>
+                    <button type="button" class="uk-button uk-button-primary app-add-row-button" onclick="agregarFilaVenta()">
+                        <span uk-icon="icon: plus; ratio: 0.9"></span>
+                        Agregar producto
+                    </button>
+                </div>
+
+                <div class="app-transaction-table-wrap uk-overflow-auto">
+                    <table class="uk-table uk-table-divider uk-table-small uk-table-striped uk-table-middle app-transaction-table">
                         <thead>
                             <tr>
-                                <th>Producto</th><th>Cantidad</th><th>Precio ($)</th>
-                                <th>Precio (Bs)</th><th>Subtotal ($)</th><th>Subtotal (Bs)</th><th>Acción</th>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Precio ($)</th>
+                                <th>Precio (Bs)</th>
+                                <th>Subtotal ($)</th>
+                                <th>Subtotal (Bs)</th>
+                                <th class="app-row-actions-head">Acción</th>
                             </tr>
                         </thead>
                         <tbody id="tbodyVenta"></tbody>
                     </table>
                 </div>
-                <div id="totalResumenVenta" class="uk-text-right uk-text-bold"></div>
-                <div class="uk-text-right uk-margin-top">
+
+                <div class="app-transaction-summary">
+                    <span class="uk-text-meta">Resumen</span>
+                    <div id="totalResumenVenta" class="app-transaction-total"></div>
+                </div>
+
+                <div class="app-modal-actions uk-text-right">
                     <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
-                    <button type="button" id="btnGuardarVenta" class="uk-button uk-button-primary">Guardar Venta</button>
+                    <button type="button" id="btnGuardarVenta" class="uk-button uk-button-primary">Guardar venta</button>
                 </div>
             </form>
         </div>
@@ -272,7 +363,7 @@ include_once 'src/Views/complements/header.php';
             <h2 class="uk-modal-title">Detalles de la Venta</h2>
             <div class="uk-overflow-auto">
                 <table class="uk-table uk-table-divider uk-table-small uk-table-striped">
-                    <thead><tr><th>Producto</th><th>Cantidad</th><th>Subtotal</th></tr></thead>
+                    <thead><tr><th>Producto</th><th>Cantidad</th><th>Precio unitario / tarifa</th><th>Subtotal</th></tr></thead>
                     <tbody id="tbodyDetallesVenta"></tbody>
                 </table>
             </div>
@@ -294,15 +385,15 @@ include_once 'src/Views/complements/header.php';
                         </div>
                     </div>
                     <div>
-                        <label class="uk-form-label">Marca</label>
+                        <label class="uk-form-label">Código del producto</label>
                         <div class="uk-form-controls">
-                            <input type="text" name="marca" class="uk-input">
+                            <input type="text" name="codigo_producto" class="uk-input">
                         </div>
                     </div>
                     <div>
-                        <label class="uk-form-label">Precio ($)</label>
+                        <label class="uk-form-label">Marca</label>
                         <div class="uk-form-controls">
-                            <input type="text" name="precio" class="uk-input input-price" required>
+                            <input type="text" name="marca" class="uk-input">
                         </div>
                     </div>
                     <div>
@@ -321,15 +412,48 @@ include_once 'src/Views/complements/header.php';
                         </div>
                     </div>
                     <div>
-                        <label class="uk-form-label">Stock Mínimo</label>
+                        <label class="uk-form-label">Stock actual</label>
                         <div class="uk-form-controls">
-                            <input type="number" name="stock_minimo" class="uk-input" required>
+                            <input type="number" name="stock" class="uk-input" min="0" value="0">
                         </div>
                     </div>
                     <div>
-                        <label class="uk-form-label">Stock Máximo</label>
+                        <label class="uk-form-label">Stock mínimo</label>
                         <div class="uk-form-controls">
-                            <input type="number" name="stock_maximo" class="uk-input" required>
+                            <input type="number" name="stock_minimo" class="uk-input" min="0" value="0" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="uk-form-label">Stock máximo</label>
+                        <div class="uk-form-controls">
+                            <input type="number" name="stock_maximo" class="uk-input" min="0" value="0" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="uk-form-label">Precio ($)</label>
+                        <div class="uk-form-controls">
+                            <input type="text" name="precio" class="uk-input input-price" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="uk-form-label">Precio al mayor ($)</label>
+                        <div class="uk-form-controls">
+                            <input type="text" name="precio_al_mayor" class="uk-input input-price">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="uk-form-label">Cantidad al mayor</label>
+                        <div class="uk-form-controls">
+                            <input type="number" name="cantidad_al_mayor" class="uk-input">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="uk-form-label">Disponibilidad</label>
+                        <div class="uk-form-controls">
+                            <select name="disponibilidad" class="uk-select" required>
+                                <option value="1" selected>Disponible</option>
+                                <option value="0">No disponible</option>
+                            </select>
                         </div>
                     </div>
                     <div class="uk-width-1-1">
@@ -369,15 +493,15 @@ include_once 'src/Views/complements/header.php';
                         </div>
                     </div>
                     <div>
-                        <label class="uk-form-label">Marca</label>
+                        <label class="uk-form-label">Código del producto</label>
                         <div class="uk-form-controls">
-                            <input name="marca" id="editMarca" class="uk-input">
+                            <input type="text" name="codigo_producto" id="editCodigoProducto" class="uk-input">
                         </div>
                     </div>
                     <div>
-                        <label class="uk-form-label">Precio ($)</label>
+                        <label class="uk-form-label">Marca</label>
                         <div class="uk-form-controls">
-                            <input type="text" name="precio" id="editPrecio" class="uk-input input-price" required>
+                            <input name="marca" id="editMarca" class="uk-input">
                         </div>
                     </div>
                     <div>
@@ -391,15 +515,57 @@ include_once 'src/Views/complements/header.php';
                         </div>
                     </div>
                     <div>
-                        <label class="uk-form-label">Stock Mínimo</label>
+                        <label class="uk-form-label">Stock actual</label>
                         <div class="uk-form-controls">
-                            <input type="number" name="stock_minimo" id="editStockMinimo" class="uk-input" required>
+                            <input type="number" name="stock" id="editStock" class="uk-input" min="0">
                         </div>
                     </div>
                     <div>
-                        <label class="uk-form-label">Stock Máximo</label>
+                        <label class="uk-form-label">Stock mínimo</label>
+                        <div class="uk-form-controls">
+                            <input type="number" name="stock_minimo" id="editStockMinimo" class="uk-input" min="1" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="uk-form-label">Stock máximo</label>
                         <div class="uk-form-controls">
                             <input type="number" name="stock_maximo" id="editStockMaximo" class="uk-input" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="uk-form-label">Precio ($)</label>
+                        <div class="uk-form-controls">
+                            <input type="text" name="precio" id="editPrecio" class="uk-input input-price" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="uk-form-label">Precio al mayor ($)</label>
+                        <div class="uk-form-controls">
+                            <input type="text" name="precio_al_mayor" id="editPrecioAlMayor" class="uk-input input-price">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="uk-form-label">Cantidad al mayor</label>
+                        <div class="uk-form-controls">
+                            <input type="number" name="cantidad_al_mayor" id="editCantidadAlMayor" class="uk-input">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="uk-form-label">Disponibilidad</label>
+                        <div class="uk-form-controls">
+                            <select name="disponibilidad" id="editDisponibilidad" class="uk-select">
+                                <option value="1">Disponible</option>
+                                <option value="0">No disponible</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="uk-form-label">Estado</label>
+                        <div class="uk-form-controls">
+                            <select name="estado" id="editEstado" class="uk-select">
+                                <option value="1">Activo</option>
+                                <option value="0">Inactivo</option>
+                            </select>
                         </div>
                     </div>
                     <div class="uk-width-1-1">
@@ -414,15 +580,6 @@ include_once 'src/Views/complements/header.php';
                         <label class="uk-form-label">Descripción</label>
                         <div class="uk-form-controls">
                             <textarea name="descripcion" id="editDescripcion" class="uk-textarea" rows="2"></textarea>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="uk-form-label">Estado</label>
-                        <div class="uk-form-controls">
-                            <select name="estado" id="editEstado" class="uk-select">
-                                <option value="1">Activo</option>
-                                <option value="0">Inactivo</option>
-                            </select>
                         </div>
                     </div>
                 </div>
@@ -443,6 +600,21 @@ include_once 'src/Views/complements/header.php';
                     <input type="hidden" name="id_usuario" value="<?= $_SESSION['id'] ?>">
                     <input type="hidden" name="id_producto" value="<?= $p['id'] ?>">
                     <div class="uk-grid-small uk-child-width-1-2@m" uk-grid>
+                        <div class="uk-width-1-1">
+                            <label class="uk-form-label">Proveedor</label>
+                            <div class="uk-form-controls">
+                                <select name="id_proveedor" class="uk-select select-proveedor-rapida" data-placeholder="Seleccione un proveedor" required>
+                                    <?php if (!empty($proveedores)): ?>
+                                        <option value="">Seleccione un proveedor</option>
+                                        <?php foreach ($proveedores as $proveedor): ?>
+                                            <option value="<?= $proveedor['id'] ?>"><?= htmlspecialchars($proveedor['nombre']) ?><?= !empty($proveedor['cedula_rif']) ? ' · ' . htmlspecialchars($proveedor['cedula_rif']) : '' ?></option>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <option value="" selected>⚠️ No hay proveedores activos</option>
+                                    <?php endif; ?>
+                                </select>
+                            </div>
+                        </div>
                         <div>
                             <label class="uk-form-label">Cantidad</label>
                             <div class="uk-form-controls">
@@ -478,7 +650,10 @@ include_once 'src/Views/complements/header.php';
         <div id="modalVentaRapida_<?= $p['id'] ?>"
              uk-modal
              data-id-producto="<?= $p['id'] ?>"
-             data-stock="<?= (int)$p['stock'] ?>">
+               data-stock="<?= (int)$p['stock'] ?>"
+               data-precio-regular="<?= (float)$p['precio'] ?>"
+               data-precio-mayor="<?= $p['precio_al_mayor'] !== null ? (float)$p['precio_al_mayor'] : '' ?>"
+               data-cantidad-mayor="<?= $p['cantidad_al_mayor'] !== null ? (float)$p['cantidad_al_mayor'] : '' ?>">
             <div class="uk-modal-dialog uk-modal-body uk-width-2xlarge">
                 <button class="uk-modal-close-default" type="button" uk-close></button>
                 <h2 class="uk-modal-title">Venta Rápida - <?= htmlspecialchars($p['nombre']) ?></h2>
@@ -501,7 +676,9 @@ include_once 'src/Views/complements/header.php';
                         <div>
                             <label class="uk-form-label">Precio ($)</label>
                             <div class="uk-form-controls">
-                                <input type="text" name="precio" class="uk-input" value="<?= $p['precio'] ?>" readonly>
+                                <input type="text" name="precio" class="uk-input input-price" value="<?= $p['precio'] ?>" required>
+                                <input type="hidden" name="precio_al_mayor" class="precio-mayor-flag" value="0">
+                                <span class="uk-label uk-label-success precio-mayor-info uk-hidden uk-margin-small-top">Precio al mayor aplicado</span>
                             </div>
                         </div>
                         <div class="uk-width-1-1">
@@ -869,6 +1046,20 @@ include_once 'src/Views/complements/header.php';
         initVentaRapidaValidacion();
         initVentaMultipleValidacion();
         
+        $('.select-proveedor, .select-proveedor-rapida').each(function() {
+            const $select = $(this);
+            if ($select.data('select2')) {
+                $select.select2('destroy');
+            }
+
+            $select.select2({
+                dropdownParent: $select.closest('.uk-modal-dialog'),
+                width: '100%',
+                placeholder: 'Seleccione un proveedor',
+                allowClear: true
+            });
+        });
+
         $('[id^="modalIngresoRapido"][uk-modal] .precio, [id^="modalIngresoRapido"][uk-modal] .precio_bs').each(function() {
             formatearInputPrecio(this);
         });
@@ -904,25 +1095,41 @@ include_once 'src/Views/complements/header.php';
             const cantidadInput = modal.querySelector('.cantidad-venta-rapida');
             const precioInput = modal.querySelector('input[name="precio"]');
             const precioBsInput = modal.querySelector('input[name="precio_bs"]');
+            const precioMayorFlag = modal.querySelector('.precio-mayor-flag');
             
             if (!cantidadInput || !precioInput || !precioBsInput) return;
             
-            // Obtener el precio unitario del value actual del input precio
-            // (que viene del PHP con el valor del producto)
-            const precioUnitario = parseFloat(precioInput.value) || 0;
-            
-            // Guardar el precio unitario como atributo data en el modal
-            modal.dataset.precioUnitario = precioUnitario;
-            
-            // Función para actualizar precios según cantidad
+            const precioRegular = parseFloat(modal.dataset.precioRegular) || 0;
+            const precioMayor = modal.dataset.precioMayor === '' ? null : parseFloat(modal.dataset.precioMayor);
+            const cantidadMayor = parseFloat(modal.dataset.cantidadMayor) || 0;
+
             function actualizarPreciosPorCantidad() {
                 const cantidad = parseFloat(cantidadInput.value) || 1;
-                const precioTotalUSD = precioUnitario * cantidad;
-                const precioTotalBS = precioTotalUSD * tasa;
-                
-                precioInput.value = formatMoneda(precioTotalUSD);
-                precioBsInput.value = formatMoneda(precioTotalBS);
+                const aplicaPrecioMayor = cantidadMayor > 0
+                    && cantidad >= cantidadMayor
+                    && precioMayor !== null
+                    && Number.isFinite(precioMayor)
+                    && precioMayor > 0;
+                const precioPropuesto = aplicaPrecioMayor ? precioMayor : precioRegular;
+
+                // Sustituye el valor automáticamente al cruzar el umbral, pero respeta
+                // cualquier ajuste manual que el administrador ya haya hecho.
+                if (precioInput.dataset.autoPrice !== '0') {
+                    precioInput.value = formatMoneda(precioPropuesto);
+                    precioInput.dataset.autoPrice = '1';
+                }
+                precioBsInput.value = formatMoneda(parseMoneda(precioInput.value) * tasa);
+                precioMayorFlag.value = aplicaPrecioMayor ? '1' : '0';
+                modal.querySelector('.precio-mayor-info').classList.toggle('uk-hidden', !aplicaPrecioMayor);
             }
+
+            precioInput.addEventListener('input', function() {
+                const inputPrecio = this;
+                requestAnimationFrame(function() {
+                    inputPrecio.dataset.autoPrice = '0';
+                    precioBsInput.value = formatMoneda(parseMoneda(inputPrecio.value) * tasa);
+                });
+            });
             
             // Evento input para la cantidad
             cantidadInput.addEventListener('input', function() {
@@ -1119,15 +1326,20 @@ include_once 'src/Views/complements/header.php';
 
     function editarProducto(data) {
         document.getElementById('editId').value = data.id;
-        document.getElementById('editNombre').value = data.nombre;
+        document.getElementById('editNombre').value = data.nombre || '';
+        document.getElementById('editCodigoProducto').value = data.codigo_producto || '';
         document.getElementById('editMarca').value = data.marca || '';
-        document.getElementById('editPrecio').value = formatMoneda(parseFloat(data.precio));
-        document.getElementById('editStockMinimo').value = data.stock_minimo;
-        document.getElementById('editStockMaximo').value = data.stock_maximo;
+        document.getElementById('editPrecio').value = formatMoneda(parseFloat(data.precio || 0));
+        document.getElementById('editPrecioAlMayor').value = data.precio_al_mayor ? formatMoneda(parseFloat(data.precio_al_mayor)) : '';
+        document.getElementById('editStock').value = data.stock ?? 0;
+        document.getElementById('editStockMinimo').value = data.stock_minimo ?? 0;
+        document.getElementById('editStockMaximo').value = data.stock_maximo ?? 0;
+        document.getElementById('editCantidadAlMayor').value = data.cantidad_al_mayor === null || data.cantidad_al_mayor === undefined || data.cantidad_al_mayor === '' ? '' : data.cantidad_al_mayor;
         document.getElementById('editDescripcion').value = data.descripcion || '';
         document.getElementById('editImagenHidden').value = data.imagen || '';
         document.getElementById('previewEditar').src = 'public/assets/img/products/' + (data.imagen || 'generic.png');
         document.getElementById('editCategoria').value = data.id_categoria;
+        document.getElementById('editDisponibilidad').value = String(data.disponibilidad ?? 1);
         document.getElementById('editEstado').value = data.estado;
         openModalElement('#modalEditar');
     }
@@ -1197,9 +1409,13 @@ include_once 'src/Views/complements/header.php';
                 const tbody = $('#tbodyDetallesVenta').empty();
                 if (Array.isArray(data) && data.length > 0) {
                     data.forEach(item => {
+                        const tarifa = Number(item.precio_al_mayor) === 1
+                            ? '<span class="uk-label uk-label-success">Mayorista</span>'
+                            : '<span class="uk-label">Regular</span>';
                         tbody.append(`<tr>
                             <td>${item.nombre_producto}</td>
                             <td>${formatMoneda(item.cantidad)}</td>
+                            <td>${formatMoneda(item.precio_unitario)} $<br>${tarifa}</td>
                             <td>${formatMoneda(item.subtotal)} $ / ${formatMoneda(item.subtotal_bs)} Bs</td>
                         </tr>`);
                     });
@@ -1207,7 +1423,7 @@ include_once 'src/Views/complements/header.php';
                         `Total: ${formatMoneda(data[0].total_venta)} $ / ${formatMoneda(data[0].total_venta_bs)} Bs`
                     );
                 } else {
-                    tbody.append('<tr><td colspan="3" class="text-center">Sin detalles</td></tr>');
+                    tbody.append('<tr><td colspan="4" class="text-center">Sin detalles</td></tr>');
                 }
             }
         });
@@ -1261,66 +1477,72 @@ include_once 'src/Views/complements/header.php';
     });
 
     // ── Tablas dinámicas ingreso/venta múltiple ───────────────────────────
-    function getOptionsProductos() {
+    function getOptionsProductos(mostrarStock = false) {
         let options = '<option value="">Seleccione</option>';
         <?php foreach ($productos as $p): ?>
             options += `<option value="<?= $p['id'] ?>"
                 data-precio="<?= $p['precio'] ?>"
+                data-precio-mayor="<?= $p['precio_al_mayor'] !== null ? (float)$p['precio_al_mayor'] : '' ?>"
+                data-cantidad-mayor="<?= $p['cantidad_al_mayor'] !== null ? (float)$p['cantidad_al_mayor'] : '' ?>"
                 data-stock="<?= floatval($p['stock']) ?>">
-                <?= htmlspecialchars($p['nombre']) ?>
+                <?= htmlspecialchars($p['nombre']) ?>${mostrarStock ? ' (<?= floatval($p['stock']) ?>)' : ''}
             </option>`;
         <?php endforeach; ?>
         return options;
     }
 
-    function filaTemplate() {
+    function filaTemplate(mostrarStock = false) {
         return `
-        <tr>
-            <td>
-                <select name="productos[]" class="form-select select-producto" required>
-                    ${getOptionsProductos()}
+        <tr class="app-transaction-row">
+            <td data-label="Producto">
+                <select name="productos[]" class="form-select select-producto app-transaction-field" required>
+                    ${getOptionsProductos(mostrarStock)}
                 </select>
             </td>
-            <td>
-                <input type="number" 
-                       name="cantidades[]" 
-                       class="form-control cantidad" 
-                       min="0.01" 
-                       step="0.01" 
-                       value="1" 
+            <td data-label="Cantidad">
+                <input type="number"
+                       name="cantidades[]"
+                       class="form-control cantidad app-transaction-field"
+                       min="1"
+                       step=""
+                       value="1"
                        required>
             </td>
-            <td>
-                <input type="text" 
-                       name="precio[]" 
-                       class="form-control precio input-price" 
+            <td data-label="Precio ($)">
+                <input type="text"
+                       name="precio[]"
+                       class="form-control precio input-price app-transaction-field"
+                      required>
+                  <input type="hidden" name="precio_al_mayor[]" class="precio-mayor-flag" value="0">
+                <div class="uk-margin-small-top"><span class="uk-label uk-label-success indicador-precio-mayor uk-hidden">Precio al mayor aplicado</span></div>
+            </td>
+            <td data-label="Precio (Bs)">
+                <input type="text"
+                       name="precio_bs[]"
+                       class="form-control precio_bs input-price app-transaction-field"
                        required>
             </td>
-            <td>
-                <input type="text" 
-                       name="precio_bs[]" 
-                       class="form-control precio_bs input-price" 
-                       required>
-            </td>
-            <td>
-                <input type="text" 
-                       class="form-control subtotal input-price" 
+            <td data-label="Subtotal ($)">
+                <input type="text"
+                       class="form-control subtotal input-price app-transaction-field"
                        readonly>
             </td>
-            <td>
-                <input type="text" 
-                       class="form-control subtotal_bs input-price" 
+            <td data-label="Subtotal (Bs)">
+                <input type="text"
+                       class="form-control subtotal_bs input-price app-transaction-field"
                        readonly>
             </td>
-            <td>
-                <button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(this)">X</button>
+            <td data-label="Acción" class="app-row-actions-cell">
+                <button type="button" class="uk-button uk-button-danger uk-button-small app-row-delete" onclick="eliminarFila(this)" aria-label="Eliminar fila">
+                    <span uk-icon="icon: trash; ratio: 0.8"></span>
+                </button>
             </td>
         </tr>`;
     }
 
     function agregarFilaIngreso() {
-        $('#tbodyIngreso').append(filaTemplate());
-        const nuevaFila = $('#tbodyIngreso tr').last();
+        $('#tbodyIngreso').prepend(filaTemplate());
+        const nuevaFila = $('#tbodyIngreso tr').first();
         
         // Aplicar formateo a los inputs de precio
         nuevaFila.find('.precio, .precio_bs').each(function() {
@@ -1328,13 +1550,17 @@ include_once 'src/Views/complements/header.php';
         });
         
         bindEventosFilaIngreso(nuevaFila);
-        nuevaFila.find('.select-producto').select2({ dropdownParent: $('#modalNuevoIngreso .uk-modal-dialog') });
+        nuevaFila.find('.select-producto').select2({
+            dropdownParent: $('#modalNuevoIngreso .uk-modal-dialog'),
+            width: '100%'
+        });
+        actualizarTotales();
     }
 
     function agregarFilaVenta() {
         limpiarErrorMultiple();
-        $('#tbodyVenta').append(filaTemplate());
-        const nuevaFila = $('#tbodyVenta tr').last();
+        $('#tbodyVenta').prepend(filaTemplate(true));
+        const nuevaFila = $('#tbodyVenta tr').first();
         
         // Aplicar formateo a los inputs de precio
         nuevaFila.find('.precio, .precio_bs').each(function() {
@@ -1342,7 +1568,11 @@ include_once 'src/Views/complements/header.php';
         });
         
         bindEventosFilaVenta(nuevaFila);
-        nuevaFila.find('.select-producto').select2({ dropdownParent: $('#modalNuevaVenta .uk-modal-dialog') });
+        nuevaFila.find('.select-producto').select2({
+            dropdownParent: $('#modalNuevaVenta .uk-modal-dialog'),
+            width: '100%'
+        });
+        actualizarTotalesVenta();
     }
 
     function eliminarFila(btn) {
@@ -1371,18 +1601,34 @@ include_once 'src/Views/complements/header.php';
 
     function bindEventosFilaVenta(fila) {
         fila = $(fila);
+        fila.find('.precio, .precio_bs').prop('readonly', false);
+
+        fila.find('.precio').off('input.precioVenta').on('input.precioVenta', function() {
+            $(this).data('precio-editado', true);
+            fila.find('.precio_bs').val(formatMoneda(parseMoneda($(this).val()) * tasa));
+            recalcularFila(fila);
+            actualizarTotalesVenta();
+        });
+
+        fila.find('.precio_bs').off('input.precioBsVenta').on('input.precioBsVenta', function() {
+            $(this).data('precio-bs-editado', true);
+            fila.find('.precio').val(formatMoneda(parseMoneda($(this).val()) / tasa));
+            recalcularFila(fila);
+            actualizarTotalesVenta();
+        });
         
         fila.find('.select-producto').off('change').on('change', function() {
             const option = $(this).find('option:selected');
-            const precio = parseFloat(option.data('precio')) || 0;
             const stock = parseFloat(option.data('stock')) || 0;
+
+            fila.find('.precio').data('precio-editado', false);
+            fila.find('.precio_bs').data('precio-bs-editado', false);
             
-            fila.find('.precio').val(formatMoneda(precio));
-            fila.find('.precio_bs').val(formatMoneda(precio * tasa));
             fila.find('.cantidad')
                 .attr('max', stock)
                 .attr('placeholder', `Máx: ${formatMoneda(stock)}`);
-            
+
+            actualizarPrecioVentaFila(fila);
             recalcularFila(fila);
             actualizarTotalesVenta();
             limpiarErrorMultiple();
@@ -1400,11 +1646,37 @@ include_once 'src/Views/complements/header.php';
                 $(this).removeClass('is-invalid');
                 select.removeClass('is-invalid');
             }
-            
+
+            actualizarPrecioVentaFila(fila);
             recalcularFila(fila);
             actualizarTotalesVenta();
             limpiarErrorMultiple();
         });
+    }
+
+    function actualizarPrecioVentaFila(fila) {
+        fila = $(fila);
+        const option = fila.find('.select-producto option:selected');
+        const precioRegular = parseFloat(option.data('precio')) || 0;
+        const precioMayorRaw = option.attr('data-precio-mayor');
+        const precioMayor = precioMayorRaw === undefined || precioMayorRaw === '' ? null : parseFloat(precioMayorRaw);
+        const cantidadMayor = parseFloat(option.attr('data-cantidad-mayor')) || 0;
+        const cantidad = parseFloat(fila.find('.cantidad').val()) || 0;
+        const aplicaPrecioMayor = cantidadMayor > 0
+            && cantidad >= cantidadMayor
+            && precioMayor !== null
+            && Number.isFinite(precioMayor)
+            && precioMayor > 0;
+        const precioPropuesto = aplicaPrecioMayor ? precioMayor : precioRegular;
+        const precioInput = fila.find('.precio');
+        const precioBsInput = fila.find('.precio_bs');
+
+        if (!precioInput.data('precio-editado')) {
+            precioInput.val(formatMoneda(precioPropuesto));
+        }
+        precioBsInput.val(formatMoneda(parseMoneda(precioInput.val()) * tasa));
+        fila.find('.precio-mayor-flag').val(aplicaPrecioMayor ? '1' : '0');
+        fila.find('.indicador-precio-mayor').toggleClass('uk-hidden', !aplicaPrecioMayor);
     }
 
     function recalcularFila(fila) {
@@ -1424,6 +1696,8 @@ include_once 'src/Views/complements/header.php';
             total_bs += parseMoneda($(this).find('.subtotal_bs').val());
         });
         $('#totalResumen').text(`Total: ${formatMoneda(total)} $ / ${formatMoneda(total_bs)} Bs`);
+        $('#ingresoRowsCount').text($('#tbodyIngreso tr').length);
+        $('#ingresoTotalChip').text(`$ ${formatMoneda(total)}`);
     }
 
     function actualizarTotalesVenta() {
@@ -1433,6 +1707,8 @@ include_once 'src/Views/complements/header.php';
             total_bs += parseMoneda($(this).find('.subtotal_bs').val());
         });
         $('#totalResumenVenta').text(`Total: ${formatMoneda(total)} $ / ${formatMoneda(total_bs)} Bs`);
+        $('#ventaRowsCount').text($('#tbodyVenta tr').length);
+        $('#ventaTotalChip').text(`$ ${formatMoneda(total)}`);
     }
 
     // Inicializar bindings para filas existentes

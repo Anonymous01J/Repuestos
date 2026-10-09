@@ -88,6 +88,7 @@ class CVentas {
             $cantidades = $_POST['cantidades'];
             $precios    = $_POST['precio'];
             $precios_bs = $_POST['precio_bs'];
+            $preciosMayor = $_POST['precio_al_mayor'] ?? [];
 
             // ── Validación de stock ──────────────────────────────
             $items = [];
@@ -117,18 +118,31 @@ class CVentas {
             }
             // ────────────────────────────────────────────────────
 
-            // Calcular totales
-            $total    = 0;
+            $total = 0;
             $total_bs = 0;
+            $lineasVenta = [];
+
             foreach ($productos as $i => $id_producto) {
                 if (empty($id_producto)) continue;
-                
-                $cantidad   = floatval($cantidades[$i]);
-                $precio     = $this->normalizarMoneda($precios[$i]);
-                $precio_bs  = $this->normalizarMoneda($precios_bs[$i]);
-                
-                $total    += round($cantidad * $precio, 2);
-                $total_bs += round($cantidad * $precio_bs, 2);
+
+                $cantidad = floatval($cantidades[$i] ?? 0);
+                $precio = $this->normalizarMoneda($precios[$i] ?? 0);
+                $precio_bs = $this->normalizarMoneda($precios_bs[$i] ?? 0);
+                $aplicoPrecioMayor = isset($preciosMayor[$i]) && (string) $preciosMayor[$i] === '1';
+                $subtotal = round($cantidad * $precio, 2);
+                $subtotal_bs = round($cantidad * $precio_bs, 2);
+
+                $lineasVenta[] = [
+                    'id_producto' => $id_producto,
+                    'cantidad' => $cantidad,
+                    'precio' => $precio,
+                    'precio_bs' => $precio_bs,
+                    'subtotal' => $subtotal,
+                    'subtotal_bs' => $subtotal_bs,
+                    'aplico_precio_mayor' => $aplicoPrecioMayor,
+                ];
+                $total += $subtotal;
+                $total_bs += $subtotal_bs;
             }
 
             $venta = new Ventas();
@@ -139,29 +153,24 @@ class CVentas {
             if ($venta->insert()) {
                 $id_venta = $venta->getLastID();
 
-                foreach ($productos as $i => $id_producto) {
-                    if (empty($id_producto)) continue;
-                    
-                    $cantidad  = floatval($cantidades[$i]);
-                    $precio    = $this->normalizarMoneda($precios[$i]);
-                    $precio_bs = $this->normalizarMoneda($precios_bs[$i]);
-
+                foreach ($lineasVenta as $linea) {
                     $detallesVenta = new Detalles_Venta();
                     $detallesVenta->setIdVenta($id_venta)
-                        ->setIdProducto($id_producto)
-                        ->setCantidad($cantidad)
-                        ->setPrecioUnitario($precio)
-                        ->setPrecioUnitarioBs($precio_bs)
-                        ->setSubtotal(round($precio * $cantidad, 2))
-                        ->setSubtotalBs(round($precio_bs * $cantidad, 2));
+                        ->setIdProducto($linea['id_producto'])
+                        ->setCantidad($linea['cantidad'])
+                        ->setPrecioUnitario($linea['precio'])
+                        ->setPrecioUnitarioBs($linea['precio_bs'])
+                        ->setSubtotal($linea['subtotal'])
+                        ->setSubtotalBs($linea['subtotal_bs'])
+                        ->setAplicoPrecioAlMayor($linea['aplico_precio_mayor']);
                     $detallesVenta->insert();
 
                     // Actualizar stock
                     $producto = new Productos();
-                    $producto->setId($id_producto);
+                    $producto->setId($linea['id_producto']);
                     $productoData = $producto->searchId();
                     if ($productoData) {
-                        $nuevoStock = max(0, $productoData['stock'] - $cantidad);
+                        $nuevoStock = max(0, $productoData['stock'] - $linea['cantidad']);
                         $producto->setStock($nuevoStock);
                         $producto->updateStock();
                     }
@@ -202,13 +211,16 @@ class CVentas {
             }
             // ────────────────────────────────────────────────────
 
-            $precio    = $this->normalizarMoneda($_POST['precio']);
+            $precio = $this->normalizarMoneda($_POST['precio']);
             $precio_bs = $this->normalizarMoneda($_POST['precio_bs']);
+            $aplicoPrecioMayor = isset($_POST['precio_al_mayor']) && (string) $_POST['precio_al_mayor'] === '1';
+            $subtotal = round($precio * $cantidad, 2);
+            $subtotalBs = round($precio_bs * $cantidad, 2);
 
             $venta = new Ventas();
             $venta->setUsuarioId($_POST['id_usuario'])
-                  ->setTotal(round($precio * $cantidad, 2))
-                  ->setTotalBs(round($precio_bs * $cantidad, 2));
+                ->setTotal($subtotal)
+                ->setTotalBs($subtotalBs);
 
             if ($venta->insert()) {
                 $id_venta = $venta->getLastID();
@@ -219,8 +231,9 @@ class CVentas {
                     ->setCantidad($cantidad)
                     ->setPrecioUnitario($precio)
                     ->setPrecioUnitarioBs($precio_bs)
-                    ->setSubtotal(round($precio * $cantidad, 2))
-                    ->setSubtotalBs(round($precio_bs * $cantidad, 2));
+                    ->setSubtotal($subtotal)
+                    ->setSubtotalBs($subtotalBs)
+                    ->setAplicoPrecioAlMayor($aplicoPrecioMayor);
 
                 if ($detallesVenta->insert()) {
                     $producto = new Productos();

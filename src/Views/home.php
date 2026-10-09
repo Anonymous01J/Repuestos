@@ -61,7 +61,7 @@
                     Ver detalles <span uk-icon="icon: arrow-right"></span>
                 </a>
             </div>
-            <div class="uk-grid-small uk-child-width-1-2@s uk-child-width-1-3@m uk-margin-top" uk-grid>
+            <div class="app-stock-summary-grid">
                 <div><div class="app-stock-summary-stat"><div class="app-stock-summary-label">Total de alertas</div><strong class="app-stock-summary-value"><?= count($productosAlerta) ?></strong></div></div>
                 <div><div class="app-stock-summary-stat"><div class="app-stock-summary-label">Sin stock</div><strong class="app-stock-summary-value app-stock-summary-value--danger"><?= count($sinStock) ?></strong></div></div>
                 <div><div class="app-stock-summary-stat"><div class="app-stock-summary-label">Stock bajo</div><strong class="app-stock-summary-value app-stock-summary-value--warning"><?= count($stockBajo) ?></strong></div></div>

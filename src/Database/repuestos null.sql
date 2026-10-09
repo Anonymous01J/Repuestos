@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-02-2026 a las 21:45:50
+-- Tiempo de generación: 10-10-2026 a las 00:48:00
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -88,7 +88,8 @@ CREATE TABLE `detalle_venta` (
   `precio_unitario` decimal(10,2) NOT NULL,
   `precio_unitario_bs` decimal(10,2) NOT NULL,
   `subtotal` decimal(10,2) NOT NULL,
-  `subtotal_bs` decimal(10,2) NOT NULL
+  `subtotal_bs` decimal(10,2) NOT NULL,
+  `precio_al_mayor` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
 --
@@ -110,6 +111,7 @@ DELIMITER ;
 CREATE TABLE `ingresos` (
   `id` int(11) NOT NULL,
   `id_usuario` int(11) NOT NULL,
+  `id_proveedor` int(11) DEFAULT NULL,
   `fecha` datetime DEFAULT current_timestamp(),
   `total` decimal(10,2) NOT NULL,
   `total_bs` decimal(10,2) NOT NULL
@@ -124,15 +126,19 @@ CREATE TABLE `ingresos` (
 CREATE TABLE `productos` (
   `id` int(11) NOT NULL,
   `id_categoria` int(11) DEFAULT NULL,
+  `codigo_producto` varchar(10) NOT NULL,
   `nombre` varchar(100) NOT NULL,
   `descripcion` text DEFAULT NULL,
   `marca` varchar(50) DEFAULT NULL,
   `precio` decimal(10,2) NOT NULL,
+  `precio_al_mayor` decimal(10,2) NOT NULL,
   `stock` int(11) NOT NULL DEFAULT 0,
   `stock_minimo` int(11) NOT NULL DEFAULT 0,
   `stock_maximo` int(11) DEFAULT NULL,
+  `cantidad_al_mayor` int(11) DEFAULT NULL,
   `imagen` varchar(255) DEFAULT NULL,
-  `estado` tinyint(1) DEFAULT 1
+  `estado` tinyint(1) DEFAULT 1,
+  `disponibilidad` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
 -- --------------------------------------------------------
@@ -161,14 +167,6 @@ CREATE TABLE `roles` (
   `nombre` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
---
--- Volcado de datos para la tabla `roles`
---
-
-INSERT INTO `roles` (`id`, `nombre`) VALUES
-(1, 'admin'),
-(2, 'ventas');
-
 -- --------------------------------------------------------
 
 --
@@ -180,13 +178,6 @@ CREATE TABLE `tasa` (
   `valor` decimal(10,2) NOT NULL,
   `fecha_actualizacion` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
-
---
--- Volcado de datos para la tabla `tasa`
---
-
-INSERT INTO `tasa` (`id`, `valor`, `fecha_actualizacion`) VALUES
-(1, 402.33, '2026-02-20 14:31:17');
 
 -- --------------------------------------------------------
 
@@ -202,14 +193,6 @@ CREATE TABLE `usuarios` (
   `clave` varchar(255) NOT NULL,
   `estado` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
-
---
--- Volcado de datos para la tabla `usuarios`
---
-
-INSERT INTO `usuarios` (`id`, `id_rol`, `nombre`, `usuario`, `clave`, `estado`) VALUES
-(1, 1, 'Administrador', 'admin', '30218990j', 1),
-(2, 2, 'Vendedor', 'ventas1', '30218990', 0);
 
 -- --------------------------------------------------------
 
@@ -292,7 +275,8 @@ ALTER TABLE `detalle_venta`
 --
 ALTER TABLE `ingresos`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `ingresos_ibfk_2` (`id_usuario`);
+  ADD KEY `ingresos_ibfk_2` (`id_usuario`),
+  ADD KEY `id_proveedor` (`id_proveedor`);
 
 --
 -- Indices de la tabla `productos`
@@ -300,7 +284,8 @@ ALTER TABLE `ingresos`
 ALTER TABLE `productos`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `nombre` (`nombre`),
-  ADD KEY `productos_ibfk_1` (`id_categoria`);
+  ADD KEY `productos_ibfk_1` (`id_categoria`),
+  ADD KEY `codigo_producto` (`codigo_producto`);
 
 --
 -- Indices de la tabla `proveedores`
@@ -387,19 +372,19 @@ ALTER TABLE `proveedores`
 -- AUTO_INCREMENT de la tabla `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `tasa`
 --
 ALTER TABLE `tasa`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `ventas`
@@ -429,7 +414,8 @@ ALTER TABLE `detalle_venta`
 -- Filtros para la tabla `ingresos`
 --
 ALTER TABLE `ingresos`
-  ADD CONSTRAINT `ingresos_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`);
+  ADD CONSTRAINT `ingresos_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`),
+  ADD CONSTRAINT `ingresos_ibfk_3` FOREIGN KEY (`id_proveedor`) REFERENCES `proveedores` (`id`) ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `productos`

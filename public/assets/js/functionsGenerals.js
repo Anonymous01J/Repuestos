@@ -96,6 +96,13 @@ function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', selectedTheme);
     localStorage.setItem('btnColor', selectedTheme);
 
+    const bcvIcon = document.getElementById('bcvIcon');
+    if (bcvIcon) {
+        bcvIcon.src = selectedTheme === 'light'
+            ? './public/assets/img/bcv.png'
+            : './public/assets/img/bcv2.png';
+    }
+
     const themeButton = document.getElementById('themeToggleBtn');
     if (themeButton) {
         const themeIcon = themeButton.querySelector('[uk-icon]');

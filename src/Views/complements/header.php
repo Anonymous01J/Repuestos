@@ -31,7 +31,7 @@
                 </button>
 
                 <button class="uk-button uk-button-text app-bcv-trigger" id="bcvDiv" type="button" uk-toggle="target: #modalTasa" aria-label="Actualizar tasa BCV">
-                    <img src="./public/assets/img/bcv2.png" alt="BCV" width="34" height="34">
+                    <img id="bcvIcon" src="./public/assets/img/bcv2.png" alt="BCV" width="34" height="34">
                     <span class="app-bcv-label">Dólar BCV</span>
                     <span class="uk-text-success uk-text-bold app-bcv-value" id="Dolar_bcv"><?= $tasaValor ?> Bs</span>
                     <span class="app-bcv-edit-icon" uk-icon="icon: pencil; ratio: 0.8" aria-hidden="true"></span>

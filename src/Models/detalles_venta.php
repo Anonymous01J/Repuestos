@@ -11,8 +11,9 @@
         private $precio_unitario_bs;
         private $subtotal;
         private $subtotal_bs;
+        private $aplico_precio_al_mayor;
 
-        public function __construct($id = null, $id_venta = null, $id_producto = null, $cantidad = null, $precio_unitario = null, $precio_unitario_bs = null, $subtotal = null, $subtotal_bs = null) {
+        public function __construct($id = null, $id_venta = null, $id_producto = null, $cantidad = null, $precio_unitario = null, $precio_unitario_bs = null, $subtotal = null, $subtotal_bs = null, $aplico_precio_al_mayor = false) {
             parent::__construct();
             $this->id = $id;
             $this->id_venta = $id_venta;
@@ -22,6 +23,7 @@
             $this->precio_unitario_bs = $precio_unitario_bs;
             $this->subtotal = $subtotal;
             $this->subtotal_bs = $subtotal_bs;
+            $this->aplico_precio_al_mayor = $aplico_precio_al_mayor;
         }
 
         public function getId() { return $this->id; }
@@ -32,6 +34,7 @@
         public function getPrecioUnitarioBs() { return $this->precio_unitario_bs; }
         public function getSubtotal() { return $this->subtotal; }
         public function getSubtotalBs() { return $this->subtotal_bs; }
+        public function getAplicoPrecioAlMayor() { return $this->aplico_precio_al_mayor; }
         public function setId($id) { $this->id = $id; return $this; }
         public function setIdVenta($id_venta) { $this->id_venta = $id_venta; return $this; }
         public function setIdProducto($id_producto) { $this->id_producto = $id_producto; return $this; }
@@ -40,9 +43,10 @@
         public function setPrecioUnitarioBs($precio_unitario_bs) { $this->precio_unitario_bs = $precio_unitario_bs; return $this; }
         public function setSubtotal($subtotal) { $this->subtotal = $subtotal; return $this; }
         public function setSubtotalBs($subtotal_bs) { $this->subtotal_bs = $subtotal_bs; return $this; }
+        public function setAplicoPrecioAlMayor($aplico_precio_al_mayor) { $this->aplico_precio_al_mayor = $aplico_precio_al_mayor; return $this; }
 
         public function insert() {
-            $sql = "INSERT INTO detalle_venta (id_venta, id_producto, cantidad, precio_unitario, precio_unitario_bs, subtotal, subtotal_bs) VALUES (:id_venta, :id_producto, :cantidad, :precio_unitario, :precio_unitario_bs, :subtotal, :subtotal_bs)";
+            $sql = "INSERT INTO detalle_venta (id_venta, id_producto, cantidad, precio_unitario, precio_unitario_bs, subtotal, subtotal_bs, precio_al_mayor) VALUES (:id_venta, :id_producto, :cantidad, :precio_unitario, :precio_unitario_bs, :subtotal, :subtotal_bs, :precio_al_mayor)";
             $stmt = $this->prepare($sql);
             $stmt->bindParam(":id_venta", $this->id_venta);
             $stmt->bindParam(":id_producto", $this->id_producto);
@@ -51,6 +55,7 @@
             $stmt->bindParam(":precio_unitario_bs", $this->precio_unitario_bs);
             $stmt->bindParam(":subtotal", $this->subtotal);
             $stmt->bindParam(":subtotal_bs", $this->subtotal_bs);
+            $stmt->bindValue(":precio_al_mayor", (int) $this->aplico_precio_al_mayor, \PDO::PARAM_INT);
             if ($stmt->execute()) {
                 return true;
             } else {
@@ -77,7 +82,7 @@
             }
         }
         public function searchIdVenta() {
-            $sql = "SELECT (SELECT nombre FROM productos WHERE id = detalle_venta.id_producto) AS nombre_producto, cantidad, precio_unitario, precio_unitario_bs, subtotal, subtotal_bs, (SELECT total FROM ventas WHERE id = :id_venta) AS total_venta, (SELECT total_bs FROM ventas WHERE id = :id_venta) AS total_venta_bs FROM detalle_venta WHERE id_venta = :id_venta";
+            $sql = "SELECT (SELECT nombre FROM productos WHERE id = detalle_venta.id_producto) AS nombre_producto, cantidad, precio_unitario, precio_unitario_bs, subtotal, subtotal_bs, precio_al_mayor, (SELECT total FROM ventas WHERE id = :id_venta) AS total_venta, (SELECT total_bs FROM ventas WHERE id = :id_venta) AS total_venta_bs FROM detalle_venta WHERE id_venta = :id_venta";
             $stmt = $this->prepare($sql);
             $stmt->bindParam(":id_venta", $this->id_venta);
             if ($stmt->execute()) {

@@ -13,6 +13,7 @@
                 }
                 $ingreso = new Ingresos();
                 $ingreso->setIdUsuario($_POST['id_usuario'])
+                        ->setIdProveedor($_POST['id_proveedor'] ?? null)
                         ->setTotal(normalizarMoneda($_POST['precio']))
                         ->setTotalBs(normalizarMoneda($_POST['precio_bs']));
                 if ($ingreso->insert() && isset($_POST['id_producto']) && isset($_POST['cantidad']) && isset($_POST['precio']) && isset($_POST['precio_bs'])) {
@@ -72,6 +73,7 @@
 
                 $ingreso = new Ingresos();
                 $ingreso->setIdUsuario($_POST['id_usuario'])
+                        ->setIdProveedor($_POST['id_proveedor'] ?? null)
                         ->setTotal($total)
                         ->setTotalBs($totalBs);
 

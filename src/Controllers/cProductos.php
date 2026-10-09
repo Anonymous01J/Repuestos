@@ -105,14 +105,23 @@
             }
 
             $producto = new Productos();
+            $precioAlMayor = (isset($_POST['precio_al_mayor']) && $_POST['precio_al_mayor'] !== '') ? $_POST['precio_al_mayor'] : null;
+            $cantidadAlMayor = (isset($_POST['cantidad_al_mayor']) && $_POST['cantidad_al_mayor'] !== '') ? $_POST['cantidad_al_mayor'] : null;
+
             $producto->setNombre($_POST['nombre'])
+                ->setCodigoProducto($_POST['codigo_producto'] ?? null)
+                ->setCategoriaId($_POST['id_categoria'])
+                ->setPrecio($_POST['precio'])
+                ->setPrecioAlMayor($precioAlMayor)
+                ->setStock($_POST['stock'] ?? 0)
                 ->setStockMinimo($_POST['stock_minimo'])
                 ->setStockMaximo($_POST['stock_maximo'])
-                ->setCategoriaId($_POST['id_categoria'])
-                ->setPrecio($_POST['precio']);
-            $producto->setMarca($_POST['marca'] ?? null)
-                    ->setDescripcion($_POST['descripcion'] ?? null)
-                    ->setImagen($imagenNombre);
+                ->setCantidadAlMayor($cantidadAlMayor)
+                ->setMarca($_POST['marca'] ?? null)
+                ->setDescripcion($_POST['descripcion'] ?? null)
+                ->setImagen($imagenNombre)
+                ->setEstado(1)
+                ->setDisponibilidad(isset($_POST['disponibilidad']) ? intval($_POST['disponibilidad']) : 1);
             if ($producto->insert()) {
                 header("Location: ?c=CProductos/view&success=1");
             } else {
@@ -136,16 +145,24 @@
                 move_uploaded_file($_FILES['imagen']['tmp_name'], $rutaDestino);
             }
 
+            $precioAlMayor = (isset($_POST['precio_al_mayor']) && $_POST['precio_al_mayor'] !== '') ? $_POST['precio_al_mayor'] : null;
+            $cantidadAlMayor = (isset($_POST['cantidad_al_mayor']) && $_POST['cantidad_al_mayor'] !== '') ? $_POST['cantidad_al_mayor'] : null;
+
             $producto->setId($_POST['id'])
                 ->setNombre($_POST['nombre'])
-                ->setStockMinimo($_POST['stock_minimo'])
-                ->setStockMaximo($_POST['stock_maximo'])
+                ->setCodigoProducto($_POST['codigo_producto'] ?? null)
                 ->setCategoriaId($_POST['id_categoria'])
+                ->setMarca($_POST['marca'] ?? null)
                 ->setDescripcion($_POST['descripcion'])
                 ->setPrecio($_POST['precio'])
-                ->setMarca($_POST['marca'])
+                ->setPrecioAlMayor($precioAlMayor)
+                ->setStock($_POST['stock'] ?? 0)
+                ->setStockMinimo($_POST['stock_minimo'])
+                ->setStockMaximo($_POST['stock_maximo'])
+                ->setCantidadAlMayor($cantidadAlMayor)
                 ->setImagen($imagenNombre)
-                ->setEstado($_POST['estado']);
+                ->setEstado($_POST['estado'])
+                ->setDisponibilidad(isset($_POST['disponibilidad']) ? intval($_POST['disponibilidad']) : 1);
 
             if ($producto->update()) {
                 header("Location: ?c=CProductos/view&success=1");
