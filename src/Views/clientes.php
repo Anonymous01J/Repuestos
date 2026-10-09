@@ -40,49 +40,10 @@
                                         <td><?= htmlspecialchars($c['telefono']) ?></td>
                                         <td><?= htmlspecialchars($c['direccion']) ?></td>
                                         <td>
-                                            <button class="uk-button uk-button-primary uk-button-small" type="button" uk-toggle="target: #modalEditar<?= $c['id'] ?>">Editar</button>
+                                            <button class="uk-button uk-button-primary uk-button-small" type="button" uk-toggle="target: #modalEditarActivo<?= $c['id'] ?>">Editar</button>
                                             <button type="button" class="uk-button uk-button-danger uk-button-small" uk-toggle="target: #modalConfirmarEliminar<?= $c['id'] ?>">Eliminar</button>
                                         </td>
                                     </tr>
-                                    <div id="modalEditar<?= $c['id'] ?>" uk-modal>
-                                        <div class="uk-modal-dialog uk-modal-body uk-width-1-2@m">
-                                            <button class="uk-modal-close-default" type="button" uk-close></button>
-                                            <h2 class="uk-modal-title">Editar Cliente</h2>
-                                            <form action="?c=CClientes/edit" method="POST">
-                                                <input type="hidden" name="id" value="<?= $c['id'] ?>">
-                                                <div class="uk-margin">
-                                                    <label class="uk-form-label">Teléfono</label>
-                                                    <div class="uk-form-controls">
-                                                        <input type="text" name="telefono" class="uk-input" value="<?= htmlspecialchars($c['telefono']) ?>">
-                                                    </div>
-                                                </div>
-                                                <div class="uk-margin">
-                                                    <label class="uk-form-label">Dirección</label>
-                                                    <div class="uk-form-controls">
-                                                        <textarea name="direccion" class="uk-textarea"><?= htmlspecialchars($c['direccion']) ?></textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="uk-text-right">
-                                                    <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
-                                                    <button type="submit" class="uk-button uk-button-primary">Guardar</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    <div id="modalConfirmarEliminar<?= $c['id'] ?>" uk-modal>
-                                        <div class="uk-modal-dialog uk-modal-body uk-width-medium">
-                                            <button class="uk-modal-close-default" type="button" uk-close></button>
-                                            <h2 class="uk-modal-title">Confirmar eliminación</h2>
-                                            <form action="?c=CClientes/delete" method="POST">
-                                                <input type="hidden" name="id" value="<?= $c['id'] ?>">
-                                                <p>¿Estás seguro de que deseas inhabilitar a <?= htmlspecialchars($c['nombre']) ?>?</p>
-                                                <div class="uk-text-right">
-                                                    <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
-                                                    <button type="submit" class="uk-button uk-button-danger">Eliminar</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
@@ -109,49 +70,10 @@
                                         <td><?= htmlspecialchars($c['telefono']) ?></td>
                                         <td><?= htmlspecialchars($c['direccion']) ?></td>
                                         <td>
-                                            <button class="uk-button uk-button-primary uk-button-small" type="button" uk-toggle="target: #modalEditar<?= $c['id'] ?>">Editar</button>
+                                            <button class="uk-button uk-button-primary uk-button-small" type="button" uk-toggle="target: #modalEditarInactivo<?= $c['id'] ?>">Editar</button>
                                             <button type="button" class="uk-button uk-button-primary uk-button-small" uk-toggle="target: #modalConfirmarActivar<?= $c['id'] ?>">Activar</button>
                                         </td>
                                     </tr>
-                                    <div id="modalEditar<?= $c['id'] ?>" uk-modal>
-                                        <div class="uk-modal-dialog uk-modal-body uk-width-1-2@m">
-                                            <button class="uk-modal-close-default" type="button" uk-close></button>
-                                            <h2 class="uk-modal-title">Editar Cliente</h2>
-                                            <form action="?c=CClientes/edit" method="POST">
-                                                <input type="hidden" name="id" value="<?= $c['id'] ?>">
-                                                <div class="uk-margin">
-                                                    <label class="uk-form-label">Teléfono</label>
-                                                    <div class="uk-form-controls">
-                                                        <input type="text" name="telefono" class="uk-input" value="<?= htmlspecialchars($c['telefono']) ?>">
-                                                    </div>
-                                                </div>
-                                                <div class="uk-margin">
-                                                    <label class="uk-form-label">Dirección</label>
-                                                    <div class="uk-form-controls">
-                                                        <textarea name="direccion" class="uk-textarea"><?= htmlspecialchars($c['direccion']) ?></textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="uk-text-right">
-                                                    <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
-                                                    <button type="submit" class="uk-button uk-button-primary">Guardar</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    <div id="modalConfirmarActivar<?= $c['id'] ?>" uk-modal>
-                                        <div class="uk-modal-dialog uk-modal-body uk-width-medium">
-                                            <button class="uk-modal-close-default" type="button" uk-close></button>
-                                            <h2 class="uk-modal-title">Confirmar activación</h2>
-                                            <form action="?c=CClientes/active" method="POST">
-                                                <input type="hidden" name="id" value="<?= $c['id'] ?>">
-                                                <p>¿Estás seguro de que deseas habilitar a <?= htmlspecialchars($c['nombre']) ?>?</p>
-                                                <div class="uk-text-right">
-                                                    <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
-                                                    <button type="submit" class="uk-button uk-button-primary">Activar</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
@@ -160,6 +82,90 @@
             </ul>
         </div>
     </div>
+
+    <?php foreach ($clientes as $c): ?>
+        <div id="modalEditarActivo<?= $c['id'] ?>" uk-modal>
+            <div class="uk-modal-dialog uk-modal-body uk-width-1-2@m">
+                <button class="uk-modal-close-default" type="button" uk-close></button>
+                <h2 class="uk-modal-title">Editar Cliente</h2>
+                <form action="?c=CClientes/edit" method="POST">
+                    <input type="hidden" name="id" value="<?= $c['id'] ?>">
+                    <div class="uk-margin">
+                        <label class="uk-form-label">Teléfono</label>
+                        <div class="uk-form-controls">
+                            <input type="text" name="telefono" class="uk-input" value="<?= htmlspecialchars($c['telefono']) ?>">
+                        </div>
+                    </div>
+                    <div class="uk-margin">
+                        <label class="uk-form-label">Dirección</label>
+                        <div class="uk-form-controls">
+                            <textarea name="direccion" class="uk-textarea"><?= htmlspecialchars($c['direccion']) ?></textarea>
+                        </div>
+                    </div>
+                    <div class="uk-text-right">
+                        <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
+                        <button type="submit" class="uk-button uk-button-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="modalConfirmarEliminar<?= $c['id'] ?>" uk-modal>
+            <div class="uk-modal-dialog uk-modal-body uk-width-medium">
+                <button class="uk-modal-close-default" type="button" uk-close></button>
+                <h2 class="uk-modal-title">Confirmar eliminación</h2>
+                <form action="?c=CClientes/delete" method="POST">
+                    <input type="hidden" name="id" value="<?= $c['id'] ?>">
+                    <p>¿Estás seguro de que deseas inhabilitar a <?= htmlspecialchars($c['nombre']) ?>?</p>
+                    <div class="uk-text-right">
+                        <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
+                        <button type="submit" class="uk-button uk-button-danger">Eliminar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    <?php endforeach; ?>
+
+    <?php foreach ($clientesInactive as $c): ?>
+        <div id="modalEditarInactivo<?= $c['id'] ?>" uk-modal>
+            <div class="uk-modal-dialog uk-modal-body uk-width-1-2@m">
+                <button class="uk-modal-close-default" type="button" uk-close></button>
+                <h2 class="uk-modal-title">Editar Cliente</h2>
+                <form action="?c=CClientes/edit" method="POST">
+                    <input type="hidden" name="id" value="<?= $c['id'] ?>">
+                    <div class="uk-margin">
+                        <label class="uk-form-label">Teléfono</label>
+                        <div class="uk-form-controls">
+                            <input type="text" name="telefono" class="uk-input" value="<?= htmlspecialchars($c['telefono']) ?>">
+                        </div>
+                    </div>
+                    <div class="uk-margin">
+                        <label class="uk-form-label">Dirección</label>
+                        <div class="uk-form-controls">
+                            <textarea name="direccion" class="uk-textarea"><?= htmlspecialchars($c['direccion']) ?></textarea>
+                        </div>
+                    </div>
+                    <div class="uk-text-right">
+                        <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
+                        <button type="submit" class="uk-button uk-button-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="modalConfirmarActivar<?= $c['id'] ?>" uk-modal>
+            <div class="uk-modal-dialog uk-modal-body uk-width-medium">
+                <button class="uk-modal-close-default" type="button" uk-close></button>
+                <h2 class="uk-modal-title">Confirmar activación</h2>
+                <form action="?c=CClientes/active" method="POST">
+                    <input type="hidden" name="id" value="<?= $c['id'] ?>">
+                    <p>¿Estás seguro de que deseas habilitar a <?= htmlspecialchars($c['nombre']) ?>?</p>
+                    <div class="uk-text-right">
+                        <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
+                        <button type="submit" class="uk-button uk-button-primary">Activar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    <?php endforeach; ?>
 
     <div id="modalAgregar" uk-modal>
         <div class="uk-modal-dialog uk-modal-body uk-width-1-2@m">

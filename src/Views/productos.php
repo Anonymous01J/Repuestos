@@ -58,180 +58,31 @@ include_once 'src/Views/complements/header.php';
             <div class="tab-content">
                 <!-- ── Tab: Productos ──────────────────────────────────── -->
                 <div class="tab-pane fade show active" id="productos" role="tabpanel">
-                    <div class="uk-overflow-auto">
-                        <table class="table-DT table table-striped uk-table uk-table-middle uk-table-divider" id="tablaProductos">
-                            <thead>
-                                <tr>
-                                    <th>Imagen</th>
-                                    <th>Nombre</th>
-                                    <th>Marca</th>
-                                    <th>Precio</th>
-                                    <th>Stock</th>
-                                    <th>Stock Min</th>
-                                    <th>Stock Max</th>
-                                    <th>Categoría</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($productos as $p): ?>
-                                    <?php
-                                        $stockAlerta = '';
-                                        if ($p['stock'] == 0) {
-                                            $stockAlerta = 'table-danger';
-                                        } elseif ($p['stock'] <= $p['stock_minimo']) {
-                                            $stockAlerta = 'table-warning';
-                                        }
-                                    ?>
-                                    <tr class="<?= $stockAlerta ?>">
-                                        <td>
-                                            <img src="public/assets/img/products/<?= htmlspecialchars($p['imagen']) ?>"
-                                                alt="img" class="img-thumbnail" width="50" style="cursor:pointer"
-                                                uk-toggle="target: #modalImagen"
-                                                onerror="this.onerror=null;this.src='public/assets/img/products/generic.png';"
-                                                onclick="verImagen('<?= htmlspecialchars($p['imagen']) ?>')">
-                                        </td>
-                                        <td><?= htmlspecialchars($p['nombre']) ?></td>
-                                        <td><?= htmlspecialchars($p['marca']) ?></td>
-                                        <td>
-                                            <?= htmlspecialchars($p['precio']) ?> $ /
-                                            <?= htmlspecialchars($p['precio'] * $tasaValor) ?> Bs
-                                        </td>
-                                        <td>
-                                            <?php if ($p['stock'] == 0): ?>
-                                                <span class="uk-badge" style="background:#dc2626; color:#fff;">0 — Sin stock</span>
-                                            <?php elseif ($p['stock'] <= $p['stock_minimo']): ?>
-                                                <span class="uk-badge" style="background:#f59e0b; color:#111827;"><?= $p['stock'] ?> ⚠️</span>
-                                            <?php else: ?>
-                                                <?= htmlspecialchars($p['stock']) ?>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td><?= htmlspecialchars($p['stock_minimo']) ?></td>
-                                        <td><?= htmlspecialchars($p['stock_maximo']) ?></td>
-                                        <td><?= htmlspecialchars($p['categoria']) ?></td>
-                                        <td>
-                                            <div class="accordion" id="accordionAcciones_<?= $p['id'] ?>">
-                                                <div class="accordion-item">
-                                                    <button class="accordion-button collapsed p-2" type="button"
-                                                        aria-expanded="false">
-                                                    </button>
-                                                    <div id="collapseAcciones_<?= $p['id'] ?>" class="accordion-collapse collapse">
-                                                        <div class="accordion-body p-2">
-                                                            <div class="d-flex gap-1 flex-wrap">
-                                                                <button class="uk-button uk-button-default uk-button-small"
-                                                                    onclick="editarProducto(<?= htmlspecialchars(json_encode($p)) ?>)">
-                                                                    Editar
-                                                                </button>
-                                                                <button class="uk-button uk-button-primary uk-button-small"
-                                                                    uk-toggle="target: #modalIngresoRapido_<?= $p['id'] ?>">
-                                                                    Entrada Rápida
-                                                                </button>
-                                                                <button class="uk-button uk-button-default uk-button-small"
-                                                                    uk-toggle="target: #modalVentaRapida_<?= $p['id'] ?>"
-                                                                    data-precioProducto="<?= $p['precio'] ?>"
-                                                                    data-stock="<?= (int)$p['stock'] ?>">
-                                                                    Venta Rápida
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
+                    <div class="app-item-list-shell">
+                        <div class="app-item-toolbar">
+                            <div class="app-item-search uk-search uk-search-default">
+                                <span uk-search-icon></span>
+                                <input id="productosSearch" class="uk-search-input" type="search" placeholder="Buscar producto..." aria-label="Buscar producto">
+                            </div>
+                            <div class="app-item-sort">
+                                <span>Orden</span>
+                                <button type="button" class="uk-icon-button" data-sort="asc" aria-label="Orden ascendente">
+                                    <span uk-icon="icon: arrow-down; ratio: 0.9"></span>
+                                </button>
+                                <button type="button" class="uk-icon-button" data-sort="desc" aria-label="Orden descendente">
+                                    <span uk-icon="icon: arrow-up; ratio: 0.9"></span>
+                                </button>
+                            </div>
+                        </div>
 
-                                    <!-- Modal Ingreso Rápido -->
-                                    <div id="modalIngresoRapido_<?= $p['id'] ?>" uk-modal>
-                                        <div class="uk-modal-dialog uk-modal-body uk-width-2xlarge">
-                                            <button class="uk-modal-close-default" type="button" uk-close></button>
-                                            <h2 class="uk-modal-title">Entrada Rápida - <?= htmlspecialchars($p['nombre']) ?></h2>
-                                            <form method="POST" action="?c=CIngresos/add">
-                                                <input type="hidden" name="id_usuario" value="<?= $_SESSION['id'] ?>">
-                                                <input type="hidden" name="id_producto" value="<?= $p['id'] ?>">
-                                                <div class="uk-grid-small uk-child-width-1-2@m" uk-grid>
-                                                    <div>
-                                                        <label class="uk-form-label">Cantidad</label>
-                                                        <div class="uk-form-controls">
-                                                            <input type="number" name="cantidad" class="uk-input" min="1" required>
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <label class="uk-form-label">Precio de Compra ($)</label>
-                                                        <div class="uk-form-controls">
-                                                            <input type="text" name="precio" class="uk-input precio input-price" required>
-                                                        </div>
-                                                    </div>
-                                                    <div class="uk-width-1-1">
-                                                        <label class="uk-form-label">Precio de Compra (Bs)</label>
-                                                        <div class="uk-form-controls">
-                                                            <input type="text" name="precio_bs" class="uk-input input-price precio_bs">
-                                                        </div>
-                                                    </div>
-                                                    <div class="uk-width-1-1">
-                                                        <div class="uk-alert-primary" uk-alert>
-                                                            <p><strong>Nota:</strong> Este ingreso se registrará con el usuario actual y la fecha actual.</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="uk-text-right uk-margin-top">
-                                                    <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
-                                                    <button type="submit" class="uk-button uk-button-primary">Registrar</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-
-                                    <!-- Modal Venta Rápida — con validación de stock en frontend -->
-                                    <div id="modalVentaRapida_<?= $p['id'] ?>"
-                                         uk-modal
-                                         data-id-producto="<?= $p['id'] ?>"
-                                         data-stock="<?= (int)$p['stock'] ?>">
-                                        <div class="uk-modal-dialog uk-modal-body uk-width-2xlarge">
-                                            <button class="uk-modal-close-default" type="button" uk-close></button>
-                                            <h2 class="uk-modal-title">Venta Rápida - <?= htmlspecialchars($p['nombre']) ?></h2>
-                                            <form class="form-venta-rapida" method="POST" action="?c=CVentas/add">
-                                                <input type="hidden" name="id_usuario" value="<?= $_SESSION['id'] ?>">
-                                                <input type="hidden" name="id_producto" value="<?= $p['id'] ?>">
-                                                <div class="uk-margin">
-                                                    <div class="uk-alert-primary" uk-alert>
-                                                        <p>Stock disponible: <strong><?= (int)$p['stock'] ?></strong> unidad(es)</p>
-                                                    </div>
-                                                    <div class="uk-alert-danger stock-error-msg uk-hidden" role="alert"></div>
-                                                </div>
-                                                <div class="uk-grid-small uk-child-width-1-2@m" uk-grid>
-                                                    <div>
-                                                        <label class="uk-form-label">Cantidad</label>
-                                                        <div class="uk-form-controls">
-                                                            <input type="number" name="cantidad" class="uk-input cantidad-venta-rapida" min="1" value="1" max="<?= (int)$p['stock'] ?>" data-stock="<?= (int)$p['stock'] ?>" required>
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <label class="uk-form-label">Precio ($)</label>
-                                                        <div class="uk-form-controls">
-                                                            <input type="text" name="precio" class="uk-input" value="<?= $p['precio'] ?>" readonly>
-                                                        </div>
-                                                    </div>
-                                                    <div class="uk-width-1-1">
-                                                        <label class="uk-form-label">Precio (Bs)</label>
-                                                        <div class="uk-form-controls">
-                                                            <input type="text" name="precio_bs" class="uk-input" value="<?= htmlspecialchars($p['precio'] * $tasaValor) ?>" readonly>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="uk-alert-primary uk-margin-top" uk-alert>
-                                                    <p><strong>Nota:</strong> Esta venta se registrará con el usuario actual y la fecha actual.</p>
-                                                </div>
-                                                <div class="uk-text-right uk-margin-top">
-                                                    <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
-                                                    <button type="submit" class="uk-button uk-button-primary btn-submit-venta-rapida">Registrar Venta</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
+                        <div id="productosList" class="uk-grid uk-grid-medium uk-flex-center app-product-grid" uk-grid></div>
+                        <div id="productosEmpty" class="app-empty-state uk-hidden">
+                            <span uk-icon="icon: bag; ratio: 1.5"></span>
+                            <div>No hay productos para mostrar.</div>
+                        </div>
+                        <div class="uk-flex uk-flex-center uk-margin-top">
+                            <ul id="productosPagination" class="uk-pagination" uk-margin></ul>
+                        </div>
                     </div>
                 </div>
 
@@ -571,6 +422,95 @@ include_once 'src/Views/complements/header.php';
         </div>
     </div>
 
+    <?php foreach ($productos as $p): ?>
+        <div id="modalIngresoRapido_<?= $p['id'] ?>" uk-modal>
+            <div class="uk-modal-dialog uk-modal-body uk-width-2xlarge">
+                <button class="uk-modal-close-default" type="button" uk-close></button>
+                <h2 class="uk-modal-title">Entrada Rápida - <?= htmlspecialchars($p['nombre']) ?></h2>
+                <form method="POST" action="?c=CIngresos/add">
+                    <input type="hidden" name="id_usuario" value="<?= $_SESSION['id'] ?>">
+                    <input type="hidden" name="id_producto" value="<?= $p['id'] ?>">
+                    <div class="uk-grid-small uk-child-width-1-2@m" uk-grid>
+                        <div>
+                            <label class="uk-form-label">Cantidad</label>
+                            <div class="uk-form-controls">
+                                <input type="number" name="cantidad" class="uk-input" min="1" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="uk-form-label">Precio de Compra ($)</label>
+                            <div class="uk-form-controls">
+                                <input type="text" name="precio" class="uk-input precio input-price" required>
+                            </div>
+                        </div>
+                        <div class="uk-width-1-1">
+                            <label class="uk-form-label">Precio de Compra (Bs)</label>
+                            <div class="uk-form-controls">
+                                <input type="text" name="precio_bs" class="uk-input input-price precio_bs">
+                            </div>
+                        </div>
+                        <div class="uk-width-1-1">
+                            <div class="uk-alert-primary" uk-alert>
+                                <p><strong>Nota:</strong> Este ingreso se registrará con el usuario actual y la fecha actual.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="uk-text-right uk-margin-top">
+                        <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
+                        <button type="submit" class="uk-button uk-button-primary">Registrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="modalVentaRapida_<?= $p['id'] ?>"
+             uk-modal
+             data-id-producto="<?= $p['id'] ?>"
+             data-stock="<?= (int)$p['stock'] ?>">
+            <div class="uk-modal-dialog uk-modal-body uk-width-2xlarge">
+                <button class="uk-modal-close-default" type="button" uk-close></button>
+                <h2 class="uk-modal-title">Venta Rápida - <?= htmlspecialchars($p['nombre']) ?></h2>
+                <form class="form-venta-rapida" method="POST" action="?c=CVentas/add">
+                    <input type="hidden" name="id_usuario" value="<?= $_SESSION['id'] ?>">
+                    <input type="hidden" name="id_producto" value="<?= $p['id'] ?>">
+                    <div class="uk-margin">
+                        <div class="uk-alert-primary" uk-alert>
+                            <p>Stock disponible: <strong><?= (int)$p['stock'] ?></strong> unidad(es)</p>
+                        </div>
+                        <div class="uk-alert-danger stock-error-msg uk-hidden" role="alert"></div>
+                    </div>
+                    <div class="uk-grid-small uk-child-width-1-2@m" uk-grid>
+                        <div>
+                            <label class="uk-form-label">Cantidad</label>
+                            <div class="uk-form-controls">
+                                <input type="number" name="cantidad" class="uk-input cantidad-venta-rapida" min="1" value="1" max="<?= (int)$p['stock'] ?>" data-stock="<?= (int)$p['stock'] ?>" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="uk-form-label">Precio ($)</label>
+                            <div class="uk-form-controls">
+                                <input type="text" name="precio" class="uk-input" value="<?= $p['precio'] ?>" readonly>
+                            </div>
+                        </div>
+                        <div class="uk-width-1-1">
+                            <label class="uk-form-label">Precio (Bs)</label>
+                            <div class="uk-form-controls">
+                                <input type="text" name="precio_bs" class="uk-input" value="<?= htmlspecialchars($p['precio'] * $tasaValor) ?>" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="uk-alert-primary uk-margin-top" uk-alert>
+                        <p><strong>Nota:</strong> Esta venta se registrará con el usuario actual y la fecha actual.</p>
+                    </div>
+                    <div class="uk-text-right uk-margin-top">
+                        <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
+                        <button type="submit" class="uk-button uk-button-primary btn-submit-venta-rapida">Registrar Venta</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    <?php endforeach; ?>
+
     <?php include_once 'src/Views/complements/footer.php'; ?>
 
 <script>
@@ -662,7 +602,120 @@ include_once 'src/Views/complements/header.php';
         });
     }
 
-    // ── Inicialización ────────────────────────────────────────────────────
+    const productosData = <?= json_encode($productos, JSON_UNESCAPED_UNICODE) ?>;
+
+    function getProductoBadge(product) {
+        if (Number(product.stock) === 0) {
+            return '<span class="uk-badge uk-border-rounded" style="background:#ef4444;color:#fff;">Sin stock</span>';
+        }
+        if (Number(product.stock) <= Number(product.stock_minimo)) {
+            return '<span class="uk-badge uk-border-rounded" style="background:#f59e0b;color:#111827;">Bajo stock</span>';
+        }
+        return '<span class="uk-badge uk-border-rounded" style="background:#22c55e;color:#fff;">Activo</span>';
+    }
+
+    function renderProductosList() {
+        const listEl = document.getElementById('productosList');
+        const emptyEl = document.getElementById('productosEmpty');
+        const paginationEl = document.getElementById('productosPagination');
+        if (!listEl) return;
+
+        const searchInput = document.getElementById('productosSearch');
+        const query = (searchInput ? searchInput.value : '').trim().toLowerCase();
+        const sorted = [...productosData].sort((a, b) => a.nombre.localeCompare(b.nombre));
+        const filtered = sorted.filter((p) => {
+            const hayTexto = [p.nombre, p.marca, p.categoria || '', p.descripcion || ''].join(' ').toLowerCase();
+            return !query || hayTexto.includes(query);
+        });
+
+        const pageSize = 6;
+        const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+        const currentPage = Math.min(Number(listEl.dataset.page || 1), totalPages);
+        const start = (currentPage - 1) * pageSize;
+        const pageItems = filtered.slice(start, start + pageSize);
+
+        if (!pageItems.length) {
+            listEl.innerHTML = '';
+            emptyEl.classList.remove('uk-hidden');
+            paginationEl.innerHTML = '';
+            return;
+        }
+
+        emptyEl.classList.add('uk-hidden');
+
+        listEl.innerHTML = pageItems.map((p) => {
+            const precio = Number(p.precio || 0);
+            const stock = Number(p.stock || 0);
+            const categoria = p.categoria || 'Sin categoría';
+            const imagen = p.imagen ? `public/assets/img/products/${p.imagen}` : 'public/assets/img/products/generic.png';
+            const badge = getProductoBadge(p);
+            return `
+                <div class="uk-width-1-1 uk-width-1-2@l uk-width-1-3@xl">
+                    <div class="uk-card uk-card-default app-product-card">
+                        <div class="uk-card-body">
+                            <div class="app-product-visual">
+                                <img src="${imagen}" alt="${p.nombre}" onerror="this.onerror=null;this.src='public/assets/img/products/generic.png';">
+                            </div>
+                            <h5 class="app-product-name">${p.nombre}</h5>
+                            <div class="app-product-head">
+                                <div>
+                                    <h4 class="app-product-title">${p.marca || 'Sin marca'}</h4>
+                                </div>
+                                <div class="app-product-actions">
+                                    <button class="app-icon-action" type="button" title="Editar" aria-label="Editar" onclick="editarProducto(${JSON.stringify(p).replace(/"/g, '&quot;')})">
+                                        <span uk-icon="icon: file-edit; ratio: 0.9"></span>
+                                    </button>
+                                    <button class="app-icon-action delete" type="button" title="Eliminar" aria-label="Eliminar" uk-toggle="target: #modalConfirmarEliminar${p.id}">
+                                        <span uk-icon="icon: trash; ratio: 0.9"></span>
+                                    </button>
+                                </div>
+                            </div>
+                            <hr class="app-product-divider">
+                            <div class="app-product-meta">
+                                <p class="app-meta-label">Estado</p>
+                                <p class="app-meta-value">${badge}</p>
+                            </div>
+                            <div class="app-product-meta">
+                                <p class="app-meta-label">Precio</p>
+                                <p class="app-meta-value">${precio.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} $</p>
+                            </div>
+                            <div class="app-product-meta">
+                                <p class="app-meta-label">Stock</p>
+                                <p class="app-meta-value">${stock}</p>
+                            </div>
+                            <div class="app-product-meta">
+                                <p class="app-meta-label">Categoría</p>
+                                <p class="app-meta-value">${categoria}</p>
+                            </div>
+                            <div class="app-product-actions uk-margin-top" style="justify-content:flex-end;">
+                                <button class="uk-button uk-button-primary uk-button-small" type="button" uk-toggle="target: #modalIngresoRapido_${p.id}">Entrada</button>
+                                <button class="uk-button uk-button-default uk-button-small" type="button" uk-toggle="target: #modalVentaRapida_${p.id}">Venta</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        paginationEl.innerHTML = `
+            <li class="${currentPage === 1 ? 'uk-disabled' : ''}"><a href="#" data-page="1" uk-pagination-prev>«</a></li>
+            <li class="${currentPage === 1 ? 'uk-disabled' : ''}"><a href="#" data-page="${Math.max(1, currentPage - 1)}">Anterior</a></li>
+            <li class="uk-active"><span>${currentPage}</span></li>
+            <li class="${currentPage >= totalPages ? 'uk-disabled' : ''}"><a href="#" data-page="${Math.min(totalPages, currentPage + 1)}">Siguiente</a></li>
+            <li class="${currentPage >= totalPages ? 'uk-disabled' : ''}"><a href="#" data-page="${totalPages}" uk-pagination-next>»</a></li>
+        `;
+
+        paginationEl.querySelectorAll('a[data-page]').forEach((anchor) => {
+            anchor.addEventListener('click', function (event) {
+                event.preventDefault();
+                const nextPage = Number(this.dataset.page || 1);
+                if (Number.isNaN(nextPage) || nextPage < 1 || nextPage > totalPages) return;
+                listEl.dataset.page = nextPage;
+                renderProductosList();
+            });
+        });
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
         const hash = window.location.hash;
         if (hash) {
@@ -670,22 +723,33 @@ include_once 'src/Views/complements/header.php';
             const tabTrigger = document.getElementById(`${tabId}-tab`);
             if (tabTrigger) showTabFromTrigger(tabTrigger);
         }
-        
+
+        const searchInput = document.getElementById('productosSearch');
+        if (searchInput) {
+            searchInput.addEventListener('input', renderProductosList);
+        }
+
+        document.querySelectorAll('.app-item-sort .uk-icon-button').forEach((button) => {
+            button.addEventListener('click', function () {
+                const direction = this.dataset.sort === 'asc' ? 1 : -1;
+                productosData.sort((a, b) => a.nombre.localeCompare(b.nombre) * direction);
+                renderProductosList();
+            });
+        });
+
+        renderProductosList();
         cargarNombresProductosVentas();
         initVentaRapidaValidacion();
         initVentaMultipleValidacion();
         
-        // Aplicar formateo a los inputs de entrada rápida existentes
         $('[id^="modalIngresoRapido"][uk-modal] .precio, [id^="modalIngresoRapido"][uk-modal] .precio_bs').each(function() {
             formatearInputPrecio(this);
         });
 
-        // Aplicar formateo a los inputs de venta rápida existentes
         $('[id^="modalVentaRapida"][uk-modal] .precio, [id^="modalVentaRapida"][uk-modal] .precio_bs').each(function() {
             formatearInputPrecio(this);
         });
 
-        // Auto-cerrar toasts tras 4 segundos
         document.querySelectorAll('.toast.show').forEach(function(el) {
             setTimeout(() => {
                 hideToastElement(el);
