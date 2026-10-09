@@ -10,7 +10,7 @@
     <div class="uk-container uk-container-large uk-padding-large">
         <div class="uk-flex uk-flex-between uk-flex-middle uk-flex-wrap uk-margin-bottom" style="gap: 12px;">
             <h2 class="uk-heading-bullet uk-margin-remove">Gestión de Usuarios</h2>
-            <button class="uk-button uk-button-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalAgregar">+ Nuevo Usuario</button>
+            <button class="uk-button uk-button-primary" type="button" uk-toggle="target: #modalAgregar">+ Nuevo Usuario</button>
         </div>
 
         <div class="uk-card uk-card-default uk-card-body">
@@ -40,63 +40,64 @@
                                         <td><?= htmlspecialchars($u['usuario']) ?></td>
                                         <td><input type="password" name="clave" value="<?= htmlspecialchars($u['clave']) ?>" class="uk-input uk-form-small"></td>
                                         <td>
-                                            <button class="uk-button uk-button-primary uk-button-small" type="button" data-bs-toggle="modal" data-bs-target="#modalEditar<?= $u['id'] ?>">Editar</button>
-                                            <button type="button" class="uk-button uk-button-danger uk-button-small" data-bs-toggle="modal" data-bs-target="#modalConfirmarEliminar<?= $u['id'] ?>">Eliminar</button>
+                                            <button class="uk-button uk-button-primary uk-button-small" type="button" uk-toggle="target: #modalEditar<?= $u['id'] ?>">Editar</button>
+                                            <button type="button" class="uk-button uk-button-danger uk-button-small" uk-toggle="target: #modalConfirmarEliminar<?= $u['id'] ?>">Eliminar</button>
                                         </td>
                                     </tr>
-                                    <div class="modal fade" id="modalEditar<?= $u['id'] ?>" tabindex="-1">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <form action="?c=CUsuarios/edit" method="POST">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Editar Usuario</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    <div id="modalEditar<?= $u['id'] ?>" uk-modal>
+                                        <div class="uk-modal-dialog uk-modal-body uk-width-1-2@m">
+                                            <button class="uk-modal-close-default" type="button" uk-close></button>
+                                            <h2 class="uk-modal-title">Editar Usuario</h2>
+                                            <form action="?c=CUsuarios/edit" method="POST">
+                                                <input type="hidden" name="id" value="<?= $u['id'] ?>">
+                                                <div class="uk-margin">
+                                                    <label class="uk-form-label">Nombre</label>
+                                                    <div class="uk-form-controls">
+                                                        <input type="text" name="nombre" class="uk-input" value="<?= htmlspecialchars($u['nombre']) ?>" required>
                                                     </div>
-                                                    <div class="modal-body">
-                                                        <input type="hidden" name="id" value="<?= $u['id'] ?>">
-                                                        <div class="mb-3">
-                                                            <label>Nombre</label>
-                                                            <input type="text" name="nombre" class="form-control" value="<?= htmlspecialchars($u['nombre']) ?>" required>
-                                                            <label>Rol</label>
-                                                            <select name="rol" class="form-control" required>
-                                                                <option value="">Seleccionar rol</option>
-                                                                <?php foreach ($roles as $r): ?>
-                                                                    <option value="<?= $r['id'] ?>" <?= $r['id'] == $u['rol'] ? 'selected' : '' ?>><?= htmlspecialchars($r['nombre']) ?></option>
-                                                                <?php endforeach; ?>
-                                                            </select>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label>Usuario</label>
-                                                            <input type="text" name="usuario" class="form-control" value="<?= htmlspecialchars($u['usuario']) ?>" required>
-                                                            <label>Contraseña</label>
-                                                            <input type="password" name="contrasena" class="form-control" required>
-                                                        </div>
+                                                </div>
+                                                <div class="uk-margin">
+                                                    <label class="uk-form-label">Rol</label>
+                                                    <div class="uk-form-controls">
+                                                        <select name="rol" class="uk-select" required>
+                                                            <option value="">Seleccionar rol</option>
+                                                            <?php foreach ($roles as $r): ?>
+                                                                <option value="<?= $r['id'] ?>" <?= $r['id'] == $u['rol'] ? 'selected' : '' ?>><?= htmlspecialchars($r['nombre']) ?></option>
+                                                            <?php endforeach; ?>
+                                                        </select>
                                                     </div>
-                                                    <div class="modal-footer">
-                                                        <button type="submit" class="uk-button uk-button-primary">Guardar</button>
+                                                </div>
+                                                <div class="uk-margin">
+                                                    <label class="uk-form-label">Usuario</label>
+                                                    <div class="uk-form-controls">
+                                                        <input type="text" name="usuario" class="uk-input" value="<?= htmlspecialchars($u['usuario']) ?>" required>
                                                     </div>
-                                                </form>
-                                            </div>
+                                                </div>
+                                                <div class="uk-margin">
+                                                    <label class="uk-form-label">Contraseña</label>
+                                                    <div class="uk-form-controls">
+                                                        <input type="password" name="contrasena" class="uk-input" required>
+                                                    </div>
+                                                </div>
+                                                <div class="uk-text-right">
+                                                    <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
+                                                    <button type="submit" class="uk-button uk-button-primary">Guardar</button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
-                                    <div class="modal fade" id="modalConfirmarEliminar<?= $u['id'] ?>" tabindex="-1">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <form action="?c=CUsuarios/delete" method="POST">
-                                                    <input type="hidden" name="id" value="<?= $u['id'] ?>">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Confirmar eliminación</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        ¿Estás seguro de que deseas inhabilitar a <?= htmlspecialchars($u['nombre']) ?>?
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="uk-button uk-button-default" data-bs-dismiss="modal">Cancelar</button>
-                                                        <button type="submit" class="uk-button uk-button-danger">Eliminar</button>
-                                                    </div>
-                                                </form>
-                                            </div>
+                                    <div id="modalConfirmarEliminar<?= $u['id'] ?>" uk-modal>
+                                        <div class="uk-modal-dialog uk-modal-body uk-width-medium">
+                                            <button class="uk-modal-close-default" type="button" uk-close></button>
+                                            <h2 class="uk-modal-title">Confirmar eliminación</h2>
+                                            <form action="?c=CUsuarios/delete" method="POST">
+                                                <input type="hidden" name="id" value="<?= $u['id'] ?>">
+                                                <p>¿Estás seguro de que deseas inhabilitar a <?= htmlspecialchars($u['nombre']) ?>?</p>
+                                                <div class="uk-text-right">
+                                                    <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
+                                                    <button type="submit" class="uk-button uk-button-danger">Eliminar</button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
@@ -125,64 +126,64 @@
                                         <td><?= htmlspecialchars($u['usuario']) ?></td>
                                         <td><input type="password" name="clave" value="<?= htmlspecialchars($u['clave']) ?>" class="uk-input uk-form-small"></td>
                                         <td>
-                                            <button class="uk-button uk-button-primary uk-button-small" type="button" data-bs-toggle="modal" data-bs-target="#modalEditar<?= $u['id'] ?>">Editar</button>
-                                            <button type="button" class="uk-button uk-button-primary uk-button-small" data-bs-toggle="modal" data-bs-target="#modalConfirmarActivar<?= $u['id'] ?>">Activar</button>
+                                            <button class="uk-button uk-button-primary uk-button-small" type="button" uk-toggle="target: #modalEditar<?= $u['id'] ?>">Editar</button>
+                                            <button type="button" class="uk-button uk-button-primary uk-button-small" uk-toggle="target: #modalConfirmarActivar<?= $u['id'] ?>">Activar</button>
                                         </td>
                                     </tr>
-                                    <div class="modal fade" id="modalEditar<?= $u['id'] ?>" tabindex="-1">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <form action="?c=CUsuarios/edit" method="POST">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Editar Usuario</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    <div id="modalEditar<?= $u['id'] ?>" uk-modal>
+                                        <div class="uk-modal-dialog uk-modal-body uk-width-1-2@m">
+                                            <button class="uk-modal-close-default" type="button" uk-close></button>
+                                            <h2 class="uk-modal-title">Editar Usuario</h2>
+                                            <form action="?c=CUsuarios/edit" method="POST">
+                                                <input type="hidden" name="id" value="<?= $u['id'] ?>">
+                                                <div class="uk-margin">
+                                                    <label class="uk-form-label">Nombre</label>
+                                                    <div class="uk-form-controls">
+                                                        <input type="text" name="nombre" class="uk-input" value="<?= htmlspecialchars($u['nombre']) ?>" required>
                                                     </div>
-                                                    <div class="modal-body">
-                                                        <input type="hidden" name="id" value="<?= $u['id'] ?>">
-                                                        <div class="mb-3">
-                                                            <label>Nombre</label>
-                                                            <input type="text" name="nombre" class="form-control" value="<?= htmlspecialchars($u['nombre']) ?>" required>
-                                                            <label>Rol</label>
-                                                            <select name="rol" class="form-control" required>
-                                                                <option value="">Seleccionar rol</option>
-                                                                <?php foreach ($roles as $r): ?>
-                                                                    <option value="<?= $r['id'] ?>" <?= $r['id'] == $u['id_rol'] ? 'selected' : '' ?>><?= htmlspecialchars($r['nombre']) ?>
-                                                                    </option>
-                                                                <?php endforeach; ?>
-                                                            </select>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label>Usuario</label>
-                                                            <input type="text" name="usuario" class="form-control" value="<?= htmlspecialchars($u['usuario']) ?>" required>
-                                                            <label>Contraseña</label>
-                                                            <input type="password" name="clave" class="form-control" required>
-                                                        </div>
+                                                </div>
+                                                <div class="uk-margin">
+                                                    <label class="uk-form-label">Rol</label>
+                                                    <div class="uk-form-controls">
+                                                        <select name="rol" class="uk-select" required>
+                                                            <option value="">Seleccionar rol</option>
+                                                            <?php foreach ($roles as $r): ?>
+                                                                <option value="<?= $r['id'] ?>" <?= $r['id'] == $u['id_rol'] ? 'selected' : '' ?>><?= htmlspecialchars($r['nombre']) ?></option>
+                                                            <?php endforeach; ?>
+                                                        </select>
                                                     </div>
-                                                    <div class="modal-footer">
-                                                        <button type="submit" class="uk-button uk-button-primary">Guardar</button>
+                                                </div>
+                                                <div class="uk-margin">
+                                                    <label class="uk-form-label">Usuario</label>
+                                                    <div class="uk-form-controls">
+                                                        <input type="text" name="usuario" class="uk-input" value="<?= htmlspecialchars($u['usuario']) ?>" required>
                                                     </div>
-                                                </form>
-                                            </div>
+                                                </div>
+                                                <div class="uk-margin">
+                                                    <label class="uk-form-label">Contraseña</label>
+                                                    <div class="uk-form-controls">
+                                                        <input type="password" name="clave" class="uk-input" required>
+                                                    </div>
+                                                </div>
+                                                <div class="uk-text-right">
+                                                    <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
+                                                    <button type="submit" class="uk-button uk-button-primary">Guardar</button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
-                                    <div class="modal fade" id="modalConfirmarActivar<?= $u['id'] ?>" tabindex="-1">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <form action="?c=CUsuarios/active" method="POST">
-                                                    <input type="hidden" name="id" value="<?= $u['id'] ?>">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Confirmar activación</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        ¿Estás seguro de que deseas habilitar a <?= htmlspecialchars($u['nombre']) ?>?
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="uk-button uk-button-default" data-bs-dismiss="modal">Cancelar</button>
-                                                        <button type="submit" class="uk-button uk-button-primary">Habilitar</button>
-                                                    </div>
-                                                </form>
-                                            </div>
+                                    <div id="modalConfirmarActivar<?= $u['id'] ?>" uk-modal>
+                                        <div class="uk-modal-dialog uk-modal-body uk-width-medium">
+                                            <button class="uk-modal-close-default" type="button" uk-close></button>
+                                            <h2 class="uk-modal-title">Confirmar activación</h2>
+                                            <form action="?c=CUsuarios/active" method="POST">
+                                                <input type="hidden" name="id" value="<?= $u['id'] ?>">
+                                                <p>¿Estás seguro de que deseas habilitar a <?= htmlspecialchars($u['nombre']) ?>?</p>
+                                                <div class="uk-text-right">
+                                                    <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
+                                                    <button type="submit" class="uk-button uk-button-primary">Habilitar</button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
@@ -194,41 +195,48 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modalAgregar" tabindex="-1">
-        <div class="modal-dialog">
-            <form action="?c=CUsuarios/add" method="POST" class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Agregar Usuario</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label>Nombre</label>
-                        <input type="text" name="nombre" class="form-control" required>
+    <div id="modalAgregar" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body uk-width-1-2@m">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <h2 class="uk-modal-title">Agregar Usuario</h2>
+            <form action="?c=CUsuarios/add" method="POST">
+                <div class="uk-margin">
+                    <label class="uk-form-label">Nombre</label>
+                    <div class="uk-form-controls">
+                        <input type="text" name="nombre" class="uk-input" required>
                     </div>
-                    <div class="mb-3">
-                        <label>Rol</label>
-                        <select name="rol" class="form-control" required>
+                </div>
+                <div class="uk-margin">
+                    <label class="uk-form-label">Rol</label>
+                    <div class="uk-form-controls">
+                        <select name="rol" class="uk-select" required>
                             <option value="">Seleccionar rol</option>
                             <?php foreach ($roles as $r): ?>
                                 <option value="<?= $r['id'] ?>"><?= htmlspecialchars($r['nombre']) ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <label>Usuario</label>
-                        <input type="text" name="usuario" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Contraseña</label>
-                        <input type="password" name="clave" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Confirmar Contraseña</label>
-                        <input type="password" name="confirmar_clave" class="form-control" required>
+                </div>
+                <div class="uk-margin">
+                    <label class="uk-form-label">Usuario</label>
+                    <div class="uk-form-controls">
+                        <input type="text" name="usuario" class="uk-input" required>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="uk-margin">
+                    <label class="uk-form-label">Contraseña</label>
+                    <div class="uk-form-controls">
+                        <input type="password" name="clave" class="uk-input" required>
+                    </div>
+                </div>
+                <div class="uk-margin">
+                    <label class="uk-form-label">Confirmar Contraseña</label>
+                    <div class="uk-form-controls">
+                        <input type="password" name="confirmar_clave" class="uk-input" required>
+                    </div>
+                </div>
+                <div class="uk-text-right">
+                    <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
                     <button type="submit" class="uk-button uk-button-primary">Guardar</button>
                 </div>
             </form>

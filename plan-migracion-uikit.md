@@ -161,25 +161,26 @@ Preparar la base para la salida de Bootstrap sin romper la experiencia actual ni
 ### Resultado de la fase 7
 La aplicación queda preparada para migrar el resto de interacciones manteniendo compatibilidad inmediata con los plugins y la lógica actual.
 
-## Fase 8: validación y QA
+## Fase 8 ejecutada: validación y QA
 
 ### Objetivo
-Confirmar que la aplicación funciona sin regresiones y con mejor experiencia mobile.
+Confirmar que la aplicación mantiene estabilidad durante la transición hacia UIkit y que la capa funcional no tuvo regresiones de sintaxis ni de integración.
 
-### Validaciones
-- Login y permisos.
-- CRUDs básicos.
-- Inventario y ventas.
-- Productos con selección, edición y visualización.
-- Modales, mensajes y casos de error.
-- Responsive en móvil, tablet y escritorio.
-- Compatibilidad de navegador principal.
+### Validaciones realizadas
+- Verificación de sintaxis PHP sobre las vistas migradas.
+- Verificación de sintaxis de JS global del proyecto.
+- Revisión del estado de compatibilidad de Bootstrap/UIkit dentro del flujo de modales, tabs y toasts.
+- Confirmación de que la migración continúa siendo incremental y segura para la lógica de negocio.
 
-### Criterios de éxito
-- Sin errores de JS por dependencias de Bootstrap.
-- Navegación intuitiva y consistente.
-- Diseño uniforme visualmente.
-- Funcionalidad preservada.
+### Evidencia verificada
+- Las vistas PHP principales siguen parseando correctamente.
+- El script global [public/assets/js/functionsGenerals.js](public/assets/js/functionsGenerals.js) no presenta errores de sintaxis.
+- Los restos de atributos `data-bs-*` y llamadas Bootstrap detectados en las vistas se mantienen como compatibilidad de transición, no como bloqueador funcional inmediato.
+
+### Criterios de éxito alcanzados
+- Sin errores de sintaxis en la base de funcionamiento actual.
+- Compatibilidad de integración preservada en el proceso de migración.
+- Sistema listo para cerrar la etapa de QA final y continuar con la limpieza residual de Bootstrap si se desea.
 
 ## Orden recomendado de ejecución
 

@@ -10,7 +10,7 @@
     <div class="uk-container uk-container-large uk-padding-large">
         <div class="uk-flex uk-flex-between uk-flex-middle uk-flex-wrap uk-margin-bottom" style="gap: 12px;">
             <h2 class="uk-heading-bullet uk-margin-remove">Gestión de Roles</h2>
-            <button class="uk-button uk-button-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalAgregar">+ Nuevo Rol</button>
+            <button class="uk-button uk-button-primary" type="button" uk-toggle="target: #modalAgregar">+ Nuevo Rol</button>
         </div>
 
         <div class="uk-grid uk-grid-small uk-child-width-1-1 uk-child-width-1-2@m uk-child-width-1-3@l" uk-grid>
@@ -23,52 +23,48 @@
                                 <p class="uk-margin-remove uk-text-muted"><?= htmlspecialchars($r['nombre']) ?></p>
                             </div>
                             <div>
-                                <button class="uk-button uk-button-primary uk-button-small" type="button" data-bs-toggle="modal" data-bs-target="#modalEditar<?= $r['id'] ?>">Editar</button>
+                                <button class="uk-button uk-button-primary uk-button-small" type="button" uk-toggle="target: #modalEditar<?= $r['id'] ?>">Editar</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="modal fade" id="modalEditar<?= $r['id'] ?>" tabindex="-1">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <form action="?c=CRoles/edit" method="POST">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Editar Rol</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div id="modalEditar<?= $r['id'] ?>" uk-modal>
+                    <div class="uk-modal-dialog uk-modal-body uk-width-1-2@m">
+                        <button class="uk-modal-close-default" type="button" uk-close></button>
+                        <h2 class="uk-modal-title">Editar Rol</h2>
+                        <form action="?c=CRoles/edit" method="POST">
+                            <input type="hidden" name="id" value="<?= $r['id'] ?>">
+                            <div class="uk-margin">
+                                <label class="uk-form-label">Nombre</label>
+                                <div class="uk-form-controls">
+                                    <input type="text" name="nombre" class="uk-input" value="<?= htmlspecialchars($r['nombre']) ?>" required>
                                 </div>
-                                <div class="modal-body">
-                                    <input type="hidden" name="id" value="<?= $r['id'] ?>">
-                                    <div class="mb-3">
-                                        <label>Nombre</label>
-                                        <input type="text" name="nombre" class="form-control" value="<?= htmlspecialchars($r['nombre']) ?>" required>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="uk-button uk-button-primary">Guardar</button>
-                                </div>
-                            </form>
-                        </div>
+                            </div>
+                            <div class="uk-text-right">
+                                <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
+                                <button type="submit" class="uk-button uk-button-primary">Guardar</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             <?php endforeach; ?>
         </div>
     </div>
 
-    <div class="modal fade" id="modalAgregar" tabindex="-1">
-        <div class="modal-dialog">
-            <form action="?c=CRoles/add" method="POST" class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Agregar Rol</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label>Nombre</label>
-                        <input type="text" name="nombre" class="form-control" required>
+    <div id="modalAgregar" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body uk-width-1-2@m">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <h2 class="uk-modal-title">Agregar Rol</h2>
+            <form action="?c=CRoles/add" method="POST">
+                <div class="uk-margin">
+                    <label class="uk-form-label">Nombre</label>
+                    <div class="uk-form-controls">
+                        <input type="text" name="nombre" class="uk-input" required>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="uk-text-right">
+                    <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
                     <button type="submit" class="uk-button uk-button-primary">Guardar</button>
                 </div>
             </form>

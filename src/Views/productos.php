@@ -14,7 +14,7 @@ include_once 'src/Views/complements/header.php';
                 <strong>❌ Stock insuficiente:</strong><br>
                 <?= $_SESSION['stock_error'] ?>
             </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            <button type="button" class="uk-close uk-position-small uk-position-top-right" aria-label="Cerrar" onclick="this.closest('.toast').remove();"></button>
         </div>
     </div>
 </div>
@@ -27,7 +27,7 @@ include_once 'src/Views/complements/header.php';
     <div id="toastSuccess" class="toast show align-items-center text-bg-success border-0" role="alert">
         <div class="d-flex">
             <div class="toast-body">✅ Operación realizada con éxito.</div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            <button type="button" class="uk-close uk-position-small uk-position-top-right" aria-label="Cerrar" onclick="this.closest('.toast').remove();"></button>
         </div>
     </div>
 </div>
@@ -37,22 +37,22 @@ include_once 'src/Views/complements/header.php';
         <div class="uk-flex uk-flex-between uk-flex-middle uk-flex-wrap uk-margin-bottom" style="gap: 12px;">
             <h2 class="uk-heading-bullet uk-margin-remove">Productos</h2>
             <div class="uk-flex uk-flex-wrap" style="gap: 12px;">
-                <button class="uk-button uk-button-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalNuevo">+ Nuevo Producto</button>
-                <button class="uk-button uk-button-success" type="button" data-bs-toggle="modal" data-bs-target="#modalNuevoIngreso">+ Registrar Entrada</button>
-                <button class="uk-button uk-button-default" type="button" data-bs-toggle="modal" data-bs-target="#modalNuevaVenta">+ Registrar Venta</button>
+                <button class="uk-button uk-button-primary" type="button" uk-toggle="target: #modalNuevo">+ Nuevo Producto</button>
+                <button class="uk-button uk-button-success" type="button" uk-toggle="target: #modalNuevoIngreso">+ Registrar Entrada</button>
+                <button class="uk-button uk-button-default" type="button" uk-toggle="target: #modalNuevaVenta">+ Registrar Venta</button>
             </div>
         </div>
 
         <div class="uk-card uk-card-default uk-card-body">
             <ul class="nav nav-tabs mb-3" id="clienteTabs" role="tablist">
                 <li class="nav-item">
-                    <button class="nav-link active" id="productos-tab" data-bs-toggle="tab" data-bs-target="#productos" type="button">Productos</button>
+                    <button class="nav-link active" id="productos-tab" type="button">Productos</button>
                 </li>
                 <li class="nav-item">
-                    <button class="nav-link" id="entradas-tab" data-bs-toggle="tab" data-bs-target="#entradas" type="button">Entradas</button>
+                    <button class="nav-link" id="entradas-tab" type="button">Entradas</button>
                 </li>
                 <li class="nav-item">
-                    <button class="nav-link" id="ventas-tab" data-bs-toggle="tab" data-bs-target="#ventas" type="button">Ventas</button>
+                    <button class="nav-link" id="ventas-tab" type="button">Ventas</button>
                 </li>
             </ul>
             <div class="tab-content">
@@ -87,7 +87,7 @@ include_once 'src/Views/complements/header.php';
                                         <td>
                                             <img src="public/assets/img/products/<?= htmlspecialchars($p['imagen']) ?>"
                                                 alt="img" class="img-thumbnail" width="50" style="cursor:pointer"
-                                                data-bs-toggle="modal" data-bs-target="#modalImagen"
+                                                uk-toggle="target: #modalImagen"
                                                 onerror="this.onerror=null;this.src='public/assets/img/products/generic.png';"
                                                 onclick="verImagen('<?= htmlspecialchars($p['imagen']) ?>')">
                                         </td>
@@ -113,12 +113,9 @@ include_once 'src/Views/complements/header.php';
                                             <div class="accordion" id="accordionAcciones_<?= $p['id'] ?>">
                                                 <div class="accordion-item">
                                                     <button class="accordion-button collapsed p-2" type="button"
-                                                        data-bs-toggle="collapse"
-                                                        data-bs-target="#collapseAcciones_<?= $p['id'] ?>"
                                                         aria-expanded="false">
                                                     </button>
-                                                    <div id="collapseAcciones_<?= $p['id'] ?>" class="accordion-collapse collapse"
-                                                        data-bs-parent="#accordionAcciones_<?= $p['id'] ?>">
+                                                    <div id="collapseAcciones_<?= $p['id'] ?>" class="accordion-collapse collapse">
                                                         <div class="accordion-body p-2">
                                                             <div class="d-flex gap-1 flex-wrap">
                                                                 <button class="uk-button uk-button-default uk-button-small"
@@ -126,13 +123,11 @@ include_once 'src/Views/complements/header.php';
                                                                     Editar
                                                                 </button>
                                                                 <button class="uk-button uk-button-primary uk-button-small"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#modalIngresoRapido_<?= $p['id'] ?>">
+                                                                    uk-toggle="target: #modalIngresoRapido_<?= $p['id'] ?>">
                                                                     Entrada Rápida
                                                                 </button>
                                                                 <button class="uk-button uk-button-default uk-button-small"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#modalVentaRapida_<?= $p['id'] ?>"
+                                                                    uk-toggle="target: #modalVentaRapida_<?= $p['id'] ?>"
                                                                     data-precioProducto="<?= $p['precio'] ?>"
                                                                     data-stock="<?= (int)$p['stock'] ?>">
                                                                     Venta Rápida
@@ -146,96 +141,91 @@ include_once 'src/Views/complements/header.php';
                                     </tr>
 
                                     <!-- Modal Ingreso Rápido -->
-                                    <div class="modal fade" id="modalIngresoRapido_<?= $p['id'] ?>" tabindex="-1">
-                                        <div class="modal-dialog modal-lg">
-                                            <div class="modal-content">
-                                                <form method="POST" action="?c=CIngresos/add">
-                                                    <input type="hidden" name="id_usuario" value="<?= $_SESSION['id'] ?>">
-                                                    <input type="hidden" name="id_producto" value="<?= $p['id'] ?>">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Entrada Rápida - <?= htmlspecialchars($p['nombre']) ?></h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                    </div>
-                                                    <div class="modal-body row g-3">
-                                                        <div class="col-md-6 mb-3">
-                                                            <label class="form-label">Cantidad</label>
-                                                            <input type="number" name="cantidad" class="form-control" min="1" required>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label">Precio de Compra ($)</label>
-                                                            <input type="text" name="precio" class="form-control precio input-price" required>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label">Precio de Compra (Bs)</label>
-                                                            <input type="text" name="precio_bs" class="form-control input-price precio_bs">
-                                                        </div>
-                                                        <div class="alert alert-info">
-                                                            <strong>Nota:</strong> Este ingreso se registrará con el usuario actual y la fecha actual.
+                                    <div id="modalIngresoRapido_<?= $p['id'] ?>" uk-modal>
+                                        <div class="uk-modal-dialog uk-modal-body uk-width-2xlarge">
+                                            <button class="uk-modal-close-default" type="button" uk-close></button>
+                                            <h2 class="uk-modal-title">Entrada Rápida - <?= htmlspecialchars($p['nombre']) ?></h2>
+                                            <form method="POST" action="?c=CIngresos/add">
+                                                <input type="hidden" name="id_usuario" value="<?= $_SESSION['id'] ?>">
+                                                <input type="hidden" name="id_producto" value="<?= $p['id'] ?>">
+                                                <div class="uk-grid-small uk-child-width-1-2@m" uk-grid>
+                                                    <div>
+                                                        <label class="uk-form-label">Cantidad</label>
+                                                        <div class="uk-form-controls">
+                                                            <input type="number" name="cantidad" class="uk-input" min="1" required>
                                                         </div>
                                                     </div>
-                                                    <div class="modal-footer">
-                                                        <button type="submit" class="btn btn-primary">Registrar</button>
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                    <div>
+                                                        <label class="uk-form-label">Precio de Compra ($)</label>
+                                                        <div class="uk-form-controls">
+                                                            <input type="text" name="precio" class="uk-input precio input-price" required>
+                                                        </div>
                                                     </div>
-                                                </form>
-                                            </div>
+                                                    <div class="uk-width-1-1">
+                                                        <label class="uk-form-label">Precio de Compra (Bs)</label>
+                                                        <div class="uk-form-controls">
+                                                            <input type="text" name="precio_bs" class="uk-input input-price precio_bs">
+                                                        </div>
+                                                    </div>
+                                                    <div class="uk-width-1-1">
+                                                        <div class="uk-alert-primary" uk-alert>
+                                                            <p><strong>Nota:</strong> Este ingreso se registrará con el usuario actual y la fecha actual.</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="uk-text-right uk-margin-top">
+                                                    <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
+                                                    <button type="submit" class="uk-button uk-button-primary">Registrar</button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
 
                                     <!-- Modal Venta Rápida — con validación de stock en frontend -->
-                                    <div class="modal fade modal-venta-rapida"
-                                         id="modalVentaRapida_<?= $p['id'] ?>"
-                                         tabindex="-1"
+                                    <div id="modalVentaRapida_<?= $p['id'] ?>"
+                                         uk-modal
                                          data-id-producto="<?= $p['id'] ?>"
                                          data-stock="<?= (int)$p['stock'] ?>">
-                                        <div class="modal-dialog modal-lg">
-                                            <div class="modal-content">
-                                                <form class="form-venta-rapida" method="POST" action="?c=CVentas/add">
-                                                    <input type="hidden" name="id_usuario" value="<?= $_SESSION['id'] ?>">
-                                                    <input type="hidden" name="id_producto" value="<?= $p['id'] ?>">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Venta Rápida - <?= htmlspecialchars($p['nombre']) ?></h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        <div class="uk-modal-dialog uk-modal-body uk-width-2xlarge">
+                                            <button class="uk-modal-close-default" type="button" uk-close></button>
+                                            <h2 class="uk-modal-title">Venta Rápida - <?= htmlspecialchars($p['nombre']) ?></h2>
+                                            <form class="form-venta-rapida" method="POST" action="?c=CVentas/add">
+                                                <input type="hidden" name="id_usuario" value="<?= $_SESSION['id'] ?>">
+                                                <input type="hidden" name="id_producto" value="<?= $p['id'] ?>">
+                                                <div class="uk-margin">
+                                                    <div class="uk-alert-primary" uk-alert>
+                                                        <p>Stock disponible: <strong><?= (int)$p['stock'] ?></strong> unidad(es)</p>
                                                     </div>
-                                                    <div class="modal-body row g-3">
-                                                        <div class="col-12">
-                                                            <!-- Alerta de stock disponible -->
-                                                            <div class="alert alert-info mb-3 py-2">
-                                                                Stock disponible: <strong><?= (int)$p['stock'] ?></strong> unidad(es)
-                                                            </div>
-                                                            <!-- Zona de error de stock (dinámica) -->
-                                                            <div class="alert alert-danger stock-error-msg d-none" role="alert"></div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <label class="form-label">Cantidad</label>
-                                                            <input type="number"
-                                                                   name="cantidad"
-                                                                   class="form-control cantidad-venta-rapida"
-                                                                   min="1"
-                                                                   value="1"
-                                                                   max="<?= (int)$p['stock'] ?>"
-                                                                   data-stock="<?= (int)$p['stock'] ?>"
-                                                                   required>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <label class="form-label">Precio ($)</label>
-                                                            <input type="text" name="precio" class="form-control" value="<?= $p['precio'] ?>" readonly>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <label class="form-label">Precio (Bs)</label>
-                                                            <input type="text" name="precio_bs" class="form-control"
-                                                                value="<?= htmlspecialchars($p['precio'] * $tasaValor) ?>" readonly>
+                                                    <div class="uk-alert-danger stock-error-msg uk-hidden" role="alert"></div>
+                                                </div>
+                                                <div class="uk-grid-small uk-child-width-1-2@m" uk-grid>
+                                                    <div>
+                                                        <label class="uk-form-label">Cantidad</label>
+                                                        <div class="uk-form-controls">
+                                                            <input type="number" name="cantidad" class="uk-input cantidad-venta-rapida" min="1" value="1" max="<?= (int)$p['stock'] ?>" data-stock="<?= (int)$p['stock'] ?>" required>
                                                         </div>
                                                     </div>
-                                                    <div class="alert alert-info m-3 mb-0">
-                                                        <strong>Nota:</strong> Esta venta se registrará con el usuario actual y la fecha actual.
+                                                    <div>
+                                                        <label class="uk-form-label">Precio ($)</label>
+                                                        <div class="uk-form-controls">
+                                                            <input type="text" name="precio" class="uk-input" value="<?= $p['precio'] ?>" readonly>
+                                                        </div>
                                                     </div>
-                                                    <div class="modal-footer">
-                                                        <button type="submit" class="btn btn-primary btn-submit-venta-rapida">Registrar Venta</button>
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                    <div class="uk-width-1-1">
+                                                        <label class="uk-form-label">Precio (Bs)</label>
+                                                        <div class="uk-form-controls">
+                                                            <input type="text" name="precio_bs" class="uk-input" value="<?= htmlspecialchars($p['precio'] * $tasaValor) ?>" readonly>
+                                                        </div>
                                                     </div>
-                                                </form>
-                                            </div>
+                                                </div>
+                                                <div class="uk-alert-primary uk-margin-top" uk-alert>
+                                                    <p><strong>Nota:</strong> Esta venta se registrará con el usuario actual y la fecha actual.</p>
+                                                </div>
+                                                <div class="uk-text-right uk-margin-top">
+                                                    <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
+                                                    <button type="submit" class="uk-button uk-button-primary btn-submit-venta-rapida">Registrar Venta</button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
 
@@ -276,9 +266,8 @@ include_once 'src/Views/complements/header.php';
                                         <td><?= htmlspecialchars($i['total']) ?> $ / <?= htmlspecialchars($i['total_bs']) ?> Bs</td>
                                         <td class="text-muted small"><?= htmlspecialchars(implode(', ', $nombresProductosIngreso)) ?></td>
                                         <td>
-                                            <button class="btn btn-sm btn-info"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#modalDetallesIngreso"
+                                            <button class="uk-button uk-button-small uk-button-primary"
+                                                uk-toggle="target: #modalDetallesIngreso"
                                                 data-id="<?= $i['id'] ?>">Ver</button>
                                         </td>
                                     </tr>
@@ -313,9 +302,8 @@ include_once 'src/Views/complements/header.php';
                                             <span class="text-muted small">Cargando...</span>
                                         </td>
                                         <td>
-                                            <button class="btn btn-sm btn-info btn-ver-venta"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#modalDetallesVenta"
+                                            <button class="uk-button uk-button-small uk-button-primary btn-ver-venta"
+                                                uk-toggle="target: #modalDetallesVenta"
                                                 data-id="<?= $v['id'] ?>">Ver</button>
                                         </td>
                                     </tr>
@@ -331,253 +319,255 @@ include_once 'src/Views/complements/header.php';
     <!-- ── Modales globales ──────────────────────────────────────────────── -->
 
     <!-- Modal Imagen -->
-    <div class="modal fade" id="modalImagen" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content text-center">
-                <img id="imgGrande" src="" alt="Imagen producto" class="img-fluid rounded">
-            </div>
+    <div id="modalImagen" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body uk-text-center">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <img id="imgGrande" src="" alt="Imagen producto" class="uk-width-1-1 uk-border-rounded">
         </div>
     </div>
 
     <!-- Modal Registro de Ingreso Múltiple -->
-    <div class="modal fade" id="modalNuevoIngreso" tabindex="-1">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <form method="POST" action="?c=CIngresos/addMany">
-                    <input type="hidden" name="id_usuario" value="<?= $_SESSION['id'] ?>">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Registrar Nuevo Ingreso</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <button type="button" class="btn btn-outline-primary mb-2" onclick="agregarFilaIngreso()">+ Agregar Producto</button>
-                        <div class="table-responsive">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Producto</th><th>Cantidad</th><th>Precio ($)</th>
-                                        <th>Precio (Bs)</th><th>Subtotal ($)</th><th>Subtotal (Bs)</th><th>Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tbodyIngreso"></tbody>
-                            </table>
-                        </div>
-                        <div id="totalResumen" class="fw-bold text-end"></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Guardar Ingreso</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    </div>
-                </form>
-            </div>
+    <div id="modalNuevoIngreso" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body uk-width-2xlarge">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <h2 class="uk-modal-title">Registrar Nuevo Ingreso</h2>
+            <form method="POST" action="?c=CIngresos/addMany">
+                <input type="hidden" name="id_usuario" value="<?= $_SESSION['id'] ?>">
+                <div class="uk-margin">
+                    <button type="button" class="uk-button uk-button-default" onclick="agregarFilaIngreso()">+ Agregar Producto</button>
+                </div>
+                <div class="uk-overflow-auto">
+                    <table class="uk-table uk-table-divider uk-table-small uk-table-striped uk-table-middle">
+                        <thead>
+                            <tr>
+                                <th>Producto</th><th>Cantidad</th><th>Precio ($)</th>
+                                <th>Precio (Bs)</th><th>Subtotal ($)</th><th>Subtotal (Bs)</th><th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyIngreso"></tbody>
+                    </table>
+                </div>
+                <div id="totalResumen" class="uk-text-right uk-text-bold"></div>
+                <div class="uk-text-right uk-margin-top">
+                    <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
+                    <button type="submit" class="uk-button uk-button-primary">Guardar Ingreso</button>
+                </div>
+            </form>
         </div>
     </div>
 
     <!-- Modal Registro de Venta Múltiple (con validación AJAX de stock) -->
-    <div class="modal fade" id="modalNuevaVenta" tabindex="-1">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <form id="formVentaMultiple" method="POST" action="?c=CVentas/addMany">
-                    <input type="hidden" name="id_usuario" value="<?= $_SESSION['id'] ?>">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Registrar Nueva Venta</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <!-- Zona de errores de stock para venta múltiple -->
-                        <div id="stockErrorMultiple" class="alert alert-danger d-none" role="alert"></div>
-
-                        <button type="button" class="btn btn-outline-primary mb-2" onclick="agregarFilaVenta()">+ Agregar Producto</button>
-                        <div class="table-responsive">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Producto</th><th>Cantidad</th><th>Precio ($)</th>
-                                        <th>Precio (Bs)</th><th>Subtotal ($)</th><th>Subtotal (Bs)</th><th>Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tbodyVenta"></tbody>
-                            </table>
-                        </div>
-                        <div id="totalResumenVenta" class="fw-bold text-end"></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" id="btnGuardarVenta" class="btn btn-success">Guardar Venta</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    </div>
-                </form>
-            </div>
+    <div id="modalNuevaVenta" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body uk-width-2xlarge">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <h2 class="uk-modal-title">Registrar Nueva Venta</h2>
+            <form id="formVentaMultiple" method="POST" action="?c=CVentas/addMany">
+                <input type="hidden" name="id_usuario" value="<?= $_SESSION['id'] ?>">
+                <div class="uk-margin">
+                    <div id="stockErrorMultiple" class="uk-alert-danger uk-hidden" uk-alert role="alert"></div>
+                    <button type="button" class="uk-button uk-button-default" onclick="agregarFilaVenta()">+ Agregar Producto</button>
+                </div>
+                <div class="uk-overflow-auto">
+                    <table class="uk-table uk-table-divider uk-table-small uk-table-striped uk-table-middle">
+                        <thead>
+                            <tr>
+                                <th>Producto</th><th>Cantidad</th><th>Precio ($)</th>
+                                <th>Precio (Bs)</th><th>Subtotal ($)</th><th>Subtotal (Bs)</th><th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyVenta"></tbody>
+                    </table>
+                </div>
+                <div id="totalResumenVenta" class="uk-text-right uk-text-bold"></div>
+                <div class="uk-text-right uk-margin-top">
+                    <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
+                    <button type="button" id="btnGuardarVenta" class="uk-button uk-button-primary">Guardar Venta</button>
+                </div>
+            </form>
         </div>
     </div>
 
     <!-- Modal Detalles Ingreso -->
-    <div class="modal fade" id="modalDetallesIngreso" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Detalles del Ingreso</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <table class="tableDetails table table-striped table-bordered">
-                        <thead><tr><th>Producto</th><th>Cantidad</th><th>Subtotal</th></tr></thead>
-                        <tbody id="tbodyDetallesIngreso"></tbody>
-                    </table>
-                    <div class="text-end"><strong id="totalDetalleIngreso"></strong></div>
-                </div>
+    <div id="modalDetallesIngreso" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body uk-width-1-2@m">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <h2 class="uk-modal-title">Detalles del Ingreso</h2>
+            <div class="uk-overflow-auto">
+                <table class="uk-table uk-table-divider uk-table-small uk-table-striped">
+                    <thead><tr><th>Producto</th><th>Cantidad</th><th>Subtotal</th></tr></thead>
+                    <tbody id="tbodyDetallesIngreso"></tbody>
+                </table>
             </div>
+            <div class="uk-text-right"><strong id="totalDetalleIngreso"></strong></div>
         </div>
     </div>
 
     <!-- Modal Detalles Venta -->
-    <div class="modal fade" id="modalDetallesVenta" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Detalles de la Venta</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <table class="tableDetails table table-striped table-bordered">
-                        <thead><tr><th>Producto</th><th>Cantidad</th><th>Subtotal</th></tr></thead>
-                        <tbody id="tbodyDetallesVenta"></tbody>
-                    </table>
-                    <div class="text-end"><strong id="totalDetallesVenta"></strong></div>
-                </div>
+    <div id="modalDetallesVenta" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body uk-width-1-2@m">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <h2 class="uk-modal-title">Detalles de la Venta</h2>
+            <div class="uk-overflow-auto">
+                <table class="uk-table uk-table-divider uk-table-small uk-table-striped">
+                    <thead><tr><th>Producto</th><th>Cantidad</th><th>Subtotal</th></tr></thead>
+                    <tbody id="tbodyDetallesVenta"></tbody>
+                </table>
             </div>
+            <div class="uk-text-right"><strong id="totalDetallesVenta"></strong></div>
         </div>
     </div>
 
     <!-- Modal Nuevo Producto -->
-    <div class="modal fade" id="modalNuevo" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <form method="POST" action="?c=CProductos/add" enctype="multipart/form-data">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Nuevo Producto</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Nombre</label>
-                                <input type="text" name="nombre" class="form-control" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Marca</label>
-                                <input type="text" name="marca" class="form-control">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Precio ($)</label>
-                                <input type="text" name="precio" class="form-control input-price" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Categoría</label>
-                                <select name="id_categoria" class="form-select select-categoria" required>
-                                    <?php if (!empty($categorias)): ?>
-                                        <option value="">Seleccione una categoría</option>
-                                        <?php foreach ($categorias as $cat): ?>
-                                            <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['nombre']) ?></option>
-                                        <?php endforeach; ?>
-                                    <?php else: ?>
-                                        <option value="" disabled selected>⚠️ No hay categorías. Cree una primero.</option>
-                                    <?php endif; ?>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label">Stock Mínimo</label>
-                                <input type="number" name="stock_minimo" class="form-control" required>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label">Stock Máximo</label>
-                                <input type="number" name="stock_maximo" class="form-control" required>
-                            </div>
-                            <div class="col-md-8">
-                                <label class="form-label">Imagen</label>
-                                <input type="file" name="imagen" class="form-control"
-                                    onchange="previewImagen(this, 'previewNuevo')">
-                                <img id="previewNuevo" src="" alt="Vista previa"
-                                    class="img-thumbnail mt-2" width="100" style="display:none;">
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Descripción</label>
-                                <textarea name="descripcion" class="form-control" rows="2"></textarea>
-                            </div>
+    <div id="modalNuevo" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body uk-width-2xlarge">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <h2 class="uk-modal-title">Nuevo Producto</h2>
+            <form method="POST" action="?c=CProductos/add" enctype="multipart/form-data">
+                <div class="uk-grid-small uk-child-width-1-2@m" uk-grid>
+                    <div>
+                        <label class="uk-form-label">Nombre</label>
+                        <div class="uk-form-controls">
+                            <input type="text" name="nombre" class="uk-input" required>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Guardar</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <div>
+                        <label class="uk-form-label">Marca</label>
+                        <div class="uk-form-controls">
+                            <input type="text" name="marca" class="uk-input">
+                        </div>
                     </div>
-                </form>
-            </div>
+                    <div>
+                        <label class="uk-form-label">Precio ($)</label>
+                        <div class="uk-form-controls">
+                            <input type="text" name="precio" class="uk-input input-price" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="uk-form-label">Categoría</label>
+                        <div class="uk-form-controls">
+                            <select name="id_categoria" class="uk-select select-categoria" required>
+                                <?php if (!empty($categorias)): ?>
+                                    <option value="">Seleccione una categoría</option>
+                                    <?php foreach ($categorias as $cat): ?>
+                                        <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['nombre']) ?></option>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <option value="" disabled selected>⚠️ No hay categorías. Cree una primero.</option>
+                                <?php endif; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="uk-form-label">Stock Mínimo</label>
+                        <div class="uk-form-controls">
+                            <input type="number" name="stock_minimo" class="uk-input" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="uk-form-label">Stock Máximo</label>
+                        <div class="uk-form-controls">
+                            <input type="number" name="stock_maximo" class="uk-input" required>
+                        </div>
+                    </div>
+                    <div class="uk-width-1-1">
+                        <label class="uk-form-label">Imagen</label>
+                        <div class="uk-form-controls">
+                            <input type="file" name="imagen" class="uk-input" onchange="previewImagen(this, 'previewNuevo')">
+                            <img id="previewNuevo" src="" alt="Vista previa" class="uk-border-rounded uk-margin-small-top" width="100" style="display:none;">
+                        </div>
+                    </div>
+                    <div class="uk-width-1-1">
+                        <label class="uk-form-label">Descripción</label>
+                        <div class="uk-form-controls">
+                            <textarea name="descripcion" class="uk-textarea" rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="uk-text-right uk-margin-top">
+                    <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
+                    <button type="submit" class="uk-button uk-button-primary">Guardar</button>
+                </div>
+            </form>
         </div>
     </div>
 
     <!-- Modal Editar Producto -->
-    <div class="modal fade" id="modalEditar" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <form method="POST" action="?c=CProductos/edit" enctype="multipart/form-data">
-                    <input type="hidden" name="id" id="editId">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Editar Producto</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <div id="modalEditar" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body uk-width-2xlarge">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <h2 class="uk-modal-title">Editar Producto</h2>
+            <form method="POST" action="?c=CProductos/edit" enctype="multipart/form-data">
+                <input type="hidden" name="id" id="editId">
+                <div class="uk-grid-small uk-child-width-1-2@m" uk-grid>
+                    <div>
+                        <label class="uk-form-label">Nombre</label>
+                        <div class="uk-form-controls">
+                            <input name="nombre" id="editNombre" class="uk-input" required>
+                        </div>
                     </div>
-                    <div class="modal-body row g-3">
-                        <div class="col-md-6">
-                            <label>Nombre</label>
-                            <input name="nombre" id="editNombre" class="form-control" required>
+                    <div>
+                        <label class="uk-form-label">Marca</label>
+                        <div class="uk-form-controls">
+                            <input name="marca" id="editMarca" class="uk-input">
                         </div>
-                        <div class="col-md-6">
-                            <label>Marca</label>
-                            <input name="marca" id="editMarca" class="form-control">
+                    </div>
+                    <div>
+                        <label class="uk-form-label">Precio ($)</label>
+                        <div class="uk-form-controls">
+                            <input type="text" name="precio" id="editPrecio" class="uk-input input-price" required>
                         </div>
-                        <div class="col-md-6">
-                            <label>Precio ($)</label>
-                            <input type="text" name="precio" id="editPrecio" class="form-control input-price" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label>Stock Mínimo</label>
-                            <input type="number" name="stock_minimo" id="editStockMinimo" class="form-control" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label>Stock Máximo</label>
-                            <input type="number" name="stock_maximo" id="editStockMaximo" class="form-control" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label>Categoría</label>
-                            <select name="id_categoria" id="editCategoria" class="form-select">
+                    </div>
+                    <div>
+                        <label class="uk-form-label">Categoría</label>
+                        <div class="uk-form-controls">
+                            <select name="id_categoria" id="editCategoria" class="uk-select">
                                 <?php foreach ($categorias as $cat): ?>
                                     <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['nombre']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="col-md-6">
-                            <label>Imagen</label>
-                            <input type="file" name="imagen" class="form-control"
-                                onchange="previewImagen(this, 'previewEditar')">
+                    </div>
+                    <div>
+                        <label class="uk-form-label">Stock Mínimo</label>
+                        <div class="uk-form-controls">
+                            <input type="number" name="stock_minimo" id="editStockMinimo" class="uk-input" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="uk-form-label">Stock Máximo</label>
+                        <div class="uk-form-controls">
+                            <input type="number" name="stock_maximo" id="editStockMaximo" class="uk-input" required>
+                        </div>
+                    </div>
+                    <div class="uk-width-1-1">
+                        <label class="uk-form-label">Imagen</label>
+                        <div class="uk-form-controls">
+                            <input type="file" name="imagen" class="uk-input" onchange="previewImagen(this, 'previewEditar')">
                             <input type="hidden" name="imagen" id="editImagenHidden">
-                            <img id="previewEditar" src="" alt="Preview" class="img-thumbnail mt-2" width="100">
+                            <img id="previewEditar" src="" alt="Preview" class="uk-border-rounded uk-margin-small-top" width="100">
                         </div>
-                        <div class="col-12">
-                            <label>Descripción</label>
-                            <textarea name="descripcion" id="editDescripcion" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="uk-width-1-1">
+                        <label class="uk-form-label">Descripción</label>
+                        <div class="uk-form-controls">
+                            <textarea name="descripcion" id="editDescripcion" class="uk-textarea" rows="2"></textarea>
                         </div>
-                        <div class="col-md-4">
-                            <label>Estado</label>
-                            <select name="estado" id="editEstado" class="form-select">
+                    </div>
+                    <div>
+                        <label class="uk-form-label">Estado</label>
+                        <div class="uk-form-controls">
+                            <select name="estado" id="editEstado" class="uk-select">
                                 <option value="1">Activo</option>
                                 <option value="0">Inactivo</option>
                             </select>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-warning">Actualizar</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    </div>
-                </form>
-            </div>
+                </div>
+                <div class="uk-text-right uk-margin-top">
+                    <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
+                    <button type="submit" class="uk-button uk-button-primary">Actualizar</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -676,7 +666,8 @@ include_once 'src/Views/complements/header.php';
     document.addEventListener("DOMContentLoaded", function () {
         const hash = window.location.hash;
         if (hash) {
-            const tabTrigger = document.querySelector(`button[data-bs-target="${hash}"]`);
+            const tabId = hash.replace('#', '');
+            const tabTrigger = document.getElementById(`${tabId}-tab`);
             if (tabTrigger) showTabFromTrigger(tabTrigger);
         }
         
@@ -685,12 +676,12 @@ include_once 'src/Views/complements/header.php';
         initVentaMultipleValidacion();
         
         // Aplicar formateo a los inputs de entrada rápida existentes
-        $('.modal[id^="modalIngresoRapido"] .precio, .modal[id^="modalIngresoRapido"] .precio_bs').each(function() {
+        $('[id^="modalIngresoRapido"][uk-modal] .precio, [id^="modalIngresoRapido"][uk-modal] .precio_bs').each(function() {
             formatearInputPrecio(this);
         });
 
         // Aplicar formateo a los inputs de venta rápida existentes
-        $('.modal[id^="modalVentaRapida"] .precio, .modal[id^="modalVentaRapida"] .precio_bs').each(function() {
+        $('[id^="modalVentaRapida"][uk-modal] .precio, [id^="modalVentaRapida"][uk-modal] .precio_bs').each(function() {
             formatearInputPrecio(this);
         });
 
@@ -702,20 +693,23 @@ include_once 'src/Views/complements/header.php';
         });
     });
 
-    $('#modalNuevo').on('shown.bs.modal', function () {
-        $('.select-categoria').select2({
-            dropdownParent: $('#modalNuevo'),
-            placeholder: 'Seleccione una categoría',
-            allowClear: true
+    const modalNuevo = document.getElementById('modalNuevo');
+    if (modalNuevo && window.UIkit && UIkit.util) {
+        UIkit.util.on(modalNuevo, 'shown', function () {
+            $('.select-categoria').select2({
+                dropdownParent: $('#modalNuevo'),
+                placeholder: 'Seleccione una categoría',
+                allowClear: true
+            });
         });
-    });
+    }
 
     // ═══════════════════════════════════════════════════════════════════════
     // VALIDACIÓN VENTA RÁPIDA (CORREGIDA)
     // ═══════════════════════════════════════════════════════════════════════
     function initVentaRapidaValidacion() {
         // Para cada modal de venta rápida
-        document.querySelectorAll('.modal[id^="modalVentaRapida"]').forEach(function(modal) {
+        document.querySelectorAll('[id^="modalVentaRapida"][uk-modal]').forEach(function(modal) {
             const cantidadInput = modal.querySelector('.cantidad-venta-rapida');
             const precioInput = modal.querySelector('input[name="precio"]');
             const precioBsInput = modal.querySelector('input[name="precio_bs"]');
@@ -978,14 +972,14 @@ include_once 'src/Views/complements/header.php';
     });
 
     // ── Eventos de precios para entrada rápida ───────────────────────────
-    $(document).on('keyup', '.modal[id^="modalIngresoRapido"] .precio', function() {
-        const modal = $(this).closest('.modal');
+    $(document).on('keyup', '[id^="modalIngresoRapido"][uk-modal] .precio', function() {
+        const modal = $(this).closest('[uk-modal]');
         const v = parseMoneda($(this).val());
         modal.find('.precio_bs').val(formatMoneda(v * tasa));
     });
 
-    $(document).on('keyup', '.modal[id^="modalIngresoRapido"] .precio_bs', function() {
-        const modal = $(this).closest('.modal');
+    $(document).on('keyup', '[id^="modalIngresoRapido"][uk-modal] .precio_bs', function() {
+        const modal = $(this).closest('[uk-modal]');
         const v = parseMoneda($(this).val());
         modal.find('.precio').val(formatMoneda(v / tasa));
     });
@@ -998,9 +992,8 @@ include_once 'src/Views/complements/header.php';
         info: false
     });
 
-    // ── Modales de detalles ───────────────────────────────────────────────
-    $('#modalDetallesVenta').on('show.bs.modal', function(event) {
-        const idVenta = $(event.relatedTarget).data('id');
+    // ── Modales de detalles con UIkit ────────────────────────────────────
+    function cargarDetallesVenta(idVenta) {
         $.ajax({
             type: 'POST', 
             url: '?c=CVentas/searchDetails',
@@ -1024,10 +1017,9 @@ include_once 'src/Views/complements/header.php';
                 }
             }
         });
-    });
+    }
 
-    $('#modalDetallesIngreso').on('show.bs.modal', function(event) {
-        const idIngreso = $(event.relatedTarget).data('id');
+    function cargarDetallesIngreso(idIngreso) {
         $.ajax({
             type: 'POST', 
             url: '?c=CIngresos/searchDetails',
@@ -1051,6 +1043,27 @@ include_once 'src/Views/complements/header.php';
                 }
             }
         });
+    }
+
+    document.addEventListener('click', function (event) {
+        const trigger = event.target.closest('[uk-toggle]');
+        if (!trigger) return;
+
+        const ukToggleValue = trigger.getAttribute('uk-toggle') || '';
+        const target = ukToggleValue.match(/#([A-Za-z0-9_-]+)/);
+        if (!target) return;
+
+        const modalId = target[1];
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+
+        const id = trigger.dataset.id;
+        if (modalId === 'modalDetallesVenta' && id) {
+            cargarDetallesVenta(id);
+        }
+        if (modalId === 'modalDetallesIngreso' && id) {
+            cargarDetallesIngreso(id);
+        }
     });
 
     // ── Tablas dinámicas ingreso/venta múltiple ───────────────────────────

@@ -10,7 +10,7 @@
     <div class="uk-container uk-container-large uk-padding-large">
         <div class="uk-flex uk-flex-between uk-flex-middle uk-flex-wrap uk-margin-bottom" style="gap: 12px;">
             <h2 class="uk-heading-bullet uk-margin-remove">Gestión de Clientes</h2>
-            <button class="uk-button uk-button-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalAgregar">+ Nuevo Cliente</button>
+            <button class="uk-button uk-button-primary" type="button" uk-toggle="target: #modalAgregar">+ Nuevo Cliente</button>
         </div>
 
         <div class="uk-card uk-card-default uk-card-body">
@@ -40,54 +40,47 @@
                                         <td><?= htmlspecialchars($c['telefono']) ?></td>
                                         <td><?= htmlspecialchars($c['direccion']) ?></td>
                                         <td>
-                                            <button class="uk-button uk-button-primary uk-button-small" type="button" data-bs-toggle="modal" data-bs-target="#modalEditar<?= $c['id'] ?>">Editar</button>
-                                            <button type="button" class="uk-button uk-button-danger uk-button-small" data-bs-toggle="modal" data-bs-target="#modalConfirmarEliminar<?= $c['id'] ?>">Eliminar</button>
+                                            <button class="uk-button uk-button-primary uk-button-small" type="button" uk-toggle="target: #modalEditar<?= $c['id'] ?>">Editar</button>
+                                            <button type="button" class="uk-button uk-button-danger uk-button-small" uk-toggle="target: #modalConfirmarEliminar<?= $c['id'] ?>">Eliminar</button>
                                         </td>
                                     </tr>
-                                    <div class="modal fade" id="modalEditar<?= $c['id'] ?>" tabindex="-1">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <form action="?c=CClientes/edit" method="POST">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Editar Cliente</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    <div id="modalEditar<?= $c['id'] ?>" uk-modal>
+                                        <div class="uk-modal-dialog uk-modal-body uk-width-1-2@m">
+                                            <button class="uk-modal-close-default" type="button" uk-close></button>
+                                            <h2 class="uk-modal-title">Editar Cliente</h2>
+                                            <form action="?c=CClientes/edit" method="POST">
+                                                <input type="hidden" name="id" value="<?= $c['id'] ?>">
+                                                <div class="uk-margin">
+                                                    <label class="uk-form-label">Teléfono</label>
+                                                    <div class="uk-form-controls">
+                                                        <input type="text" name="telefono" class="uk-input" value="<?= htmlspecialchars($c['telefono']) ?>">
                                                     </div>
-                                                    <div class="modal-body">
-                                                        <input type="hidden" name="id" value="<?= $c['id'] ?>">
-                                                        <div class="mb-3">
-                                                            <label>Teléfono</label>
-                                                            <input type="text" name="telefono" class="form-control" value="<?= htmlspecialchars($c['telefono']) ?>">
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label>Dirección</label>
-                                                            <textarea name="direccion" class="form-control"><?= htmlspecialchars($c['direccion']) ?></textarea>
-                                                        </div>
+                                                </div>
+                                                <div class="uk-margin">
+                                                    <label class="uk-form-label">Dirección</label>
+                                                    <div class="uk-form-controls">
+                                                        <textarea name="direccion" class="uk-textarea"><?= htmlspecialchars($c['direccion']) ?></textarea>
                                                     </div>
-                                                    <div class="modal-footer">
-                                                        <button type="submit" class="uk-button uk-button-primary">Guardar</button>
-                                                    </div>
-                                                </form>
-                                            </div>
+                                                </div>
+                                                <div class="uk-text-right">
+                                                    <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
+                                                    <button type="submit" class="uk-button uk-button-primary">Guardar</button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
-                                    <div class="modal fade" id="modalConfirmarEliminar<?= $c['id'] ?>" tabindex="-1">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <form action="?c=CClientes/delete" method="POST">
-                                                    <input type="hidden" name="id" value="<?= $c['id'] ?>">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Confirmar eliminación</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        ¿Estás seguro de que deseas inhabilitar a <?= htmlspecialchars($c['nombre']) ?>?
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="uk-button uk-button-default" data-bs-dismiss="modal">Cancelar</button>
-                                                        <button type="submit" class="uk-button uk-button-danger">Eliminar</button>
-                                                    </div>
-                                                </form>
-                                            </div>
+                                    <div id="modalConfirmarEliminar<?= $c['id'] ?>" uk-modal>
+                                        <div class="uk-modal-dialog uk-modal-body uk-width-medium">
+                                            <button class="uk-modal-close-default" type="button" uk-close></button>
+                                            <h2 class="uk-modal-title">Confirmar eliminación</h2>
+                                            <form action="?c=CClientes/delete" method="POST">
+                                                <input type="hidden" name="id" value="<?= $c['id'] ?>">
+                                                <p>¿Estás seguro de que deseas inhabilitar a <?= htmlspecialchars($c['nombre']) ?>?</p>
+                                                <div class="uk-text-right">
+                                                    <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
+                                                    <button type="submit" class="uk-button uk-button-danger">Eliminar</button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
@@ -116,54 +109,47 @@
                                         <td><?= htmlspecialchars($c['telefono']) ?></td>
                                         <td><?= htmlspecialchars($c['direccion']) ?></td>
                                         <td>
-                                            <button class="uk-button uk-button-primary uk-button-small" type="button" data-bs-toggle="modal" data-bs-target="#modalEditar<?= $c['id'] ?>">Editar</button>
-                                            <button type="button" class="uk-button uk-button-primary uk-button-small" data-bs-toggle="modal" data-bs-target="#modalConfirmarActivar<?= $c['id'] ?>">Activar</button>
+                                            <button class="uk-button uk-button-primary uk-button-small" type="button" uk-toggle="target: #modalEditar<?= $c['id'] ?>">Editar</button>
+                                            <button type="button" class="uk-button uk-button-primary uk-button-small" uk-toggle="target: #modalConfirmarActivar<?= $c['id'] ?>">Activar</button>
                                         </td>
                                     </tr>
-                                    <div class="modal fade" id="modalEditar<?= $c['id'] ?>" tabindex="-1">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <form action="?c=CClientes/edit" method="POST">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Editar Cliente</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    <div id="modalEditar<?= $c['id'] ?>" uk-modal>
+                                        <div class="uk-modal-dialog uk-modal-body uk-width-1-2@m">
+                                            <button class="uk-modal-close-default" type="button" uk-close></button>
+                                            <h2 class="uk-modal-title">Editar Cliente</h2>
+                                            <form action="?c=CClientes/edit" method="POST">
+                                                <input type="hidden" name="id" value="<?= $c['id'] ?>">
+                                                <div class="uk-margin">
+                                                    <label class="uk-form-label">Teléfono</label>
+                                                    <div class="uk-form-controls">
+                                                        <input type="text" name="telefono" class="uk-input" value="<?= htmlspecialchars($c['telefono']) ?>">
                                                     </div>
-                                                    <div class="modal-body">
-                                                        <input type="hidden" name="id" value="<?= $c['id'] ?>">
-                                                        <div class="mb-3">
-                                                            <label>Teléfono</label>
-                                                            <input type="text" name="telefono" class="form-control" value="<?= htmlspecialchars($c['telefono']) ?>">
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label>Dirección</label>
-                                                            <textarea name="direccion" class="form-control"><?= htmlspecialchars($c['direccion']) ?></textarea>
-                                                        </div>
+                                                </div>
+                                                <div class="uk-margin">
+                                                    <label class="uk-form-label">Dirección</label>
+                                                    <div class="uk-form-controls">
+                                                        <textarea name="direccion" class="uk-textarea"><?= htmlspecialchars($c['direccion']) ?></textarea>
                                                     </div>
-                                                    <div class="modal-footer">
-                                                        <button type="submit" class="uk-button uk-button-primary">Guardar</button>
-                                                    </div>
-                                                </form>
-                                            </div>
+                                                </div>
+                                                <div class="uk-text-right">
+                                                    <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
+                                                    <button type="submit" class="uk-button uk-button-primary">Guardar</button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
-                                    <div class="modal fade" id="modalConfirmarActivar<?= $c['id'] ?>" tabindex="-1">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <form action="?c=CClientes/active" method="POST">
-                                                    <input type="hidden" name="id" value="<?= $c['id'] ?>">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Confirmar activación</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        ¿Estás seguro de que deseas habilitar a <?= htmlspecialchars($c['nombre']) ?>?
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="uk-button uk-button-default" data-bs-dismiss="modal">Cancelar</button>
-                                                        <button type="submit" class="uk-button uk-button-primary">Activar</button>
-                                                    </div>
-                                                </form>
-                                            </div>
+                                    <div id="modalConfirmarActivar<?= $c['id'] ?>" uk-modal>
+                                        <div class="uk-modal-dialog uk-modal-body uk-width-medium">
+                                            <button class="uk-modal-close-default" type="button" uk-close></button>
+                                            <h2 class="uk-modal-title">Confirmar activación</h2>
+                                            <form action="?c=CClientes/active" method="POST">
+                                                <input type="hidden" name="id" value="<?= $c['id'] ?>">
+                                                <p>¿Estás seguro de que deseas habilitar a <?= htmlspecialchars($c['nombre']) ?>?</p>
+                                                <div class="uk-text-right">
+                                                    <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
+                                                    <button type="submit" class="uk-button uk-button-primary">Activar</button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
@@ -175,32 +161,37 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modalAgregar" tabindex="-1">
-        <div class="modal-dialog">
-            <form action="?c=CClientes/add" method="POST" class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Agregar Cliente</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label>Nombre</label>
-                        <input type="text" name="nombre" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Cédula/RIF</label>
-                        <input type="text" name="cedula_rif" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Teléfono</label>
-                        <input type="text" name="telefono" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Dirección</label>
-                        <textarea name="direccion" class="form-control" required></textarea>
+    <div id="modalAgregar" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body uk-width-1-2@m">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <h2 class="uk-modal-title">Agregar Cliente</h2>
+            <form action="?c=CClientes/add" method="POST">
+                <div class="uk-margin">
+                    <label class="uk-form-label">Nombre</label>
+                    <div class="uk-form-controls">
+                        <input type="text" name="nombre" class="uk-input" required>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="uk-margin">
+                    <label class="uk-form-label">Cédula/RIF</label>
+                    <div class="uk-form-controls">
+                        <input type="text" name="cedula_rif" class="uk-input" required>
+                    </div>
+                </div>
+                <div class="uk-margin">
+                    <label class="uk-form-label">Teléfono</label>
+                    <div class="uk-form-controls">
+                        <input type="text" name="telefono" class="uk-input" required>
+                    </div>
+                </div>
+                <div class="uk-margin">
+                    <label class="uk-form-label">Dirección</label>
+                    <div class="uk-form-controls">
+                        <textarea name="direccion" class="uk-textarea" required></textarea>
+                    </div>
+                </div>
+                <div class="uk-text-right">
+                    <button type="button" class="uk-button uk-button-default uk-modal-close">Cancelar</button>
                     <button type="submit" class="uk-button uk-button-primary">Guardar</button>
                 </div>
             </form>

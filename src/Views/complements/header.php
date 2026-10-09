@@ -19,7 +19,7 @@
 
             <div class="uk-navbar-right">
                 <div class="uk-flex uk-flex-middle uk-flex-wrap uk-flex-wrap-around">
-                    <button class="uk-button uk-button-text uk-margin-small-right uk-flex uk-flex-middle uk-text-white" id="bcvDiv" type="button" data-bs-toggle="modal" data-bs-target="#modalTasa" style="padding: 0; min-height: auto;">
+                    <button class="uk-button uk-button-text uk-margin-small-right uk-flex uk-flex-middle uk-text-white" id="bcvDiv" type="button" uk-toggle="target: #modalTasa" style="padding: 0; min-height: auto;">
                         <img src="./public/assets/img/bcv2.png" alt="BCV" width="40" style="border-radius: 8px;">
                         <span class="uk-margin-small-left uk-text-bold">Dólar BCV:</span>
                         <span class="uk-text-success uk-margin-small-left uk-text-bold" id="Dolar_bcv"><?= $tasaValor ?> Bs</span>
@@ -38,33 +38,29 @@
 </div>
 
 <!-- Modal Tasa -->
-<div class="modal fade" id="modalTasa" tabindex="-1" aria-labelledby="modalTasaLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <form id="formTasa">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalTasaLabel">Actualizar Tasa BCV</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+<div id="modalTasa" uk-modal>
+  <div class="uk-modal-dialog uk-modal-body uk-width-1-2@m">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <h2 class="uk-modal-title" id="modalTasaLabel">Actualizar Tasa BCV</h2>
+    <form id="formTasa">
+      <div class="uk-margin">
+        <label for="inputTasa" class="uk-form-label">Valor actual (Bs):</label>
+        <div class="uk-form-controls">
+          <input type="text" step="0.01" class="uk-input" id="inputTasa" name="valor" required>
+          <input type="hidden" id="inputTasaId" name="id">
         </div>
-        <div class="modal-body">
-          <div class="mb-3">
-            <label for="inputTasa" class="form-label">Valor actual (Bs):</label>
-            <input type="text" step="0.01" class="form-control" id="inputTasa" name="valor" required>
-            <input type="hidden" id="inputTasaId" name="id">
-          </div>
-          <div class="mb-2">
-            <button type="button" class="btn btn-outline-primary btn-sm" id="btnActualizarApi">Actualizar con API BCV</button>
-          </div>
-          <div>
-            <label class="form-label">Última actualización:</label>
-            <span id="fechaActualizacion" class="fw-bold"></span>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-success">Guardar</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        </div>
-      </form>
-    </div>
+      </div>
+      <div class="uk-margin-small-bottom">
+        <button type="button" class="uk-button uk-button-default uk-button-small" id="btnActualizarApi">Actualizar con API BCV</button>
+      </div>
+      <div class="uk-margin-small-bottom">
+        <label class="uk-form-label">Última actualización:</label>
+        <span id="fechaActualizacion" class="uk-text-bold"></span>
+      </div>
+      <div class="uk-text-right">
+        <button type="button" class="uk-button uk-button-default uk-modal-close">Cerrar</button>
+        <button type="submit" class="uk-button uk-button-primary">Guardar</button>
+      </div>
+    </form>
   </div>
 </div>

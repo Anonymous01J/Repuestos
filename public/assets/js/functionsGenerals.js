@@ -125,8 +125,10 @@ $(document).ready(function () {
     InputPrice(".input-price");
 
     // Modal Tasa BCV
-    $('#modalTasa').on('show.bs.modal', function () {
-        $.get('?c=CHome/tasa', function(data) {
+    const modalTasa = document.getElementById('modalTasa');
+    if (modalTasa && window.UIkit && UIkit.util) {
+        UIkit.util.on(modalTasa, 'beforeshow', function () {
+            $.get('?c=CHome/tasa', function(data) {
                 let tasa = JSON.parse(data);
                 if (!tasa.error) {
                     $('#inputTasa').val(tasa.valor);
@@ -139,6 +141,7 @@ $(document).ready(function () {
                 }
             });
         });
+    }
 
     $('#btnActualizarApi').on('click', function() {
         fetch("https://ve.dolarapi.com/v1/dolares")
