@@ -146,9 +146,29 @@ function initAppLoader() {
     window.addEventListener('load', hideLoader, { once: true });
 }
 
+function initResponsiveHeaderOffset() {
+    const header = document.querySelector('.app-shell-header');
+    if (!header) return;
+
+    const updateHeaderHeight = function () {
+        const height = Math.ceil(header.getBoundingClientRect().height);
+        document.documentElement.style.setProperty('--app-header-height', `${height}px`);
+    };
+
+    updateHeaderHeight();
+
+    if ('ResizeObserver' in window) {
+        const headerResizeObserver = new ResizeObserver(updateHeaderHeight);
+        headerResizeObserver.observe(header);
+    } else {
+        window.addEventListener('resize', updateHeaderHeight, { passive: true });
+    }
+}
+
 $(document).ready(function () {
     initThemeToggle();
     initAppLoader();
+    initResponsiveHeaderOffset();
 
     const ahora = new Date();
     const tzOffset = ahora.getTimezoneOffset() * 60000; // en milisegundos

@@ -24,6 +24,7 @@ html {
     height: 100%;
     margin: 0;
     padding: 0;
+    scroll-padding-top: calc(var(--app-header-height, 72px) + 12px);
 }
 
 body {
@@ -233,6 +234,15 @@ body.light-theme .app-loader {
     background: var(--app-navbar) !important;
     border-bottom: 1px solid var(--app-border);
     box-shadow: 0 8px 24px var(--app-shadow);
+}
+
+/* Mantener modales y backdrop por encima del header fijo en responsive. */
+.uk-modal {
+    z-index: 3000 !important;
+}
+
+.uk-modal .select2-container--open {
+    z-index: 3010 !important;
 }
 
 .app-header-inner {
@@ -655,7 +665,9 @@ body.light-theme .app-loader {
     border-color: var(--app-border) !important;
     color: var(--app-text) !important;
 }
-
+.uk-tab>.uk-active>a {
+    border-color: #0c8e3c;
+}
 .uk-button-danger {
     background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%) !important;
     color: #fff !important;
@@ -846,7 +858,41 @@ body.light-theme .app-loader {
 
 .app-transaction-table {
     margin: 0;
-    min-width: 760px;
+    width: 100%;
+    min-width: 900px;
+    table-layout: fixed;
+}
+
+.app-transaction-table th,
+.app-transaction-table td {
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+.app-transaction-table th:first-child,
+.app-transaction-table td:first-child {
+    width: 16%;
+}
+
+.app-transaction-table th:nth-child(2),
+.app-transaction-table td:nth-child(2) {
+    width: 10%;
+}
+
+.app-transaction-table th:nth-child(3),
+.app-transaction-table td:nth-child(3),
+.app-transaction-table th:nth-child(4),
+.app-transaction-table td:nth-child(4),
+.app-transaction-table th:nth-child(5),
+.app-transaction-table td:nth-child(5),
+.app-transaction-table th:nth-child(6),
+.app-transaction-table td:nth-child(6) {
+    width: 14%;
+}
+
+.app-transaction-table th:last-child,
+.app-transaction-table td:last-child {
+    width: 8%;
 }
 
 .app-transaction-table thead th {
@@ -863,8 +909,27 @@ body.light-theme .app-loader {
     transition: background 0.2s ease;
 }
 
+#modalNuevoIngreso .app-transaction-table > tbody > tr,
+#modalNuevaVenta .app-transaction-table > tbody > tr,
+#modalNuevoIngreso .app-transaction-table.uk-table-striped > tbody > tr:nth-of-type(odd),
+#modalNuevoIngreso .app-transaction-table.uk-table-striped > tbody > tr:nth-of-type(even),
+#modalNuevaVenta .app-transaction-table.uk-table-striped > tbody > tr:nth-of-type(odd),
+#modalNuevaVenta .app-transaction-table.uk-table-striped > tbody > tr:nth-of-type(even) {
+    background: var(--app-surface) !important;
+}
+
+#modalNuevoIngreso .app-transaction-table > tbody > tr:hover,
+#modalNuevaVenta .app-transaction-table > tbody > tr:hover {
+    background: var(--app-surface) !important;
+}
+
+#modalNuevoIngreso .app-transaction-table > tbody > tr > td,
+#modalNuevaVenta .app-transaction-table > tbody > tr > td {
+    background: transparent !important;
+}
+
 .app-transaction-table tbody tr:hover {
-    background: rgba(255, 255, 255, 0.015);
+    background: var(--app-surface);
 }
 
 .app-transaction-table td {
@@ -886,7 +951,19 @@ body.light-theme .app-loader {
     border-radius: 10px !important;
     font-size: 0.95rem;
     width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
     display: block;
+}
+
+.app-transaction-table .form-control,
+.app-transaction-table .app-transaction-field,
+.app-transaction-table .select2-container {
+    width: 100% !important;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .app-transaction-table .precio,
@@ -1651,7 +1728,12 @@ body.light-theme .alert-success {
     }
 
     body {
-        padding-top: 72px;
+        padding-top: calc(var(--app-header-height, 72px) + 12px);
+    }
+
+    :target,
+    [data-scroll-target] {
+        scroll-margin-top: calc(var(--app-header-height, 72px) + 12px);
     }
 
     .app-header-inner {
