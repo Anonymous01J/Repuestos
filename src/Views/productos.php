@@ -33,16 +33,17 @@ include_once 'src/Views/complements/header.php';
 </div>
 <?php endif; ?>
 
-    <div class="container mt-4">
-        <h2 class="mb-4">Productos</h2>
-        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalNuevo">+ Nuevo Producto</button>
-        <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#modalNuevoIngreso">
-            + Registrar Entrada
-        </button>
-        <button class="btn btn-secondary mb-3" data-bs-toggle="modal" data-bs-target="#modalNuevaVenta">
-            + Registrar Venta
-        </button>
-        <div class="container bg-white p-4 rounded shadow-sm">
+    <div class="uk-container uk-container-large uk-padding-large">
+        <div class="uk-flex uk-flex-between uk-flex-middle uk-flex-wrap uk-margin-bottom" style="gap: 12px;">
+            <h2 class="uk-heading-bullet uk-margin-remove">Productos</h2>
+            <div class="uk-flex uk-flex-wrap" style="gap: 12px;">
+                <button class="uk-button uk-button-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalNuevo">+ Nuevo Producto</button>
+                <button class="uk-button uk-button-success" type="button" data-bs-toggle="modal" data-bs-target="#modalNuevoIngreso">+ Registrar Entrada</button>
+                <button class="uk-button uk-button-default" type="button" data-bs-toggle="modal" data-bs-target="#modalNuevaVenta">+ Registrar Venta</button>
+            </div>
+        </div>
+
+        <div class="uk-card uk-card-default uk-card-body">
             <ul class="nav nav-tabs mb-3" id="clienteTabs" role="tablist">
                 <li class="nav-item">
                     <button class="nav-link active" id="productos-tab" data-bs-toggle="tab" data-bs-target="#productos" type="button">Productos</button>
@@ -57,8 +58,8 @@ include_once 'src/Views/complements/header.php';
             <div class="tab-content">
                 <!-- ── Tab: Productos ──────────────────────────────────── -->
                 <div class="tab-pane fade show active" id="productos" role="tabpanel">
-                    <div class="table-responsive">
-                        <table class="table-DT table table-striped" id="tablaProductos">
+                    <div class="uk-overflow-auto">
+                        <table class="table-DT table table-striped uk-table uk-table-middle uk-table-divider" id="tablaProductos">
                             <thead>
                                 <tr>
                                     <th>Imagen</th>
@@ -75,7 +76,6 @@ include_once 'src/Views/complements/header.php';
                             <tbody>
                                 <?php foreach ($productos as $p): ?>
                                     <?php
-                                        // Resaltar fila si stock está en nivel crítico
                                         $stockAlerta = '';
                                         if ($p['stock'] == 0) {
                                             $stockAlerta = 'table-danger';
@@ -99,9 +99,9 @@ include_once 'src/Views/complements/header.php';
                                         </td>
                                         <td>
                                             <?php if ($p['stock'] == 0): ?>
-                                                <span class="badge bg-danger">0 — Sin stock</span>
+                                                <span class="uk-badge" style="background:#dc2626; color:#fff;">0 — Sin stock</span>
                                             <?php elseif ($p['stock'] <= $p['stock_minimo']): ?>
-                                                <span class="badge bg-warning text-dark"><?= $p['stock'] ?> ⚠️</span>
+                                                <span class="uk-badge" style="background:#f59e0b; color:#111827;"><?= $p['stock'] ?> ⚠️</span>
                                             <?php else: ?>
                                                 <?= htmlspecialchars($p['stock']) ?>
                                             <?php endif; ?>
@@ -120,17 +120,17 @@ include_once 'src/Views/complements/header.php';
                                                     <div id="collapseAcciones_<?= $p['id'] ?>" class="accordion-collapse collapse"
                                                         data-bs-parent="#accordionAcciones_<?= $p['id'] ?>">
                                                         <div class="accordion-body p-2">
-                                                            <div class="d-flex gap-1">
-                                                                <button class="btn btn-sm btn-outline-warning"
+                                                            <div class="d-flex gap-1 flex-wrap">
+                                                                <button class="uk-button uk-button-default uk-button-small"
                                                                     onclick="editarProducto(<?= htmlspecialchars(json_encode($p)) ?>)">
                                                                     Editar
                                                                 </button>
-                                                                <button class="btn btn-sm btn-outline-success"
+                                                                <button class="uk-button uk-button-primary uk-button-small"
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#modalIngresoRapido_<?= $p['id'] ?>">
                                                                     Entrada Rápida
                                                                 </button>
-                                                                <button class="btn btn-sm btn-outline-success"
+                                                                <button class="uk-button uk-button-default uk-button-small"
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#modalVentaRapida_<?= $p['id'] ?>"
                                                                     data-precioProducto="<?= $p['precio'] ?>"
