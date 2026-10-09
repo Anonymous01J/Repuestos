@@ -301,6 +301,27 @@ body {
 }
 
 /* ── Print (ocultar nav y controles) ─────────────────────── */
+.dataTables_wrapper .dataTables_paginate .paginate_button,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    border-radius: 999px;
+    padding: 0.35rem 0.75rem;
+    margin: 0 0.15rem;
+}
+
+.dataTables_wrapper .dataTables_filter input,
+.dataTables_wrapper .dataTables_length select,
+.select2-container .select2-selection {
+    border-radius: 10px;
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    min-height: 38px;
+}
+
+.uk-card-default,
+.uk-card,
+.modal-content {
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+}
+
 @media print {
     .navbar,
     .btn,

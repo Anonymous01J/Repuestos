@@ -147,6 +147,20 @@ Quitar dependencias de Bootstrap de plugins, sin romper la funcionalidad.
 ### Recomendación
 Hacer esta fase después de la migración base para evitar trabajos repetidos de ajustes visuales con Bootstrap presente.
 
+## Fase 7 ejecutada: adaptación de plugins y JS
+
+### Objetivo
+Preparar la base para la salida de Bootstrap sin romper la experiencia actual ni la funcionalidad de tablas, modales y validaciones.
+
+### Cambios realizados
+- Se añadió una capa de compatibilidad para `modal`, `tab` y `toast` con soporte tanto de Bootstrap como de UIkit.
+- Se protegieron las inicializaciones de DataTables para evitar errores si un plugin no está disponible.
+- Se añadieron estilos de integración para los componentes de DataTables y Select2 dentro del sistema UIkit.
+- Se reescribieron los cierres de modales para evitar llamadas directas a `$('#modal').modal('hide')` sin soporte.
+
+### Resultado de la fase 7
+La aplicación queda preparada para migrar el resto de interacciones manteniendo compatibilidad inmediata con los plugins y la lógica actual.
+
 ## Fase 8: validación y QA
 
 ### Objetivo

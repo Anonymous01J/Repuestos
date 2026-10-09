@@ -677,7 +677,7 @@ include_once 'src/Views/complements/header.php';
         const hash = window.location.hash;
         if (hash) {
             const tabTrigger = document.querySelector(`button[data-bs-target="${hash}"]`);
-            if (tabTrigger) new bootstrap.Tab(tabTrigger).show();
+            if (tabTrigger) showTabFromTrigger(tabTrigger);
         }
         
         cargarNombresProductosVentas();
@@ -696,8 +696,8 @@ include_once 'src/Views/complements/header.php';
 
         // Auto-cerrar toasts tras 4 segundos
         document.querySelectorAll('.toast.show').forEach(function(el) {
-            setTimeout(() => { 
-                try { new bootstrap.Toast(el).hide(); } catch(e) {} 
+            setTimeout(() => {
+                hideToastElement(el);
             }, 4000);
         });
     });
@@ -941,7 +941,7 @@ include_once 'src/Views/complements/header.php';
         document.getElementById('previewEditar').src = 'public/assets/img/products/' + (data.imagen || 'generic.png');
         document.getElementById('editCategoria').value = data.id_categoria;
         document.getElementById('editEstado').value = data.estado;
-        new bootstrap.Modal(document.getElementById('modalEditar')).show();
+        openModalElement('#modalEditar');
     }
 
     // ── Eventos de precios para tablas múltiples ─────────────────────────

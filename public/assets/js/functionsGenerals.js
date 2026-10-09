@@ -1,36 +1,111 @@
+function openModalElement(target) {
+    const modalEl = typeof target === 'string' ? document.querySelector(target) : target;
+    if (!modalEl) return;
+
+    if (window.bootstrap && bootstrap.Modal) {
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+        return;
+    }
+
+    if (window.UIkit && UIkit.modal) {
+        const modal = UIkit.modal(modalEl);
+        if (modal) modal.show();
+    }
+}
+
+function hideModalElement(target) {
+    const modalEl = typeof target === 'string' ? document.querySelector(target) : target;
+    if (!modalEl) return;
+
+    if (window.bootstrap && bootstrap.Modal) {
+        const modal = bootstrap.Modal.getInstance(modalEl) || bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.hide();
+        return;
+    }
+
+    if (window.UIkit && UIkit.modal) {
+        const modal = UIkit.modal(modalEl);
+        if (modal) modal.hide();
+    }
+}
+
+function hideToastElement(toastEl) {
+    if (!toastEl) return;
+
+    if (window.bootstrap && bootstrap.Toast) {
+        const toast = bootstrap.Toast.getInstance(toastEl) || new bootstrap.Toast(toastEl);
+        toast.hide();
+        return;
+    }
+
+    if (window.UIkit && UIkit.util) {
+        toastEl.classList.remove('uk-open');
+        toastEl.setAttribute('hidden', 'hidden');
+    }
+}
+
+function showTabFromTrigger(trigger) {
+    if (!trigger) return;
+
+    const targetSelector = trigger.getAttribute('data-bs-target');
+    if (!targetSelector) return;
+
+    if (window.bootstrap && bootstrap.Tab) {
+        const tab = new bootstrap.Tab(trigger);
+        tab.show();
+        return;
+    }
+
+    const target = document.querySelector(targetSelector);
+    if (!target) return;
+
+    document.querySelectorAll('[data-bs-toggle="tab"]').forEach(function (tabButton) {
+        tabButton.classList.remove('active');
+    });
+
+    document.querySelectorAll('.tab-pane').forEach(function (pane) {
+        pane.classList.remove('show', 'active');
+    });
+
+    trigger.classList.add('active');
+    target.classList.add('show', 'active');
+}
+
 $(document).ready(function () {
     const ahora = new Date();
     const tzOffset = ahora.getTimezoneOffset() * 60000; // en milisegundos
     const localISO = new Date(ahora - tzOffset).toISOString().slice(0, 16);
     $('#fecha').val(localISO);
 
+    if ($.fn && $.fn.DataTable) {
+        $('.table-DT').DataTable({
+            language: {
+                url: 'public/assets/libs/dataTable/Spanish.json'
+            },
+            responsive: true
+        });
 
-    $('.table-DT').DataTable({
-        language: {
-            url: 'public/assets/libs/dataTable/Spanish.json'
-        },
-        responsive: true
-    });
+        // Para la tabla de entradas
+        $('#tablaEntradas').DataTable({
+            language: {
+                url: 'public/assets/libs/dataTable/Spanish.json'
+            },
+            order: [[0, 'desc']],
+            pageLength: 10,
+            responsive: true
+        });
 
-    // Para la tabla de entradas
-    $('#tablaEntradas').DataTable({
-        language: {
-            url: 'public/assets/libs/dataTable/Spanish.json'
-        },
-        order: [[0, 'desc']], // Ordenar por la primera columna (ID) descendente
-        pageLength: 10,
-        responsive: true
-    });
-
-    // Para la tabla de ventas
-    $('#tablaVentas').DataTable({
-        language: {
-            url: 'public/assets/libs/dataTable/Spanish.json'
-        },
-        order: [[0, 'desc']], // Ordenar por la primera columna (ID) descendente
-        pageLength: 10,
-        responsive: true
-    });
+        // Para la tabla de ventas
+        $('#tablaVentas').DataTable({
+            language: {
+                url: 'public/assets/libs/dataTable/Spanish.json'
+            },
+            order: [[0, 'desc']],
+            pageLength: 10,
+            responsive: true
+        });
+    }
 
     //inputs de precios
     function InputPrice(input) {
@@ -76,9 +151,33 @@ $(document).ready(function () {
     $('#formTasa').on('submit', function(e) {
         e.preventDefault();
         $.post('?c=CHome/updateTasa', $(this).serialize(), function() {
-            $('#modalTasa').modal('hide');
-            // Actualiza el valor en el header
+            hideModalElement('#modalTasa');
             $('#Dolar_bcv').text($('#inputTasa').val() + " Bs");
+        });
+    });
+
+    document.querySelectorAll('[data-bs-toggle="modal"]').forEach(function (trigger) {
+        trigger.addEventListener('click', function () {
+            const targetSelector = this.getAttribute('data-bs-target');
+            if (targetSelector) {
+                openModalElement(targetSelector);
+            }
+        });
+    });
+
+    document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(function (trigger) {
+        trigger.addEventListener('click', function () {
+            const modal = this.closest('.modal');
+            if (modal) {
+                hideModalElement(modal);
+            }
+        });
+    });
+
+    document.querySelectorAll('[data-bs-toggle="tab"]').forEach(function (trigger) {
+        trigger.addEventListener('click', function (event) {
+            event.preventDefault();
+            showTabFromTrigger(trigger);
         });
     });
 });
