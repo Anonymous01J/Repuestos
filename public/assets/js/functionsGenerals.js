@@ -42,11 +42,40 @@ function hideToastElement(toastEl) {
 function showTabFromTrigger(trigger) {
     if (!trigger) return;
 
-    const targetSelector = trigger.getAttribute('data-bs-target') || trigger.getAttribute('href');
+    const targetSelector = trigger.getAttribute('data-bs-target') || trigger.getAttribute('href') || trigger.getAttribute('data-target');
     if (!targetSelector) return;
 
     const target = document.querySelector(targetSelector);
     if (!target) return;
+
+    const uiTabList = trigger.closest('ul.uk-tab');
+    if (uiTabList) {
+        const items = uiTabList.querySelectorAll('li');
+        items.forEach(function (item) {
+            item.classList.remove('uk-active');
+        });
+
+        const activeItem = trigger.closest('li');
+        if (activeItem) {
+            activeItem.classList.add('uk-active');
+        }
+
+        const switcher = uiTabList.nextElementSibling;
+        if (switcher && switcher.classList.contains('uk-switcher')) {
+            const panes = switcher.children;
+            for (let i = 0; i < panes.length; i++) {
+                panes[i].classList.remove('uk-active');
+                panes[i].setAttribute('hidden', 'hidden');
+            }
+
+            if (target && target.parentElement === switcher) {
+                target.classList.add('uk-active');
+                target.removeAttribute('hidden');
+            }
+        }
+
+        return;
+    }
 
     document.querySelectorAll('[data-bs-toggle="tab"]').forEach(function (tabButton) {
         tabButton.classList.remove('active');
@@ -223,4 +252,5 @@ $(document).ready(function () {
             showTabFromTrigger(trigger);
         });
     });
+
 });

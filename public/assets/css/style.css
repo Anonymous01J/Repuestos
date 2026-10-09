@@ -793,6 +793,110 @@ body.light-theme .alert-success {
     color: var(--app-text);
 }
 
+.app-view-toggle {
+    border: 1px solid var(--app-border);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.app-view-toggle .uk-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    border: 0;
+    text-transform: none;
+}
+
+.app-view-toggle .uk-button-default {
+    background: transparent;
+    color: var(--app-muted);
+}
+
+.app-view-toggle .uk-button-primary {
+    color: #fff;
+}
+
+.app-product-list-rows {
+    display: block;
+    margin: 0;
+}
+
+.app-product-table-wrap {
+    border: 1px solid var(--app-border);
+    border-radius: 14px;
+}
+
+.app-product-table {
+    margin: 0;
+    min-width: 760px;
+}
+
+.app-product-row-identity {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 190px;
+}
+
+.app-product-row-identity img {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    border-radius: 10px;
+    object-fit: cover;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.app-product-row-identity div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.app-product-row-identity strong {
+    color: var(--app-text);
+}
+
+.app-product-row-identity span {
+    color: var(--app-muted);
+    font-size: 0.8rem;
+}
+
+.app-product-row-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+}
+
+.app-pagination-controls {
+    gap: 1rem;
+}
+
+.app-page-size-control {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: var(--app-muted);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.app-page-size-control .uk-select {
+    width: auto;
+    min-width: 76px;
+    border: 1px solid var(--app-border);
+    border-radius: 9px;
+    background-color: var(--app-surface);
+    color: var(--app-text);
+}
+
+.app-page-size-control .uk-select option {
+    background: var(--app-surface);
+    color: var(--app-text);
+}
+
 .app-product-grid {
     margin-top: 0.75rem;
 }
@@ -970,6 +1074,15 @@ body.light-theme .alert-success {
 }
 
 @media (max-width: 560px) {
+    .app-pagination-controls {
+        justify-content: center;
+    }
+
+    .app-page-size-control {
+        width: 100%;
+        justify-content: center;
+    }
+
     .app-header-inner {
         padding-left: 12px;
         padding-right: 12px;

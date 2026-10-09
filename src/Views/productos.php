@@ -44,20 +44,14 @@ include_once 'src/Views/complements/header.php';
         </div>
 
         <div class="uk-card uk-card-default uk-card-body">
-            <ul class="nav nav-tabs mb-3" id="clienteTabs" role="tablist">
-                <li class="nav-item">
-                    <button class="nav-link active" id="productos-tab" type="button">Productos</button>
-                </li>
-                <li class="nav-item">
-                    <button class="nav-link" id="entradas-tab" type="button">Entradas</button>
-                </li>
-                <li class="nav-item">
-                    <button class="nav-link" id="ventas-tab" type="button">Ventas</button>
-                </li>
+            <ul class="uk-tab uk-margin-bottom" uk-tab>
+                <li class="uk-active"><a href="#productos-tab-panel">Productos</a></li>
+                <li><a href="#entradas-tab-panel">Entradas</a></li>
+                <li><a href="#ventas-tab-panel">Ventas</a></li>
             </ul>
-            <div class="tab-content">
+            <div class="uk-switcher">
                 <!-- ── Tab: Productos ──────────────────────────────────── -->
-                <div class="tab-pane fade show active" id="productos" role="tabpanel">
+                <div id="productos-tab-panel" class="uk-active">
                     <div class="app-item-list-shell">
                         <div class="app-item-toolbar">
                             <div class="app-item-search uk-search uk-search-default">
@@ -73,6 +67,14 @@ include_once 'src/Views/complements/header.php';
                                     <span uk-icon="icon: arrow-up; ratio: 0.9"></span>
                                 </button>
                             </div>
+                            <div class="uk-button-group app-view-toggle" role="group" aria-label="Vista de productos">
+                                <button type="button" class="uk-button uk-button-small" data-product-view="cards" aria-pressed="true">
+                                    <span uk-icon="icon: grid" aria-hidden="true"></span><span>Tarjetas</span>
+                                </button>
+                                <button type="button" class="uk-button uk-button-small" data-product-view="rows" aria-pressed="false">
+                                    <span uk-icon="icon: table" aria-hidden="true"></span><span>Filas</span>
+                                </button>
+                            </div>
                         </div>
 
                         <div id="productosList" class="uk-grid uk-grid-medium uk-flex-center app-product-grid" uk-grid></div>
@@ -80,14 +82,23 @@ include_once 'src/Views/complements/header.php';
                             <span uk-icon="icon: bag; ratio: 1.5"></span>
                             <div>No hay productos para mostrar.</div>
                         </div>
-                        <div class="uk-flex uk-flex-center uk-margin-top">
+                        <div class="app-pagination-controls uk-flex uk-flex-between uk-flex-middle uk-flex-wrap uk-margin-top">
+                            <label class="app-page-size-control" for="productosPageSize">
+                                <span>Elementos por página</span>
+                                <select id="productosPageSize" class="uk-select uk-form-small">
+                                    <option value="6">6</option>
+                                    <option value="12">12</option>
+                                    <option value="24">24</option>
+                                    <option value="48">48</option>
+                                </select>
+                            </label>
                             <ul id="productosPagination" class="uk-pagination" uk-margin></ul>
                         </div>
                     </div>
                 </div>
 
                 <!-- ── Tab: Entradas ───────────────────────────────────── -->
-                <div class="tab-pane fade" id="entradas" role="tabpanel">
+                <div id="entradas-tab-panel">
                     <div class="table-responsive">
                         <table class="table table-striped" id="tablaEntradas">
                             <thead>
@@ -129,7 +140,7 @@ include_once 'src/Views/complements/header.php';
                 </div>
 
                 <!-- ── Tab: Ventas ─────────────────────────────────────── -->
-                <div class="tab-pane fade" id="ventas" role="tabpanel">
+                <div id="ventas-tab-panel">
                     <div class="table-responsive">
                         <table class="table table-striped" id="tablaVentas">
                             <thead>
@@ -603,6 +614,11 @@ include_once 'src/Views/complements/header.php';
     }
 
     const productosData = <?= json_encode($productos, JSON_UNESCAPED_UNICODE) ?>;
+    let productosView = localStorage.getItem('productosView') === 'rows' ? 'rows' : 'cards';
+    const pageSizeOptions = [6, 12, 24, 48];
+    const savedPageSize = Number(localStorage.getItem('productosPageSize'));
+    let productosPageSize = pageSizeOptions.includes(savedPageSize) ? savedPageSize : 6;
+    let productosSortDirection = 1;
 
     function getProductoBadge(product) {
         if (Number(product.stock) === 0) {
@@ -622,17 +638,29 @@ include_once 'src/Views/complements/header.php';
 
         const searchInput = document.getElementById('productosSearch');
         const query = (searchInput ? searchInput.value : '').trim().toLowerCase();
-        const sorted = [...productosData].sort((a, b) => a.nombre.localeCompare(b.nombre));
+        const sorted = [...productosData].sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }) * productosSortDirection);
         const filtered = sorted.filter((p) => {
             const hayTexto = [p.nombre, p.marca, p.categoria || '', p.descripcion || ''].join(' ').toLowerCase();
             return !query || hayTexto.includes(query);
         });
 
-        const pageSize = 6;
+        const pageSize = productosPageSize;
         const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
         const currentPage = Math.min(Number(listEl.dataset.page || 1), totalPages);
         const start = (currentPage - 1) * pageSize;
         const pageItems = filtered.slice(start, start + pageSize);
+        const isCardView = productosView === 'cards';
+        listEl.classList.toggle('uk-grid', isCardView);
+        listEl.classList.toggle('uk-grid-medium', isCardView);
+        listEl.classList.toggle('uk-flex-center', isCardView);
+        listEl.classList.toggle('app-product-list-rows', !isCardView);
+
+        document.querySelectorAll('[data-product-view]').forEach((button) => {
+            const active = button.dataset.productView === productosView;
+            button.classList.toggle('uk-button-primary', active);
+            button.classList.toggle('uk-button-default', !active);
+            button.setAttribute('aria-pressed', String(active));
+        });
 
         if (!pageItems.length) {
             listEl.innerHTML = '';
@@ -643,7 +671,44 @@ include_once 'src/Views/complements/header.php';
 
         emptyEl.classList.add('uk-hidden');
 
-        listEl.innerHTML = pageItems.map((p) => {
+        if (productosView === 'rows') {
+            listEl.innerHTML = `
+                <div class="uk-overflow-auto app-product-table-wrap">
+                    <table class="uk-table uk-table-divider uk-table-hover uk-table-middle app-product-table">
+                        <thead>
+                            <tr><th>Producto</th><th>Categoría</th><th>Estado</th><th>Precio</th><th>Stock</th><th class="uk-text-right">Acciones</th></tr>
+                        </thead>
+                        <tbody>${pageItems.map((p) => {
+                            const precio = Number(p.precio || 0);
+                            const stock = Number(p.stock || 0);
+                            const categoria = p.categoria || 'Sin categoría';
+                            const imagen = p.imagen ? `public/assets/img/products/${p.imagen}` : 'public/assets/img/products/generic.png';
+                            return `
+                                <tr>
+                                    <td>
+                                        <div class="app-product-row-identity">
+                                            <img src="${imagen}" alt="" onerror="this.onerror=null;this.src='public/assets/img/products/generic.png';">
+                                            <div><strong>${p.nombre}</strong><span>${p.marca || 'Sin marca'}</span></div>
+                                        </div>
+                                    </td>
+                                    <td>${categoria}</td>
+                                    <td>${getProductoBadge(p)}</td>
+                                    <td>${precio.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} $</td>
+                                    <td>${stock}</td>
+                                    <td>
+                                        <div class="app-product-row-actions">
+                                            <button class="app-icon-action" type="button" title="Editar" aria-label="Editar" onclick="editarProducto(${JSON.stringify(p).replace(/"/g, '&quot;')})"><span uk-icon="icon: file-edit; ratio: 0.9"></span></button>
+                                            <button class="app-icon-action delete" type="button" title="Eliminar" aria-label="Eliminar" uk-toggle="target: #modalConfirmarEliminar${p.id}"><span uk-icon="icon: trash; ratio: 0.9"></span></button>
+                                            <button class="uk-button uk-button-primary uk-button-small" type="button" uk-toggle="target: #modalIngresoRapido_${p.id}">Entrada</button>
+                                            <button class="uk-button uk-button-default uk-button-small" type="button" uk-toggle="target: #modalVentaRapida_${p.id}">Venta</button>
+                                        </div>
+                                    </td>
+                                </tr>`;
+                        }).join('')}</tbody>
+                    </table>
+                </div>`;
+        } else {
+            listEl.innerHTML = pageItems.map((p) => {
             const precio = Number(p.precio || 0);
             const stock = Number(p.stock || 0);
             const categoria = p.categoria || 'Sin categoría';
@@ -695,7 +760,8 @@ include_once 'src/Views/complements/header.php';
                     </div>
                 </div>
             `;
-        }).join('');
+            }).join('');
+        }
 
         paginationEl.innerHTML = `
             <li class="${currentPage === 1 ? 'uk-disabled' : ''}"><a href="#" data-page="1" uk-pagination-prev>«</a></li>
@@ -726,13 +792,39 @@ include_once 'src/Views/complements/header.php';
 
         const searchInput = document.getElementById('productosSearch');
         if (searchInput) {
-            searchInput.addEventListener('input', renderProductosList);
+            searchInput.addEventListener('input', function () {
+                document.getElementById('productosList').dataset.page = '1';
+                renderProductosList();
+            });
+        }
+
+        document.querySelectorAll('[data-product-view]').forEach((button) => {
+            button.addEventListener('click', function () {
+                productosView = this.dataset.productView;
+                localStorage.setItem('productosView', productosView);
+                document.getElementById('productosList').dataset.page = '1';
+                renderProductosList();
+            });
+        });
+
+        const pageSizeSelect = document.getElementById('productosPageSize');
+        if (pageSizeSelect) {
+            pageSizeSelect.value = String(productosPageSize);
+            pageSizeSelect.addEventListener('change', function () {
+                const selectedPageSize = Number(this.value);
+                if (!pageSizeOptions.includes(selectedPageSize)) return;
+
+                productosPageSize = selectedPageSize;
+                localStorage.setItem('productosPageSize', String(productosPageSize));
+                document.getElementById('productosList').dataset.page = '1';
+                renderProductosList();
+            });
         }
 
         document.querySelectorAll('.app-item-sort .uk-icon-button').forEach((button) => {
             button.addEventListener('click', function () {
-                const direction = this.dataset.sort === 'asc' ? 1 : -1;
-                productosData.sort((a, b) => a.nombre.localeCompare(b.nombre) * direction);
+                productosSortDirection = this.dataset.sort === 'asc' ? 1 : -1;
+                document.getElementById('productosList').dataset.page = '1';
                 renderProductosList();
             });
         });
@@ -761,7 +853,7 @@ include_once 'src/Views/complements/header.php';
     if (modalNuevo && window.UIkit && UIkit.util) {
         UIkit.util.on(modalNuevo, 'shown', function () {
             $('.select-categoria').select2({
-                dropdownParent: $('#modalNuevo'),
+                dropdownParent: $('#modalNuevo .uk-modal-dialog'),
                 placeholder: 'Seleccione una categoría',
                 allowClear: true
             });
@@ -1198,7 +1290,7 @@ include_once 'src/Views/complements/header.php';
         });
         
         bindEventosFilaIngreso(nuevaFila);
-        nuevaFila.find('.select-producto').select2({ dropdownParent: $('#modalNuevoIngreso') });
+        nuevaFila.find('.select-producto').select2({ dropdownParent: $('#modalNuevoIngreso .uk-modal-dialog') });
     }
 
     function agregarFilaVenta() {
@@ -1212,7 +1304,7 @@ include_once 'src/Views/complements/header.php';
         });
         
         bindEventosFilaVenta(nuevaFila);
-        nuevaFila.find('.select-producto').select2({ dropdownParent: $('#modalNuevaVenta') });
+        nuevaFila.find('.select-producto').select2({ dropdownParent: $('#modalNuevaVenta .uk-modal-dialog') });
     }
 
     function eliminarFila(btn) {
