@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <?php $productosAlerta = $productosAlerta ?? []; ?>
-    <?php require_once __DIR__ . '../complements/head.php'; ?>
-    <?php require_once __DIR__ . '../complements/header.php'; ?>
+    <?php require_once __DIR__ . '/complements/head.php'; ?>
+    <?php require_once __DIR__ . '/complements/header.php'; ?>
 
     <div class="app-dashboard-shell uk-container uk-container-large uk-padding-large">
         <div class="uk-margin-bottom">
@@ -71,11 +71,29 @@
             <?php endif; ?>
         </section>
 
+        <section class="uk-card uk-card-default uk-card-body uk-margin-large-top app-home-statistics" aria-labelledby="homeStatisticsTitle">
+            <div class="uk-flex uk-flex-between uk-flex-middle uk-flex-wrap" style="gap: 16px;">
+                <div>
+                    <h3 id="homeStatisticsTitle" class="uk-card-title uk-margin-small-bottom">Resumen de ventas del mes</h3>
+                    <p class="uk-text-muted uk-margin-remove">Indicadores rápidos; los rankings y filtros están en el módulo de estadísticas.</p>
+                </div>
+                <a href="?c=CHome/estadisticas" class="uk-button uk-button-primary">
+                    Ver estadísticas <span uk-icon="icon: arrow-right"></span>
+                </a>
+            </div>
+            <?php $resumenEstadistico = $resumenEstadistico ?? []; ?>
+            <div class="app-stock-summary-grid app-home-statistics-grid">
+                <div><div class="app-stock-summary-stat"><div class="app-stock-summary-label">Ventas del mes</div><strong class="app-stock-summary-value">$ <?= number_format((float) ($resumenEstadistico['ventas_usd'] ?? 0), 2, ',', '.') ?></strong></div></div>
+                <div><div class="app-stock-summary-stat"><div class="app-stock-summary-label">Unidades vendidas</div><strong class="app-stock-summary-value"><?= number_format((float) ($resumenEstadistico['unidades_vendidas'] ?? 0), 0, ',', '.') ?></strong></div></div>
+                <div><div class="app-stock-summary-stat"><div class="app-stock-summary-label">Ganancia bruta estimada</div><strong class="app-stock-summary-value"><?= ($resumenEstadistico['ganancia_bruta_usd'] ?? null) === null ? 'Sin costo completo' : '$ ' . number_format((float) $resumenEstadistico['ganancia_bruta_usd'], 2, ',', '.') ?></strong></div></div>
+            </div>
+        </section>
+
         <div class="uk-margin-large-top uk-text-muted uk-text-small">
             Rol: <?= htmlspecialchars($_SESSION['rol']) ?> | <?= date('d/m/Y H:i') ?>
         </div>
     </div>
 
-    <?php require_once __DIR__ . '../complements/footer.php'; ?>
+    <?php require_once __DIR__ . '/complements/footer.php'; ?>
 </body>
 </html>

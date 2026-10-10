@@ -82,7 +82,7 @@
             }
         }
         public function searchIdVenta() {
-            $sql = "SELECT (SELECT nombre FROM productos WHERE id = detalle_venta.id_producto) AS nombre_producto, cantidad, precio_unitario, precio_unitario_bs, subtotal, subtotal_bs, precio_al_mayor, (SELECT total FROM ventas WHERE id = :id_venta) AS total_venta, (SELECT total_bs FROM ventas WHERE id = :id_venta) AS total_venta_bs FROM detalle_venta WHERE id_venta = :id_venta";
+            $sql = "SELECT p.nombre AS nombre_producto, p.codigo_producto, detalle_venta.cantidad, detalle_venta.precio_unitario, detalle_venta.precio_unitario_bs, detalle_venta.subtotal, detalle_venta.subtotal_bs, detalle_venta.precio_al_mayor, ventas.total AS total_venta, ventas.total_bs AS total_venta_bs FROM detalle_venta INNER JOIN productos p ON p.id = detalle_venta.id_producto INNER JOIN ventas ON ventas.id = detalle_venta.id_venta WHERE detalle_venta.id_venta = :id_venta";
             $stmt = $this->prepare($sql);
             $stmt->bindParam(":id_venta", $this->id_venta);
             if ($stmt->execute()) {

@@ -22,7 +22,7 @@
         <nav class="app-header-nav" aria-label="Navegación principal">
             <a class="app-brand" href="?c=CHome/view" aria-label="Ir al inicio">
                 <span class="app-brand-mark">R</span>
-                <span class="app-brand-text">RepuestosApp</span>
+                <span class="app-brand-text">Inventario de Repuestos</span>
             </a>
 
             <div class="app-header-actions">

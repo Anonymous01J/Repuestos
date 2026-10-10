@@ -3,6 +3,8 @@
     use Anonymous01j\Repuestos\Models\Usuarios;
     use Anonymous01j\Repuestos\Models\Tasa;
     use Anonymous01j\Repuestos\Models\StockBajo;
+    use Anonymous01j\Repuestos\Models\Estadistica;
+    use Anonymous01j\Repuestos\Models\Categorias;
 
     class CHome {
         public function view() {
@@ -22,7 +24,62 @@
             $stockBajoModel   = new StockBajo();
             $productosAlerta  = $stockBajoModel->search();
 
+            $estadisticaModel = new Estadistica();
+            $resumenEstadistico = $estadisticaModel->obtenerResumenMensual();
+
             require_once __DIR__ . '/../Views/Home.php';
+        }
+
+        public function estadisticas() {
+            if (!isset($_SESSION['id'])) {
+                if (isset($_COOKIE['id'])) {
+                    $_SESSION['id'] = $_COOKIE['id'];
+                    $_SESSION['nombre'] = $_COOKIE['nombre'] ?? '';
+                    $_SESSION['rol'] = $_COOKIE['rol'] ?? '';
+                } else {
+                    require_once __DIR__ . '/../Views/Login.php';
+                    exit();
+                }
+            }
+
+            $title = 'Estadísticas de ventas';
+            $periodosPermitidos = ['MES', 'ULTIMOS_6_MESES', 'ANIO', 'INTERVALO', 'TODO'];
+            $periodo = strtoupper(trim($_GET['periodo'] ?? 'MES'));
+            if (!in_array($periodo, $periodosPermitidos, true)) {
+                $periodo = 'MES';
+            }
+
+            $fechaDesde = $_GET['fecha_desde'] ?? null;
+            $fechaHasta = $_GET['fecha_hasta'] ?? null;
+            $fechaDesde = is_string($fechaDesde) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $fechaDesde) ? $fechaDesde : null;
+            $fechaHasta = is_string($fechaHasta) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $fechaHasta) ? $fechaHasta : null;
+            $categoriaId = isset($_GET['categoria_id']) && $_GET['categoria_id'] !== ''
+                ? filter_var($_GET['categoria_id'], FILTER_VALIDATE_INT)
+                : null;
+            if ($categoriaId === false || ($categoriaId !== null && $categoriaId <= 0)) {
+                $categoriaId = null;
+            }
+
+            $estadisticaModel = new Estadistica();
+            try {
+                $rankings = $estadisticaModel->obtenerRankings(
+                    $periodo,
+                    $periodo === 'INTERVALO' ? $fechaDesde : null,
+                    $periodo === 'INTERVALO' ? $fechaHasta : null,
+                    $categoriaId
+                );
+                $estadisticaError = null;
+            } catch (\Throwable $exception) {
+                $rankings = array_fill_keys([
+                    'mas_vendidos', 'menos_vendidos', 'mas_rentables',
+                    'menos_rentables', 'mayor_ganancia', 'menor_ganancia',
+                ], []);
+                $estadisticaError = $exception->getMessage();
+            }
+
+            $categoriasModel = new Categorias();
+            $categorias = $categoriasModel->search();
+            require_once __DIR__ . '/../Views/estadisticas.php';
         }
 
         public function login() {

@@ -99,7 +99,7 @@ include_once 'src/Views/complements/header.php';
 
                 <!-- ── Tab: Entradas ───────────────────────────────────── -->
                 <div id="entradas-tab-panel">
-                    <div class="app-product-table-wrap">
+                    <div class="app-product-table-wrap app-history-table-wrap">
                         <table class="uk-table uk-table-divider uk-table-hover uk-table-middle app-product-table" id="tablaEntradas">
                             <thead>
                                 <tr>
@@ -117,7 +117,14 @@ include_once 'src/Views/complements/header.php';
                                     foreach ($detallesIngresos as $di) {
                                         if ($di['id_ingreso'] == $i['id']) {
                                             $prod = array_filter($productos, fn($p) => $p['id'] == $di['id_producto']);
-                                            if ($prod) $nombresProductosIngreso[] = reset($prod)['nombre'];
+                                            if ($prod) {
+                                                $productoIngreso = reset($prod);
+                                                $nombreProductoIngreso = $productoIngreso['nombre'];
+                                                if (!empty($productoIngreso['codigo_producto'])) {
+                                                    $nombreProductoIngreso .= ' · Código: ' . $productoIngreso['codigo_producto'];
+                                                }
+                                                $nombresProductosIngreso[] = $nombreProductoIngreso;
+                                            }
                                         }
                                     }
                                 ?>
@@ -141,7 +148,7 @@ include_once 'src/Views/complements/header.php';
 
                 <!-- ── Tab: Ventas ─────────────────────────────────────── -->
                 <div id="ventas-tab-panel">
-                    <div class="app-product-table-wrap">
+                    <div class="app-product-table-wrap app-history-table-wrap">
                         <table class="uk-table uk-table-divider uk-table-hover uk-table-middle app-product-table" id="tablaVentas">
                             <thead>
                                 <tr>
@@ -346,8 +353,8 @@ include_once 'src/Views/complements/header.php';
         <div class="uk-modal-dialog uk-modal-body uk-width-1-2@m">
             <button class="uk-modal-close-default" type="button" uk-close></button>
             <h2 class="uk-modal-title">Detalles del Ingreso</h2>
-            <div class="uk-overflow-auto">
-                <table class="uk-table uk-table-divider uk-table-small uk-table-striped">
+            <div class="uk-overflow-auto app-detail-table-wrap">
+                <table class="uk-table uk-table-divider uk-table-small uk-table-striped app-detail-table">
                     <thead><tr><th>Producto</th><th>Cantidad</th><th>Subtotal</th></tr></thead>
                     <tbody id="tbodyDetallesIngreso"></tbody>
                 </table>
@@ -361,8 +368,8 @@ include_once 'src/Views/complements/header.php';
         <div class="uk-modal-dialog uk-modal-body uk-width-1-2@m">
             <button class="uk-modal-close-default" type="button" uk-close></button>
             <h2 class="uk-modal-title">Detalles de la Venta</h2>
-            <div class="uk-overflow-auto">
-                <table class="uk-table uk-table-divider uk-table-small uk-table-striped">
+            <div class="uk-overflow-auto app-detail-table-wrap">
+                <table class="uk-table uk-table-divider uk-table-small uk-table-striped app-detail-table">
                     <thead><tr><th>Producto</th><th>Cantidad</th><th>Precio unitario / tarifa</th><th>Subtotal</th></tr></thead>
                     <tbody id="tbodyDetallesVenta"></tbody>
                 </table>
@@ -818,7 +825,7 @@ include_once 'src/Views/complements/header.php';
         const query = (searchInput ? searchInput.value : '').trim().toLowerCase();
         const sorted = [...productosData].sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }) * productosSortDirection);
         const filtered = sorted.filter((p) => {
-            const hayTexto = [p.nombre, p.marca, p.categoria || '', p.descripcion || ''].join(' ').toLowerCase();
+            const hayTexto = [p.codigo_producto || '', p.nombre, p.marca, p.categoria || '', p.descripcion || ''].join(' ').toLowerCase();
             return !query || hayTexto.includes(query);
         });
 
@@ -860,6 +867,7 @@ include_once 'src/Views/complements/header.php';
                             const precio = Number(p.precio || 0);
                             const stock = Number(p.stock || 0);
                             const categoria = p.categoria || 'Sin categoría';
+                            const codigoProducto = p.codigo_producto || 'Sin código';
                             const imagen = p.imagen ? `public/assets/img/products/${p.imagen}` : 'public/assets/img/products/generic.png';
                             return `
                                 <tr>
@@ -868,7 +876,11 @@ include_once 'src/Views/complements/header.php';
                                             <button class="app-product-image-trigger" type="button" data-product-image-id="${p.id}" aria-label="Ver imagen completa de ${p.nombre}">
                                                 <img src="${imagen}" alt="" onerror="this.onerror=null;this.src='public/assets/img/products/generic.png';">
                                             </button>
-                                            <div><strong>${p.nombre}</strong><span>${p.marca || 'Sin marca'}</span></div>
+                                            <div>
+                                                <strong>${p.nombre}</strong>
+                                                <div class="uk-text-meta">Código: <strong>${codigoProducto}</strong></div>
+                                                <span>${p.marca || 'Sin marca'}</span>
+                                            </div>
                                         </div>
                                     </td>
                                     <td>${categoria}</td>
@@ -892,6 +904,7 @@ include_once 'src/Views/complements/header.php';
             const precio = Number(p.precio || 0);
             const stock = Number(p.stock || 0);
             const categoria = p.categoria || 'Sin categoría';
+            const codigoProducto = p.codigo_producto || 'Sin código';
             const imagen = p.imagen ? `public/assets/img/products/${p.imagen}` : 'public/assets/img/products/generic.png';
             const badge = getProductoBadge(p);
             return `
@@ -904,6 +917,7 @@ include_once 'src/Views/complements/header.php';
                                 </button>
                             </div>
                             <h5 class="app-product-name">${p.nombre}</h5>
+                            <div class="app-product-code uk-text-meta uk-margin-small-bottom">Código: <strong>${codigoProducto}</strong></div>
                             <div class="app-product-head">
                                 <div>
                                     <h4 class="app-product-title">${p.marca || 'Sin marca'}</h4>
@@ -1284,16 +1298,19 @@ include_once 'src/Views/complements/header.php';
                 dataType: 'json',
                 success: function(data) {
                     if (Array.isArray(data) && data.length > 0) {
-                        const nombres = data.map(item => item.nombre_producto).join(', ');
-                        celda.innerHTML = `<span class="text-muted small">${nombres}</span>`;
-                        const tabla = $('#tablaVentas').DataTable();
-                        tabla.row($(celda).closest('tr')).invalidate().draw(false);
+                            const nombres = data.map((item) => {
+                                const codigo = item.codigo_producto ? ` · Código: ${item.codigo_producto}` : '';
+                                return `${item.nombre_producto || ''}${codigo}`;
+                            }).join(', ');
+                            celda.textContent = nombres;
+                            const tabla = $('#tablaVentas').DataTable();
+                            tabla.row($(celda).closest('tr')).invalidate().draw(false);
                     } else {
-                        celda.innerHTML = '<span class="text-muted small">—</span>';
+                            celda.textContent = '—';
                     }
                 },
                 error: function() { 
-                    celda.innerHTML = '<span class="text-muted small">—</span>'; 
+                        celda.textContent = '—';
                 }
             });
         });
@@ -1412,12 +1429,15 @@ include_once 'src/Views/complements/header.php';
                         const tarifa = Number(item.precio_al_mayor) === 1
                             ? '<span class="uk-label uk-label-success">Mayorista</span>'
                             : '<span class="uk-label">Regular</span>';
-                        tbody.append(`<tr>
-                            <td>${item.nombre_producto}</td>
-                            <td>${formatMoneda(item.cantidad)}</td>
-                            <td>${formatMoneda(item.precio_unitario)} $<br>${tarifa}</td>
-                            <td>${formatMoneda(item.subtotal)} $ / ${formatMoneda(item.subtotal_bs)} Bs</td>
-                        </tr>`);
+                        const nombreConCodigo = item.codigo_producto
+                            ? `${item.nombre_producto || ''} · Código: ${item.codigo_producto}`
+                            : (item.nombre_producto || '');
+                        const fila = $('<tr>');
+                        fila.append($('<td>').text(nombreConCodigo));
+                        fila.append($('<td>').text(formatMoneda(item.cantidad)));
+                        fila.append($('<td>').html(`${formatMoneda(item.precio_unitario)} $<br>${tarifa}`));
+                        fila.append($('<td>').text(`${formatMoneda(item.subtotal)} $ / ${formatMoneda(item.subtotal_bs)} Bs`));
+                        tbody.append(fila);
                     });
                     $('#totalDetallesVenta').text(
                         `Total: ${formatMoneda(data[0].total_venta)} $ / ${formatMoneda(data[0].total_venta_bs)} Bs`
@@ -1439,11 +1459,14 @@ include_once 'src/Views/complements/header.php';
                 const tbody = $('#tbodyDetallesIngreso').empty();
                 if (Array.isArray(data) && data.length > 0) {
                     data.forEach(item => {
-                        tbody.append(`<tr>
-                            <td>${item.nombre_producto}</td>
-                            <td>${item.cantidad}</td>
-                            <td>${item.subtotal} $ / ${item.subtotal_bs} Bs</td>
-                        </tr>`);
+                        const nombreConCodigo = item.codigo_producto
+                            ? `${item.nombre_producto || ''} · Código: ${item.codigo_producto}`
+                            : (item.nombre_producto || '');
+                        const fila = $('<tr>');
+                        fila.append($('<td>').text(nombreConCodigo));
+                        fila.append($('<td>').text(item.cantidad));
+                        fila.append($('<td>').text(`${item.subtotal} $ / ${item.subtotal_bs} Bs`));
+                        tbody.append(fila);
                     });
                     $('#totalDetalleIngreso').text(
                         `Total: ${data[0].total_ingreso} $ / ${data[0].total_ingreso_bs} Bs`
@@ -1485,7 +1508,7 @@ include_once 'src/Views/complements/header.php';
                 data-precio-mayor="<?= $p['precio_al_mayor'] !== null ? (float)$p['precio_al_mayor'] : '' ?>"
                 data-cantidad-mayor="<?= $p['cantidad_al_mayor'] !== null ? (float)$p['cantidad_al_mayor'] : '' ?>"
                 data-stock="<?= floatval($p['stock']) ?>">
-                <?= htmlspecialchars($p['nombre']) ?>${mostrarStock ? ' (<?= floatval($p['stock']) ?>)' : ''}
+                <?= htmlspecialchars($p['nombre'], ENT_QUOTES, 'UTF-8') ?><?= !empty($p['codigo_producto']) ? ' · Código: ' . htmlspecialchars($p['codigo_producto'], ENT_QUOTES, 'UTF-8') : '' ?>${mostrarStock ? ' (<?= floatval($p['stock']) ?>)' : ''}
             </option>`;
         <?php endforeach; ?>
         return options;
@@ -1552,7 +1575,8 @@ include_once 'src/Views/complements/header.php';
         bindEventosFilaIngreso(nuevaFila);
         nuevaFila.find('.select-producto').select2({
             dropdownParent: $('#modalNuevoIngreso .uk-modal-dialog'),
-            width: '100%'
+            width: '100%',
+            placeholder: 'Buscar por nombre o código'
         });
         actualizarTotales();
     }
@@ -1570,7 +1594,8 @@ include_once 'src/Views/complements/header.php';
         bindEventosFilaVenta(nuevaFila);
         nuevaFila.find('.select-producto').select2({
             dropdownParent: $('#modalNuevaVenta .uk-modal-dialog'),
-            width: '100%'
+            width: '100%',
+            placeholder: 'Buscar por nombre o código'
         });
         actualizarTotalesVenta();
     }

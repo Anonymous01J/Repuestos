@@ -58,6 +58,45 @@ body.light-theme {
     --app-warning-readable: #8a4b00;
 }
 
+body.light-theme,
+body.light-theme * {
+    color: var(--app-text);
+}
+
+body.light-theme .uk-card,
+body.light-theme .uk-card-body,
+body.light-theme .uk-card-header,
+body.light-theme .uk-card-title,
+body.light-theme .uk-card h5,
+body.light-theme .uk-table,
+body.light-theme .uk-table thead th,
+body.light-theme .uk-table tbody td,
+body.light-theme .uk-modal,
+body.light-theme .uk-modal *,
+body.light-theme .uk-form-label,
+body.light-theme label,
+body.light-theme .uk-input,
+body.light-theme .uk-select,
+body.light-theme .uk-textarea,
+body.light-theme .form-control,
+body.light-theme .select2-container,
+body.light-theme .select2-selection__rendered,
+body.light-theme .select2-results__option,
+body.light-theme .nav-tabs .nav-link,
+body.light-theme .uk-tab > * > a,
+body.light-theme .app-stat-pill span,
+body.light-theme .app-stat-pill strong,
+body.light-theme .app-modal-kicker,
+body.light-theme .app-brand,
+body.light-theme .app-bcv-trigger,
+body.light-theme .app-user-box,
+body.light-theme .app-user-meta,
+body.light-theme .app-logout-btn,
+body.light-theme .app-item-sort,
+body.light-theme .app-view-toggle .uk-button-default {
+    color: var(--app-text) !important;
+}
+
 body, .uk-container, .uk-card, .uk-table, .uk-modal-dialog, .uk-navbar-container {
     background: var(--app-bg);
     color: var(--app-text);
@@ -146,6 +185,16 @@ body.light-theme .app-auth-card {
 .app-dashboard-shell {
     padding-top: 36px !important;
     padding-bottom: 42px !important;
+}
+
+.app-statistics-chart-card {
+    min-height: 320px;
+}
+
+.app-statistics-chart-wrap {
+    position: relative;
+    min-height: 240px;
+    height: 240px;
 }
 
 .app-section-title {
@@ -1391,6 +1440,38 @@ body.light-theme .alert-success {
     padding: 0.25rem;
 }
 
+.app-history-table-wrap {
+    width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.app-history-table-wrap .app-product-table {
+    min-width: 760px;
+}
+
+.app-detail-table-wrap {
+    width: 100%;
+    max-width: 100%;
+    max-height: min(60vh, 520px);
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.app-detail-table {
+    width: 100%;
+    min-width: 0;
+    table-layout: fixed;
+}
+
+.app-detail-table th,
+.app-detail-table td {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
+
 .app-product-table {
     margin: 0;
     min-width: 760px;
@@ -1399,6 +1480,8 @@ body.light-theme .alert-success {
 #tablaEntradas_wrapper,
 #tablaVentas_wrapper {
     color: var(--app-text) !important;
+    width: 100%;
+    min-width: 0;
 }
 
 #tablaEntradas_wrapper .dataTables_length select,
@@ -1929,6 +2012,57 @@ body.light-theme .alert-success {
         padding: 0.9rem !important;
     }
 
+    #modalDetallesIngreso .uk-modal-dialog,
+    #modalDetallesVenta .uk-modal-dialog {
+        width: calc(100vw - 16px) !important;
+        max-width: calc(100vw - 16px) !important;
+        max-height: calc(100vh - 24px);
+        margin: 12px 8px !important;
+        overflow-y: auto;
+        box-sizing: border-box;
+    }
+
+    #modalDetallesIngreso .app-detail-table-wrap,
+    #modalDetallesVenta .app-detail-table-wrap {
+        max-height: 55vh;
+        overflow-x: auto;
+        overflow-y: auto;
+    }
+
+    #modalDetallesIngreso .app-detail-table,
+    #modalDetallesVenta .app-detail-table {
+        width: 100%;
+        min-width: 0;
+        table-layout: fixed;
+    }
+
+    #modalDetallesIngreso .app-detail-table th,
+    #modalDetallesIngreso .app-detail-table td,
+    #modalDetallesVenta .app-detail-table th,
+    #modalDetallesVenta .app-detail-table td {
+        padding: 0.55rem 0.45rem;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    #tablaEntradas_wrapper,
+    #tablaVentas_wrapper {
+        width: 100%;
+        min-width: 0;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #tablaEntradas,
+    #tablaVentas {
+        min-width: 700px;
+    }
+
+    #tablaEntradas_wrapper .dataTables_scroll,
+    #tablaVentas_wrapper .dataTables_scroll {
+        overflow-x: auto;
+    }
+
     .app-section-title {
         font-size: 1.5rem;
     }
@@ -2055,6 +2189,41 @@ body.light-theme .alert-success {
         background: rgba(255, 255, 255, 0.035) !important;
         border-color: rgba(255, 255, 255, 0.08) !important;
         color: var(--app-text) !important;
+    }
+
+    /* En tablet y móvil, usar el ancho completo disponible para cada control. */
+    #modalNuevoIngreso .app-transaction-table tbody tr > td,
+    #modalNuevaVenta .app-transaction-table tbody tr > td {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+
+    #modalNuevoIngreso .app-transaction-table tbody td .app-transaction-field,
+    #modalNuevoIngreso .app-transaction-table tbody td .form-control,
+    #modalNuevaVenta .app-transaction-table tbody td .app-transaction-field,
+    #modalNuevaVenta .app-transaction-table tbody td .form-control {
+        display: block;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        min-height: 42px;
+        font-size: 0.95rem;
+        padding: 0.55rem 0.7rem;
+        box-sizing: border-box;
+    }
+
+    #modalNuevoIngreso .app-transaction-table tbody td .select2-container,
+    #modalNuevaVenta .app-transaction-table tbody td .select2-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0;
+    }
+
+    #modalNuevoIngreso .app-transaction-table tbody td .select2-selection--single,
+    #modalNuevaVenta .app-transaction-table tbody td .select2-selection--single {
+        width: 100%;
+        min-height: 42px;
     }
 
     .app-transaction-table tbody td .app-row-delete {
@@ -2320,4 +2489,63 @@ body.light-theme .alert-success {
 
 .app-stock-metric-value.app-stock-metric-value--warning {
     color: var(--app-warning-readable) !important;
+}
+
+.app-home-statistics-grid {
+    margin-top: 1rem;
+}
+
+.app-statistics-filters,
+.app-statistics-ranking {
+    border-radius: 18px;
+}
+
+.app-statistics-ranking {
+    min-width: 0;
+}
+
+.app-statistics-ranking .uk-card-title {
+    font-size: 1.05rem;
+    margin-bottom: 0.75rem;
+}
+
+.app-statistics-table {
+    min-width: 420px;
+    margin-bottom: 0;
+}
+
+.app-statistics-table th,
+.app-statistics-table td {
+    white-space: normal;
+}
+
+.app-statistics-table td:nth-child(2),
+.app-statistics-table td:nth-child(3) {
+    text-align: right;
+    white-space: nowrap;
+}
+
+@media (max-width: 639px) {
+    .app-statistics-page {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+
+    .app-statistics-filters .uk-grid > div {
+        width: 100%;
+    }
+
+    .app-statistics-filters .uk-flex-right {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .app-statistics-filters .uk-button {
+        padding-inline: 0.6rem;
+        font-size: 0.8rem;
+    }
+
+    .app-statistics-table {
+        min-width: 360px;
+    }
 }

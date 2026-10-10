@@ -80,7 +80,7 @@
             }
         }
         public function searchIngresoId() {
-            $sql = "SELECT (SELECT nombre FROM productos WHERE id = detalle_ingreso.id_producto) AS nombre_producto, cantidad, precio_compra, precio_compra_bs, subtotal, subtotal_bs, (SELECT total FROM ingresos WHERE id = detalle_ingreso.id_ingreso) AS total_ingreso, (SELECT total_bs FROM ingresos WHERE id = detalle_ingreso.id_ingreso) AS total_ingreso_bs FROM detalle_ingreso WHERE id_ingreso = :id_ingreso";
+            $sql = "SELECT p.nombre AS nombre_producto, p.codigo_producto, detalle_ingreso.cantidad, detalle_ingreso.precio_compra, detalle_ingreso.precio_compra_bs, detalle_ingreso.subtotal, detalle_ingreso.subtotal_bs, ingresos.total AS total_ingreso, ingresos.total_bs AS total_ingreso_bs FROM detalle_ingreso INNER JOIN productos p ON p.id = detalle_ingreso.id_producto INNER JOIN ingresos ON ingresos.id = detalle_ingreso.id_ingreso WHERE detalle_ingreso.id_ingreso = :id_ingreso";
             $stmt = $this->prepare($sql);
             $stmt->bindParam(":id_ingreso", $this->id_ingreso);
             if ($stmt->execute()) {
