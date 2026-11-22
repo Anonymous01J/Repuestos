@@ -10,7 +10,7 @@
                     $_SESSION['nombre'] = $_COOKIE['nombre'];
                     $_SESSION['rol'] = $_COOKIE['rol'];
                 } else {
-                    require_once __DIR__ . '/../Views/Login.php';
+                    require_once __DIR__ . '/../Views/login.php';
                     exit();
                 }
             }
@@ -20,7 +20,7 @@
             $roles = $rol->search();
             $usuarios = $usuario->search();
             $usuariosInactive = $usuario->searchInactive();
-            require_once __DIR__ . '/../Views/Usuarios.php';
+            require_once __DIR__ . '/../Views/usuarios.php';
         }
         public function add() {
             if (isset($_POST['nombre']) && isset($_POST['rol']) && isset($_POST['usuario']) && isset($_POST['clave'])) {

@@ -16,7 +16,7 @@
                     $_SESSION['nombre'] = $_COOKIE['nombre'];
                     $_SESSION['rol'] = $_COOKIE['rol'];
                 } else {
-                    require_once __DIR__ . '/../Views/Login.php';
+                    require_once __DIR__ . '/../Views/login.php';
                     exit();
                 }
             }
@@ -34,7 +34,7 @@
             $ventas = $venta->search();
             $categorias = $categoria->search();
             $productos = $producto->search();
-            require_once __DIR__ . '/../Views/Productos.php';
+            require_once __DIR__ . '/../Views/productos.php';
         }
 
         /**

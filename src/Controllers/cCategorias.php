@@ -10,14 +10,14 @@
                     $_SESSION['nombre'] = $_COOKIE['nombre'];
                     $_SESSION['rol'] = $_COOKIE['rol'];
                 } else {
-                    require_once __DIR__ . '/../Views/Login.php';
+                    require_once __DIR__ . '/../Views/login.php';
                     exit();
                 }
             }
             $title = 'Categorias';
             $categoria = new Categorias();
             $categorias = $categoria->search();
-            require_once __DIR__ . '/../Views/Categorias.php';
+            require_once __DIR__ . '/../Views/categorias.php';
         }
 
         public function add() {

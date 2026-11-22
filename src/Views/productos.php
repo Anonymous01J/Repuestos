@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <?php
-include_once 'src/Views/complements/head.php';
-include_once 'src/Views/complements/header.php';
+include_once __DIR__ . '/complements/head.php';
+include_once __DIR__ . '/complements/header.php';
 ?>
 
 <!-- ── Toast de error de stock (generado por backend tras redirect) ────── -->
@@ -581,7 +581,7 @@ include_once 'src/Views/complements/header.php';
         </div>
     </div>
 
-    <?php include_once 'src/Views/complements/footer.php'; ?>
+    <?php include_once __DIR__ . '/complements/footer.php'; ?>
 
 <script>
     // ── Variables globales ─────────────────────────────────────────────────

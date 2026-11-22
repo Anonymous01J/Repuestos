@@ -6,35 +6,67 @@
     
     class CIngresos {
 
+        private function normalizarMoneda($valor): float {
+            if ($valor === null || $valor === '') {
+                return 0;
+            }
+            if (is_numeric($valor)) {
+                return floatval($valor);
+            }
+            $valor = trim(strval($valor));
+            if (preg_match('/,\d{1,2}$/', $valor)) {
+                $valor = str_replace('.', '', $valor);
+                $valor = str_replace(',', '.', $valor);
+            } else {
+                $valor = str_replace(',', '', $valor);
+            }
+            return floatval($valor);
+        }
+
         public function add() {
-            if (isset($_POST['id_usuario'])) {
-                function normalizarMoneda($valor) {
-                    return floatval(str_replace(',', '.', str_replace('.', '', $valor)));
-                }
+            if (isset($_POST['id_usuario']) && isset($_POST['id_producto']) && isset($_POST['cantidad']) && isset($_POST['precio']) && isset($_POST['precio_bs'])) {
+                $precio = $this->normalizarMoneda($_POST['precio']);
+                $precio_bs = $this->normalizarMoneda($_POST['precio_bs']);
+                $cantidad = floatval($_POST['cantidad']);
+
                 $ingreso = new Ingresos();
                 $ingreso->setIdUsuario($_POST['id_usuario'])
-                        ->setTotal(normalizarMoneda($_POST['precio']))
-                        ->setTotalBs(normalizarMoneda($_POST['precio_bs']));
-                if ($ingreso->insert() && isset($_POST['id_producto']) && isset($_POST['cantidad']) && isset($_POST['precio']) && isset($_POST['precio_bs'])) {
+                        ->setTotal(round($precio * $cantidad, 2))
+                        ->setTotalBs(round($precio_bs * $cantidad, 2));
+
+                try {
+                    $ingreso->beginTransaction();
+
+                    if (!$ingreso->insert()) {
+                        throw new \Exception("Error al registrar ingreso.");
+                    }
+
                     $detallesIngreso = new Detalles_Ingreso();
                     $detallesIngreso->setIdIngreso($ingreso->getLastID())
                         ->setIdProducto($_POST['id_producto'])
-                        ->setCantidad($_POST['cantidad'])
-                        ->setPrecio_compra($_POST['precio'])
-                        ->setPrecio_compra_bs(normalizarMoneda($_POST['precio_bs']))
-                        ->setSubtotal(normalizarMoneda($_POST['precio']))
-                        ->setSubtotal_bs(normalizarMoneda($_POST['precio_bs']));
-                    if ($detallesIngreso->insert()) {
-                        header("Location: ?c=CProductos/view&success=1");
-                    } else {
-                        header("Location: ?c=CProductos/view&error=1");
+                        ->setCantidad($cantidad)
+                        ->setPrecio_compra($precio)
+                        ->setPrecio_compra_bs($precio_bs)
+                        ->setSubtotal(round($precio * $cantidad, 2))
+                        ->setSubtotal_bs(round($precio_bs * $cantidad, 2));
+
+                    if (!$detallesIngreso->insert()) {
+                        throw new \Exception("Error al registrar detalle de ingreso.");
                     }
-                } else {
-                    header(header: "Location: ?c=CProductos/view&error=2");
+
+                    $ingreso->commit();
+                    header("Location: ?c=CProductos/view&success=1");
+                    exit;
+                } catch (\Throwable $e) {
+                    if ($ingreso->inTransaction()) {
+                        $ingreso->rollBack();
+                    }
+                    header("Location: ?c=CProductos/view&error=1");
+                    exit;
                 }
             } else {
-                // header("Location: ?c=CProductos/view&error=3");
-                echo "Error: Faltan campos obligatorios.";
+                header("Location: ?c=CProductos/view&error=2");
+                exit;
             }
         }
 
@@ -46,11 +78,6 @@
                 isset($_POST['precio']) &&
                 isset($_POST['precio_bs'])
             ) {
-                function normalizarMoneda($valor)
-                {
-                    return floatval(str_replace(',', '.', str_replace('.', '', $valor)));
-                }
-
                 $productos = $_POST['productos'];
                 $cantidades = $_POST['cantidades'];
                 $precios = $_POST['precio'];
@@ -61,11 +88,12 @@
 
                 // Calcular totales antes de insertar el ingreso
                 for ($i = 0; $i < count($productos); $i++) {
-                    $cantidad = intval($cantidades[$i]);
-                    $precio = normalizarMoneda($precios[$i]);
-                    $precio_bs = normalizarMoneda($precios_bs[$i]);
-                    $subtotal = $cantidad * $precio;
-                    $subtotal_bs = $cantidad * $precio_bs;
+                    if (empty($productos[$i])) continue;
+                    $cantidad = floatval($cantidades[$i]);
+                    $precio = $this->normalizarMoneda($precios[$i]);
+                    $precio_bs = $this->normalizarMoneda($precios_bs[$i]);
+                    $subtotal = round($cantidad * $precio, 2);
+                    $subtotal_bs = round($cantidad * $precio_bs, 2);
                     $total += $subtotal;
                     $totalBs += $subtotal_bs;
                 }
@@ -75,15 +103,22 @@
                         ->setTotal($total)
                         ->setTotalBs($totalBs);
 
-                if ($ingreso->insert()) {
+                try {
+                    $ingreso->beginTransaction();
+
+                    if (!$ingreso->insert()) {
+                        throw new \Exception("Error al registrar ingreso.");
+                    }
+
                     $idIngreso = $ingreso->getLastID();
 
                     for ($i = 0; $i < count($productos); $i++) {
-                        $cantidad = intval($cantidades[$i]);
-                        $precio = normalizarMoneda($precios[$i]);
-                        $precio_bs = normalizarMoneda($precios_bs[$i]);
-                        $subtotal = $cantidad * $precio;
-                        $subtotal_bs = $cantidad * $precio_bs;
+                        if (empty($productos[$i])) continue;
+                        $cantidad = floatval($cantidades[$i]);
+                        $precio = $this->normalizarMoneda($precios[$i]);
+                        $precio_bs = $this->normalizarMoneda($precios_bs[$i]);
+                        $subtotal = round($cantidad * $precio, 2);
+                        $subtotal_bs = round($cantidad * $precio_bs, 2);
 
                         $detallesIngreso = new Detalles_Ingreso();
                         $detallesIngreso->setIdIngreso($idIngreso)
@@ -94,13 +129,19 @@
                                         ->setSubtotal($subtotal)
                                         ->setSubtotal_bs($subtotal_bs);
 
-                        $detallesIngreso->insert();
+                        if (!$detallesIngreso->insert()) {
+                            throw new \Exception("Error al registrar detalle de ingreso.");
+                        }
                     }
 
-                    header("Location: ?c=CProductos&success=1");
+                    $ingreso->commit();
+                    header("Location: ?c=CProductos/view&success=1");
                     exit;
-                } else {
-                    header("Location: ?c=CProductos&error=1");
+                } catch (\Throwable $e) {
+                    if ($ingreso->inTransaction()) {
+                        $ingreso->rollBack();
+                    }
+                    header("Location: ?c=CProductos/view&error=1");
                     exit;
                 }
             } else {

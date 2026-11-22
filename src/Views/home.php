@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
-    <?php require_once __DIR__ . '../complements/head.php'; ?>
-    <?php require_once __DIR__ . '../complements/header.php'; ?>
+    <?php require_once __DIR__ . '/complements/head.php'; ?>
+    <?php require_once __DIR__ . '/complements/header.php'; ?>
 
     <div class="container py-5">
         <h2 class="mb-4">Panel principal</h2>
@@ -155,6 +155,6 @@
         </div>
     </div>
 
-    <?php require_once __DIR__ . '../complements/footer.php'; ?>
+    <?php require_once __DIR__ . '/complements/footer.php'; ?>
 </body>
 </html>

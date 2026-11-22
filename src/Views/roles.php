@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
     <?php
-        require_once __DIR__ . '../complements/head.php';
+        require_once __DIR__ . '/complements/head.php';
     ?>
     <?php
-        require_once __DIR__ . '../complements/header.php';
+        require_once __DIR__ . '/complements/header.php';
     ?>
 
     <div class="container py-4">
@@ -77,7 +77,7 @@
         </div>
     </div>
     <?php
-        require_once __DIR__ . '../complements/footer.php';
+        require_once __DIR__ . '/complements/footer.php';
     ?>
 </body>
 </html>

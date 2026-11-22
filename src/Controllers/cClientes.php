@@ -10,7 +10,7 @@
                     $_SESSION['nombre'] = $_COOKIE['nombre'];
                     $_SESSION['rol'] = $_COOKIE['rol'];
                 } else {
-                    require_once __DIR__ . '/../Views/Login.php';
+                    require_once __DIR__ . '/../Views/login.php';
                     exit();
                 }
             }
@@ -18,7 +18,7 @@
             $cliente = new Clientes();
             $clientes = $cliente->search();
             $clientesInactive = $cliente->searchInactive();
-            require_once __DIR__ . '/../Views/Clientes.php';
+            require_once __DIR__ . '/../Views/clientes.php';
         }
         public function add() {
             if (isset($_POST['nombre']) && isset($_POST['telefono']) && isset($_POST['direccion']) && isset($_POST['cedula_rif'])) {
