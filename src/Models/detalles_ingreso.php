@@ -42,9 +42,10 @@
         public function setSubtotal($subtotal) { $this->subtotal = $subtotal; return $this; }
         public function setSubtotal_bs($subtotal_bs) { $this->subtotal_bs = $subtotal_bs; return $this; }
 
-        public function insert() {
+        public function insert(?\PDO $connection = null) {
             $sql = "INSERT INTO detalle_ingreso (id_ingreso, id_producto, cantidad, precio_compra, subtotal, precio_compra_bs, subtotal_bs) VALUES (:id_ingreso, :id_producto, :cantidad, :precio_compra, :subtotal, :precio_compra_bs, :subtotal_bs)";
-            $stmt = $this->prepare($sql);
+            $connection = $connection ?? $this;
+            $stmt = $connection->prepare($sql);
             $stmt->bindParam(":id_ingreso", $this->id_ingreso);
             $stmt->bindParam(":id_producto", $this->id_producto);
             $stmt->bindParam(":cantidad", $this->cantidad);

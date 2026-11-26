@@ -165,6 +165,15 @@
                 return false;
             }
         }
+        public function decreaseStock($quantity, ?\PDO $connection = null) {
+            $sql = "UPDATE productos SET stock = stock - :quantity WHERE id = :id AND stock >= :minimum_stock";
+            $connection = $connection ?? $this;
+            $stmt = $connection->prepare($sql);
+            $stmt->bindParam(":id", $this->id);
+            $stmt->bindParam(":quantity", $quantity);
+            $stmt->bindParam(":minimum_stock", $quantity);
+            return $stmt->execute() && $stmt->rowCount() === 1;
+        }
         public function delete() {
             $sql = "UPDATE productos SET estado = 0 WHERE id = :id";
             $stmt = $this->prepare($sql);

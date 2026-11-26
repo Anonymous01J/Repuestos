@@ -33,10 +33,11 @@
         public function insert() {
             $sql = "INSERT INTO usuarios (id_rol, nombre, usuario, clave) VALUES (:rol, :nombre, :usuario, :clave)";
             $stmt = $this->prepare($sql);
+            $clave = hash('sha256', (string) $this->clave);
             $stmt->bindParam(":rol", $this->rol);
             $stmt->bindParam(":nombre", $this->nombre);
             $stmt->bindParam(":usuario", $this->usuario);
-            $stmt->bindParam(":clave", $this->clave);
+            $stmt->bindParam(":clave", $clave);
             if ($stmt->execute()) {
                 return true;
             } else {
@@ -44,24 +45,42 @@
             }
         }
         public function login($usuario, $clave) {
-            $sql = "SELECT * FROM usuarios WHERE usuario = :usuario AND clave = :clave AND estado = 1";
+            $sql = "SELECT * FROM usuarios WHERE usuario = :usuario AND estado = 1";
             $stmt = $this->prepare($sql);
             $stmt->bindParam(":usuario", $usuario);
-            $stmt->bindParam(":clave", $clave);
-            if ($stmt->execute()) {
-                return $stmt->fetch(\PDO::FETCH_ASSOC);
-            } else {
+            if (!$stmt->execute()) {
                 return false;
             }
+            $usuarioData = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if (!$usuarioData) {
+                return false;
+            }
+
+            $claveHash = hash('sha256', (string) $clave);
+            $claveGuardada = (string) $usuarioData['clave'];
+            if (preg_match('/^[a-f0-9]{64}$/i', $claveGuardada)) {
+                return hash_equals(strtolower($claveGuardada), $claveHash) ? $usuarioData : false;
+            }
+
+            if (!hash_equals($claveGuardada, (string) $clave)) {
+                return false;
+            }
+
+            $upgrade = $this->prepare("UPDATE usuarios SET clave = :clave WHERE id = :id");
+            $upgrade->bindParam(":clave", $claveHash);
+            $upgrade->bindParam(":id", $usuarioData['id']);
+            $upgrade->execute();
+            $usuarioData['clave'] = $claveHash;
+            return $usuarioData;
         }
         public function search() {
-            $sql = "SELECT id, nombre, id_rol, (SELECT nombre FROM roles WHERE id=usuarios.id_rol) AS rol, usuario, clave FROM usuarios WHERE estado = 1";
+            $sql = "SELECT id, nombre, id_rol, (SELECT nombre FROM roles WHERE id=usuarios.id_rol) AS rol, usuario FROM usuarios WHERE estado = 1";
             $stmt = $this->prepare($sql);
             $stmt->execute();
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         }
         public function searchInactive() {
-            $sql = "SELECT id, nombre, id_rol, (SELECT nombre FROM roles WHERE id=usuarios.id_rol) AS rol, usuario, clave FROM usuarios WHERE estado = 0";
+            $sql = "SELECT id, nombre, id_rol, (SELECT nombre FROM roles WHERE id=usuarios.id_rol) AS rol, usuario FROM usuarios WHERE estado = 0";
             $stmt = $this->prepare($sql);
             $stmt->execute();
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -82,13 +101,21 @@
             return $stmt->fetch(\PDO::FETCH_ASSOC);
         }
         public function update() {
-            $sql = "UPDATE usuarios SET nombre = :nombre, id_rol = :rol, usuario = :usuario, clave = :clave WHERE id = :id";
+            $cambiarClave = (string) $this->clave !== '';
+            $sql = "UPDATE usuarios SET nombre = :nombre, id_rol = :rol, usuario = :usuario";
+            if ($cambiarClave) {
+                $sql .= ", clave = :clave";
+            }
+            $sql .= " WHERE id = :id";
             $stmt = $this->prepare($sql);
             $stmt->bindParam(":id", $this->id);
             $stmt->bindParam(":nombre", $this->nombre);
             $stmt->bindParam(":rol", $this->rol);
             $stmt->bindParam(":usuario", $this->usuario);
-            $stmt->bindParam(":clave", $this->clave);
+            if ($cambiarClave) {
+                $clave = hash('sha256', (string) $this->clave);
+                $stmt->bindParam(":clave", $clave);
+            }
             if ($stmt->execute()) {
                 return true;
             } else {

@@ -150,7 +150,13 @@ class CVentas {
                   ->setTotal($total)
                   ->setTotalBs($total_bs);
 
-            if ($venta->insert()) {
+            try {
+                $venta->beginTransaction();
+
+                if (!$venta->insert()) {
+                    throw new \Exception("Error al insertar venta.");
+                }
+
                 $id_venta = $venta->getLastID();
 
                 foreach ($lineasVenta as $linea) {
@@ -163,22 +169,21 @@ class CVentas {
                         ->setSubtotal($linea['subtotal'])
                         ->setSubtotalBs($linea['subtotal_bs'])
                         ->setAplicoPrecioAlMayor($linea['aplico_precio_mayor']);
-                    $detallesVenta->insert();
 
-                    // Actualizar stock
-                    $producto = new Productos();
-                    $producto->setId($linea['id_producto']);
-                    $productoData = $producto->searchId();
-                    if ($productoData) {
-                        $nuevoStock = max(0, $productoData['stock'] - $linea['cantidad']);
-                        $producto->setStock($nuevoStock);
-                        $producto->updateStock();
+                    if (!$detallesVenta->insert()) {
+                        throw new \Exception("Error al insertar detalle de venta.");
+                    }
                     }
                 }
+
+                $venta->commit();
                 
                 header("Location: ?c=CProductos/view&success=1");
                 exit;
-            } else {
+            } catch (\Throwable $e) {
+                if ($venta->inTransaction()) {
+                    $venta->rollBack();
+                }
                 header("Location: ?c=CProductos/view&error=1");
                 exit;
             }
@@ -222,7 +227,13 @@ class CVentas {
                 ->setTotal($subtotal)
                 ->setTotalBs($subtotalBs);
 
-            if ($venta->insert()) {
+            try {
+                $venta->beginTransaction();
+
+                if (!$venta->insert()) {
+                    throw new \Exception("Error al insertar venta.");
+                }
+
                 $id_venta = $venta->getLastID();
 
                 $detallesVenta = new Detalles_Venta();
@@ -235,21 +246,19 @@ class CVentas {
                     ->setSubtotalBs($subtotalBs)
                     ->setAplicoPrecioAlMayor($aplicoPrecioMayor);
 
-                if ($detallesVenta->insert()) {
-                    $producto = new Productos();
-                    $producto->setId($_POST['id_producto']);
-                    $productoData = $producto->searchId();
-                    if ($productoData) {
-                        $nuevoStock = max(0, $productoData['stock'] - $cantidad);
-                        $producto->setStock($nuevoStock);
-                        $producto->updateStock();
-                    }
-                    header("Location: ?c=CProductos/view&success=1");
-                } else {
-                    header("Location: ?c=CProductos/view&error=1");
+                if (!$detallesVenta->insert()) {
+                    throw new \Exception("Error al insertar detalle de venta.");
                 }
-            } else {
-                header("Location: ?c=CProductos/view&error=2");
+
+                $venta->commit();
+                header("Location: ?c=CProductos/view&success=1");
+                exit;
+            } catch (\Throwable $e) {
+                if ($venta->inTransaction()) {
+                    $venta->rollBack();
+                }
+                header("Location: ?c=CProductos/view&error=1");
+                exit;
             }
         } else {
             echo "Error: Faltan campos obligatorios.";

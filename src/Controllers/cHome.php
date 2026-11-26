@@ -5,6 +5,7 @@
     use Anonymous01j\Repuestos\Models\StockBajo;
     use Anonymous01j\Repuestos\Models\Estadistica;
     use Anonymous01j\Repuestos\Models\Categorias;
+    use Anonymous01j\Repuestos\Services\LicenseService;
 
     class CHome {
         public function view() {
@@ -17,6 +18,11 @@
                     require_once __DIR__ . '/../Views/Login.php';
                     exit();
                 }
+            }
+            try {
+                $licenseSummary = (new LicenseService())->getSummary();
+            } catch (\Throwable $exception) {
+                $licenseSummary = ['status' => 'storage_unavailable'];
             }
             $title = 'Inicio';
 

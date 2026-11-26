@@ -45,9 +45,10 @@
         public function setSubtotalBs($subtotal_bs) { $this->subtotal_bs = $subtotal_bs; return $this; }
         public function setAplicoPrecioAlMayor($aplico_precio_al_mayor) { $this->aplico_precio_al_mayor = $aplico_precio_al_mayor; return $this; }
 
-        public function insert() {
+        public function insert(?\PDO $connection = null) {
             $sql = "INSERT INTO detalle_venta (id_venta, id_producto, cantidad, precio_unitario, precio_unitario_bs, subtotal, subtotal_bs, precio_al_mayor) VALUES (:id_venta, :id_producto, :cantidad, :precio_unitario, :precio_unitario_bs, :subtotal, :subtotal_bs, :precio_al_mayor)";
-            $stmt = $this->prepare($sql);
+            $connection = $connection ?? $this;
+            $stmt = $connection->prepare($sql);
             $stmt->bindParam(":id_venta", $this->id_venta);
             $stmt->bindParam(":id_producto", $this->id_producto);
             $stmt->bindParam(":cantidad", $this->cantidad);

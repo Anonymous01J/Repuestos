@@ -5,9 +5,31 @@
     <?php require_once __DIR__ . '/complements/header.php'; ?>
 
     <div class="app-dashboard-shell uk-container uk-container-large uk-padding-large">
+        <?php $licenseSummary = $licenseSummary ?? ['status' => 'unknown']; ?>
         <div class="uk-margin-bottom">
             <div class="app-section-title">Panel principal</div>
         </div>
+
+        <section class="uk-card uk-card-default uk-card-body uk-margin-bottom" aria-labelledby="licenseSummaryTitle">
+            <div class="uk-flex uk-flex-between uk-flex-middle uk-flex-wrap" style="gap: 16px;">
+                <div>
+                    <h2 id="licenseSummaryTitle" class="uk-card-title uk-margin-small-bottom">Licencia</h2>
+                    <p class="uk-margin-remove">
+                        Estado: <strong><?= ($licenseSummary['status'] ?? '') === 'active' ? 'Activa' : 'Revisar licencia' ?></strong>
+                        <?php if (!empty($licenseSummary['expires_at'])): ?>
+                            <span class="uk-text-muted">· Vence <?= gmdate('d/m/Y H:i', (int) $licenseSummary['expires_at']) ?> UTC</span>
+                            <span class="uk-text-muted">· <?= (int) $licenseSummary['days_remaining'] ?> días restantes</span>
+                        <?php endif; ?>
+                    </p>
+                </div>
+                <a href="?c=CLicense/settings" class="uk-button uk-button-default">Configuración de licencia</a>
+            </div>
+            <?php if (!empty($licenseSummary['alert_message'])): ?>
+                <div class="uk-alert-<?= ($licenseSummary['alert_level'] ?? '') === 'critical' ? 'danger' : 'warning' ?> uk-margin-top" uk-alert>
+                    <p class="uk-margin-remove"><?= htmlspecialchars($licenseSummary['alert_message'], ENT_QUOTES, 'UTF-8') ?></p>
+                </div>
+            <?php endif; ?>
+        </section>
 
         <div class="app-dashboard-grid uk-grid uk-grid-small uk-child-width-1-1 uk-child-width-1-2@m uk-child-width-1-3@l" uk-grid>
             <div>
@@ -36,6 +58,13 @@
                     <h5 class="uk-card-title uk-margin-small-bottom">Categorías de Productos</h5>
                     <p class="uk-text-small uk-text-muted">Gestiona las categorías disponibles.</p>
                     <a href="?c=CCategorias/view" class="uk-button uk-button-primary">Ver categorías</a>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-default uk-card-body uk-height-1-1">
+                    <h5 class="uk-card-title uk-margin-small-bottom">Usuarios</h5>
+                    <p class="uk-text-small uk-text-muted">Gestiona a tus usuarios.</p>
+                    <a href="?c=CUsuarios/view" class="uk-button uk-button-primary">Ver usuarios</a>
                 </div>
             </div>
             <div>
