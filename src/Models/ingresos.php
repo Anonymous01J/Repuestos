@@ -77,14 +77,20 @@
             }
         }
         public function searchProveedorId($id_proveedor) {
-            $sql = "SELECT * FROM ingresos WHERE id_proveedor = :id_proveedor";
-            $stmt = $this->prepare($sql);
-            $stmt->bindParam(":id_proveedor", $id_proveedor);
-            if ($stmt->execute()) {
-                return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            } else {
+            // NOTA: La tabla `ingresos` no posee la columna `id_proveedor`. Si la columna existe en el esquema futuro,
+            // descomentar la consulta con id_proveedor.
+            try {
+                $sql = "SELECT * FROM ingresos WHERE id_proveedor = :id_proveedor";
+                $stmt = $this->prepare($sql);
+                $stmt->bindParam(":id_proveedor", $id_proveedor);
+                if ($stmt->execute()) {
+                    return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+                }
+            } catch (\PDOException $e) {
+                // Prevenir excepción si la columna id_proveedor aún no existe en la base de datos
                 return [];
             }
+            return [];
         }
         public function searchUsuarioId($id_usuario) {
             $sql = "SELECT * FROM ingresos WHERE id_usuario = :id_usuario";

@@ -14,7 +14,7 @@
                     $_SESSION['nombre'] = $_COOKIE['nombre'];
                     $_SESSION['rol'] = $_COOKIE['rol'];
                 } else {
-                    require_once __DIR__ . '/../Views/Login.php';
+                    require_once __DIR__ . '/../Views/login.php';
                     exit();
                 }
             }
@@ -24,10 +24,14 @@
             $stockBajoModel   = new StockBajo();
             $productosAlerta  = $stockBajoModel->search();
 
+<<<<<<< HEAD
             $estadisticaModel = new Estadistica();
             $resumenEstadistico = $estadisticaModel->obtenerResumenMensual();
 
             require_once __DIR__ . '/../Views/Home.php';
+=======
+            require_once __DIR__ . '/../Views/home.php';
+>>>>>>> 427dc3a866328b94a630a4682abb9d435b139c9d
         }
 
         public function estadisticas() {
@@ -111,7 +115,7 @@
             setcookie("id", "", time() - 3600, "/");
             setcookie("nombre", "", time() - 3600, "/");
             setcookie("rol", "", time() - 3600, "/");
-            require_once __DIR__ . '/../Views/Login.php';
+            require_once __DIR__ . '/../Views/login.php';
             exit();
         }
 

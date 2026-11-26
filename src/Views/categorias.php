@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
+<<<<<<< HEAD
 <?php
     include_once __DIR__ . '/complements/head.php';
     include_once __DIR__ . '/complements/header.php';
 ?>
+=======
+    <?php require_once __DIR__ . '/complements/head.php'; ?>
+    <?php require_once __DIR__ . '/complements/header.php'; ?>
+>>>>>>> 427dc3a866328b94a630a4682abb9d435b139c9d
 
 <?php if (isset($_GET['success'])): ?>
 <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 9999;">
@@ -97,6 +102,7 @@
         </div>
     </div>
 
+<<<<<<< HEAD
     <div id="modalEliminar<?= $c['id'] ?>" uk-modal>
         <div class="uk-modal-dialog uk-modal-body uk-width-medium">
             <button class="uk-modal-close-default" type="button" uk-close></button>
@@ -321,5 +327,8 @@
         renderCategoriasLists();
     });
 </script>
+=======
+    <?php require_once __DIR__ . '/complements/footer.php'; ?>
+>>>>>>> 427dc3a866328b94a630a4682abb9d435b139c9d
 </body>
 </html>
