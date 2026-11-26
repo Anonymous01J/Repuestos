@@ -12,7 +12,7 @@ class LicenseService
 
     public function __construct(?PDO $connection = null, ?string $stateFilePath = null)
     {
-        $this->connection = $connection ?? new Conexion();
+        $this->connection = $connection ?? Conexion::getInstance();
         $this->publicKeyPath = dirname(__DIR__) . '/Config/licencia_publica.pem';
         $stateDirectory = getenv('APPDATA') ?: getenv('USERPROFILE') ?: sys_get_temp_dir();
         $this->stateFilePath = $stateFilePath
