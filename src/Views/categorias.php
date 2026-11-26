@@ -321,5 +321,8 @@
         renderCategoriasLists();
     });
 </script>
+=======
+    <?php require_once __DIR__ . '/complements/footer.php'; ?>
+>>>>>>> 427dc3a866328b94a630a4682abb9d435b139c9d
 </body>
 </html>

@@ -15,7 +15,7 @@
                     $_SESSION['nombre'] = $_COOKIE['nombre'];
                     $_SESSION['rol'] = $_COOKIE['rol'];
                 } else {
-                    require_once __DIR__ . '/../Views/Login.php';
+                    require_once __DIR__ . '/../Views/login.php';
                     exit();
                 }
             }
@@ -33,7 +33,7 @@
             $estadisticaModel = new Estadistica();
             $resumenEstadistico = $estadisticaModel->obtenerResumenMensual();
 
-            require_once __DIR__ . '/../Views/Home.php';
+            require_once __DIR__ . '/../Views/home.php';
         }
 
         public function estadisticas() {
@@ -117,7 +117,7 @@
             setcookie("id", "", time() - 3600, "/");
             setcookie("nombre", "", time() - 3600, "/");
             setcookie("rol", "", time() - 3600, "/");
-            require_once __DIR__ . '/../Views/Login.php';
+            require_once __DIR__ . '/../Views/login.php';
             exit();
         }
 

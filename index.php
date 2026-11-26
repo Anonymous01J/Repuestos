@@ -6,7 +6,7 @@ namespace Anonymous01j\Repuestos;
 	}	
 	require 'vendor/autoload.php';
 
-	$ruta = isset($_GET['c']) ? $_GET['c'] : "CHome/view";
+	$ruta = isset($_GET['c']) ? $_GET['c'] : "cHome/view";
 	$partes = explode("/", $ruta);
 	$rutasLicencia = ['CLicense/view', 'CLicense/activate'];
 	if (!in_array($ruta, $rutasLicencia, true)) {
@@ -20,9 +20,15 @@ namespace Anonymous01j\Repuestos;
 			exit;
 		}
 	}
-	$nomClase = "Anonymous01j\\Repuestos\\Controllers\\" . ucfirst($partes[0]);
+	// Normalizar el nombre del archivo del controlador: si viene "CHome", buscar "cHome" o "CHome"
+	$controladorArchivo = lcfirst($partes[0]);
+	$nomClase = "Anonymous01j\\Repuestos\\Controllers\\" . ucfirst($controladorArchivo);
 	$metodo = isset($partes[1]) ? $partes[1] : "view";
-	$url = __DIR__ . "/src/Controllers/" . $partes[0] . ".php";
+	$url = __DIR__ . "/src/Controllers/" . $controladorArchivo . ".php";
+	if (!file_exists($url)) {
+		// Fallback por si el archivo físico estuviese con primera mayúscula
+		$url = __DIR__ . "/src/Controllers/" . ucfirst($partes[0]) . ".php";
+	}
 	if (file_exists($url)) {
 		require_once $url;
 		if (class_exists($nomClase)) {

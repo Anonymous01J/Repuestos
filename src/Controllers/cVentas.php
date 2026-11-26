@@ -173,7 +173,6 @@ class CVentas {
                     if (!$detallesVenta->insert()) {
                         throw new \Exception("Error al insertar detalle de venta.");
                     }
-                    }
                 }
 
                 $venta->commit();

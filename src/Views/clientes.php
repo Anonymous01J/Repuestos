@@ -123,7 +123,6 @@
             </form>
         </div>
     </div>
-
     <div id="modalConfirmarEliminar<?= $c['id'] ?>" uk-modal>
         <div class="uk-modal-dialog uk-modal-body uk-width-medium">
             <button class="uk-modal-close-default" type="button" uk-close></button>
@@ -461,5 +460,10 @@
         renderClientesLists();
     });
 </script>
+=======
+    <?php
+        require_once __DIR__ . '/complements/footer.php';
+    ?>
+>>>>>>> 427dc3a866328b94a630a4682abb9d435b139c9d
 </body>
 </html>
